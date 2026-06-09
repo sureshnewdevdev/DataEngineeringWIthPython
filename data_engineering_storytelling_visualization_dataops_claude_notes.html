@@ -1,0 +1,357 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Storytelling, Visualization, DataOps and Claude for Data Engineers</title><style>:root{--navy:#082f49;--blue:#075985;--cyan:#0891b2;--teal:#0f766e;--green:#15803d;--orange:#ea580c;--red:#b91c1c;--purple:#6d28d9;--bg:#f5f8fc;--text:#1e293b;--muted:#64748b;--border:#dbeafe;--code:#0f172a;--shadow:0 10px 28px rgba(8,47,73,.12)}*{box-sizing:border-box;scroll-behavior:smooth}body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:radial-gradient(circle at top left,rgba(14,165,233,.16),transparent 30%),var(--bg);color:var(--text);line-height:1.65}.layout{max-width:1360px;margin:auto;padding:22px;display:grid;grid-template-columns:310px 1fr;gap:22px}.sidebar{position:sticky;top:18px;height:calc(100vh - 36px);overflow:auto;background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--shadow)}.sidebar h3{margin:0 0 12px;color:var(--navy)}.sidebar a{display:block;margin:7px 0;padding:10px 12px;background:#f8fbff;border-radius:12px;color:var(--blue);text-decoration:none;font-weight:700;border:1px solid transparent}.sidebar a:hover{background:#ecfeff;border-color:#67e8f9}.hero{background:linear-gradient(135deg,var(--navy),var(--blue),var(--teal));color:#fff;padding:36px;border-radius:26px;box-shadow:var(--shadow);margin-bottom:22px}.hero h1{margin:0 0 12px;font-size:35px;line-height:1.2}.hero p{color:#dbeafe;font-size:17px;margin:0}.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}.tile{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:15px;padding:14px}.tile span{display:block;color:#bae6fd;font-size:12px;text-transform:uppercase;letter-spacing:.6px}.tile strong{display:block;margin-top:4px}section{background:#fff;border:1px solid var(--border);border-radius:18px;padding:26px;margin-bottom:22px;box-shadow:var(--shadow);transition:.22s}section:hover{transform:translateY(-2px);border-color:#67e8f9;box-shadow:0 16px 38px rgba(8,145,178,.17)}h2{color:var(--navy);margin:0 0 17px;padding-left:13px;border-left:7px solid var(--cyan);font-size:25px}h3{color:var(--blue);margin:22px 0 10px}.tag{display:inline-block;background:#ecfeff;border:1px solid #a5f3fc;color:var(--blue);padding:7px 12px;border-radius:999px;font-size:13px;font-weight:800;margin-bottom:10px}.box{border-radius:15px;padding:17px;margin:17px 0}.learn{background:#e0f2fe;border:1px solid #bae6fd;border-left:7px solid var(--blue)}.train{background:#ecfeff;border:1px solid #a5f3fc;border-left:7px solid var(--cyan)}.warn{background:#fff7ed;border:1px solid #fed7aa;border-left:7px solid var(--orange)}.ok{background:#ecfdf5;border:1px solid #bbf7d0;border-left:7px solid var(--green)}.case{background:#f3e8ff;border:1px solid #d8b4fe;border-left:7px solid var(--purple)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.cards4{grid-template-columns:repeat(4,1fr)}.card{background:#fbfdff;border:1px solid var(--border);border-radius:15px;padding:17px;position:relative}.card:before{content:'';position:absolute;left:0;top:0;width:100%;height:5px;background:linear-gradient(90deg,var(--cyan),var(--teal));border-radius:15px 15px 0 0}.card h3{margin-top:0}.table{overflow-x:auto;border:1px solid var(--border);border-radius:14px;margin:16px 0}table{width:100%;border-collapse:collapse;min-width:850px}th,td{border:1px solid var(--border);padding:12px;text-align:left;vertical-align:top;font-size:14px}th{background:var(--navy);color:#fff}tr:nth-child(even){background:#f8fbff}tr:hover{background:#ecfeff}pre{background:var(--code);color:#e2e8f0;padding:17px;border-radius:15px;overflow-x:auto;font-size:14px;line-height:1.5}code{font-family:Consolas,'Courier New',monospace}.diagram{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;overflow-x:auto;margin:18px 0}svg{max-width:100%;height:auto;display:block;margin:auto}.in{background:#e2e8f0;color:#0f172a;padding:2px 7px;border-radius:7px;font-family:Consolas,'Courier New',monospace}ol.steps{counter-reset:s;list-style:none;padding:0}ol.steps li{counter-increment:s;background:#fbfdff;border:1px solid var(--border);border-radius:14px;margin:10px 0;padding:13px 13px 13px 54px;position:relative}ol.steps li:before{content:counter(s);position:absolute;left:15px;top:13px;background:var(--cyan);color:#fff;width:27px;height:27px;border-radius:50%;text-align:center;line-height:27px;font-weight:800}.footer{text-align:center;color:var(--muted);padding:24px;font-size:13px}@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto}.tiles,.cards,.cards4{grid-template-columns:1fr 1fr}}@media(max-width:720px){.layout{padding:12px}.hero{padding:24px}.hero h1{font-size:26px}.tiles,.cards,.cards4{grid-template-columns:1fr}section{padding:20px}}</style></head><body><div class="layout"><aside class="sidebar"><h3>Class Notes Menu</h3><a href="#objective">1. Learning Objective</a><a href="#outcome">2. Outcome of Step 2: pandas Exploratory Analysis</a><a href="#storytelling">3. Storytelling for Data Engineers</a><a href="#sourceissues">4. Communicating Source-System Issues</a><a href="#pipeline">5. Communicating Pipeline Logic</a><a href="#contracts">6. Communicating Data Contracts</a><a href="#impact">7. Connecting Data Issues to Business Impact</a><a href="#visual">8. Visualization Foundations for Profiling Outputs</a><a href="#requirements">9. Communicating Pipeline Requirements</a><a href="#dataops">10. DataOps Foundations</a><a href="#versioning">11. Code Versioning and Naming Conventions</a><a href="#debugging">12. Debugging Basics for Data Engineers</a><a href="#utilities">13. Reusable Utility Functions</a><a href="#claude">14. Using Claude for Data Engineering Communication</a><a href="#labs">15. Hands-on Exercises</a><a href="#interview">16. Interview Questions and Answers</a><a href="#summary">17. Final Summary</a></aside><main><header class="hero"><h1>Storytelling, Visualization Foundations, DataOps Basics, and Using Claude for Data Engineers</h1><p>Corporate trainer style classroom notes for communicating source-system issues, pipeline logic, data contracts, business impact, profiling outputs, DataOps practices, and Claude-assisted documentation.</p><div class="tiles"><div class="tile"><span>Level</span><strong>Intermediate</strong></div><div class="tile"><span>Audience</span><strong>Data Engineers</strong></div><div class="tile"><span>Focus</span><strong>Communication + DataOps</strong></div><div class="tile"><span>AI Tool</span><strong>Claude</strong></div></div></header><section id="objective"><span class="tag">Classroom Opening</span><h2>1. Learning Objective</h2>
+<p>This module helps data engineers move beyond only writing code. A professional data engineer must explain source-system problems, pipeline logic, data contracts, business impact, and technical decisions clearly to stakeholders.</p>
+<div class='box learn'><h3>By the end of this session, learners will understand:</h3>
+<ul>
+<li>How to communicate source-system issues in a business-friendly way.</li>
+<li>How to explain pipeline logic clearly to technical and non-technical stakeholders.</li>
+<li>How to define and present data contracts.</li>
+<li>How to connect data engineering issues with business impact.</li>
+<li>How to visualize profiling outputs and trend summaries.</li>
+<li>How DataOps starts with repository structure, versioning, naming, debugging, and reusable utilities.</li>
+<li>How Claude can help generate summaries, architecture notes, slide narratives, and code explanations.</li>
+</ul></div>
+<div class='box train'><b>Trainer note:</b> Start by saying: “A dashboard failure is not only a technical failure. It can affect business decisions, revenue reporting, compliance, and stakeholder trust.”</div>
+</section><section id="outcome"><span class="tag">Outcome of Step 2</span><h2>2. Outcome of Step 2: pandas Exploratory Analysis</h2>
+<p>In the previous step, exploratory analysis using pandas helped us understand source-system characteristics, schema issues, data quality gaps, and business patterns. The outcome of that step should not remain only in code. It should be converted into a stakeholder-ready explanation.</p>
+<div class='table'><table><thead><tr><th>EDA Output</th><th>Technical Meaning</th><th>Stakeholder Message</th><th>Pipeline Action</th></tr></thead><tbody>
+<tr><td>OrderId duplicates found</td><td>Business key is not unique</td><td>Sales numbers may be double-counted</td><td>Add deduplication rule</td></tr>
+<tr><td>Amount has negative values</td><td>Invalid or refund transactions exist</td><td>Revenue may be understated or incorrectly calculated</td><td>Confirm business rule and filter/flag records</td></tr>
+<tr><td>OrderDate format inconsistent</td><td>Date parsing issue</td><td>Daily and monthly trends may be wrong</td><td>Standardize date format</td></tr>
+<tr><td>CustomerId nulls found</td><td>Missing customer relationship</td><td>Customer-level reporting will be incomplete</td><td>Reject, quarantine, or map unknown customer</td></tr>
+<tr><td>Unexpected columns found</td><td>Schema drift</td><td>Pipeline may break if source changes continue</td><td>Add schema validation and alert</td></tr>
+</tbody></table></div>
+<div class='box ok'><b>Outcome:</b> Step 2 produces source profiling notes, schema issue list, data quality findings, business pattern summary, and pipeline rules for Bronze-to-Silver processing.</div>
+</section><section id="storytelling"><span class="tag">Core Skill</span><h2>3. Storytelling for Data Engineers</h2>
+<p>Storytelling means explaining technical data findings in a clear, structured, and business-relevant way. Data engineers often communicate with business analysts, product owners, data architects, QA teams, BI developers, and managers.</p>
+<div class='cards cards4'>
+<div class='card'><h3>Context</h3><p>What system, dataset, or pipeline are we discussing?</p></div>
+<div class='card'><h3>Problem</h3><p>What issue was found in the source data or pipeline?</p></div>
+<div class='card'><h3>Impact</h3><p>How does this affect reporting, decisions, or operations?</p></div>
+<div class='card'><h3>Action</h3><p>What rule, fix, or decision is required?</p></div>
+</div>
+<h3>Simple Storytelling Formula</h3>
+<pre><code>1. We analyzed [source/system/table].
+2. We found [issue/pattern].
+3. This affects [business report/process/decision].
+4. We recommend [pipeline rule/action/owner decision].
+5. Expected result is [better quality/faster pipeline/trusted report].</code></pre>
+<div class='box train'><b>Trainer explanation:</b> Do not say only “there are 500 nulls.” Say “500 orders do not have CustomerId, so customer-wise sales reports will be incomplete unless we apply a business rule.”</div>
+</section><section id="sourceissues"><span class="tag">Communication Skill</span><h2>4. Communicating Source-System Issues</h2>
+<p>Source-system issues should be explained with evidence, severity, business impact, and recommended action.</p>
+<h3>Source Issue Communication Template</h3>
+<pre><code>Issue:
+CustomerId is missing in 4.8% of sales records.
+
+Evidence:
+- Total records: 100,000
+- Null CustomerId records: 4,800
+- Affected date range: 2026-05-01 to 2026-05-31
+
+Business Impact:
+Customer-level sales reporting and loyalty analysis will be incomplete.
+
+Recommended Action:
+Confirm whether null CustomerId represents guest checkout.
+If yes, map to "Guest Customer".
+If no, send records to exception handling.</code></pre>
+<div class='table'><table><thead><tr><th>Issue Type</th><th>How to Explain</th><th>Good Stakeholder Language</th></tr></thead><tbody>
+<tr><td>Null values</td><td>Show count and affected fields</td><td>“Some records are incomplete and may affect reporting accuracy.”</td></tr>
+<tr><td>Duplicates</td><td>Show duplicate key and count</td><td>“Revenue may be overstated if duplicate orders are not removed.”</td></tr>
+<tr><td>Invalid date</td><td>Show parsing failure count</td><td>“Trend reports may show incorrect daily/monthly numbers.”</td></tr>
+<tr><td>Schema drift</td><td>Show missing or extra columns</td><td>“The source structure changed and may break the pipeline.”</td></tr>
+<tr><td>Outliers</td><td>Show unusual values</td><td>“Large transaction values need business confirmation before filtering.”</td></tr>
+</tbody></table></div>
+</section><section id="pipeline"><span class="tag">Presentation Thinking</span><h2>5. Communicating Pipeline Logic</h2>
+<p>Pipeline logic should be explained as a simple flow, not only as code. Stakeholders should understand what happens to data at each stage.</p>
+<div class='diagram'><svg width='1120' height='430' viewBox='0 0 1120 430' xmlns='http://www.w3.org/2000/svg'>
+<defs><marker id='a' markerWidth='10' markerHeight='10' refX='8' refY='3' orient='auto'><path d='M0,0 L0,6 L9,3 z' fill='#075985'/></marker></defs>
+<rect x='35' y='35' width='1030' height='335' rx='26' fill='#f8fbff' stroke='#dbeafe'/>
+<rect x='65' y='85' width='160' height='75' rx='15' fill='#082f49'/><text x='145' y='116' text-anchor='middle' fill='#fff' font-weight='800'>Bronze</text><text x='145' y='140' text-anchor='middle' fill='#dbeafe' font-size='12'>Raw source data</text>
+<rect x='285' y='85' width='170' height='75' rx='15' fill='#075985'/><text x='370' y='116' text-anchor='middle' fill='#fff' font-weight='800'>Validation</text><text x='370' y='140' text-anchor='middle' fill='#dbeafe' font-size='12'>Schema + quality</text>
+<rect x='515' y='85' width='170' height='75' rx='15' fill='#0891b2'/><text x='600' y='116' text-anchor='middle' fill='#fff' font-weight='800'>Transformation</text><text x='600' y='140' text-anchor='middle' fill='#ecfeff' font-size='12'>Clean + enrich</text>
+<rect x='745' y='85' width='160' height='75' rx='15' fill='#0f766e'/><text x='825' y='116' text-anchor='middle' fill='#fff' font-weight='800'>Silver</text><text x='825' y='140' text-anchor='middle' fill='#dcfce7' font-size='12'>Clean data</text>
+<rect x='955' y='85' width='90' height='75' rx='15' fill='#6d28d9'/><text x='1000' y='116' text-anchor='middle' fill='#fff' font-weight='800'>Gold</text><text x='1000' y='140' text-anchor='middle' fill='#f3e8ff' font-size='12'>KPIs</text>
+<line x1='225' y1='122' x2='285' y2='122' stroke='#075985' stroke-width='3' marker-end='url(#a)'/><line x1='455' y1='122' x2='515' y2='122' stroke='#075985' stroke-width='3' marker-end='url(#a)'/><line x1='685' y1='122' x2='745' y2='122' stroke='#075985' stroke-width='3' marker-end='url(#a)'/><line x1='905' y1='122' x2='955' y2='122' stroke='#075985' stroke-width='3' marker-end='url(#a)'/>
+<rect x='150' y='250' width='245' height='65' rx='14' fill='#ecfeff' stroke='#0891b2'/><text x='272' y='289' text-anchor='middle' fill='#082f49' font-weight='900'>Reject / Quarantine Bad Records</text>
+<rect x='445' y='250' width='245' height='65' rx='14' fill='#fff7ed' stroke='#ea580c'/><text x='567' y='289' text-anchor='middle' fill='#082f49' font-weight='900'>Apply Business Rules</text>
+<rect x='740' y='250' width='245' height='65' rx='14' fill='#ecfdf5' stroke='#15803d'/><text x='862' y='289' text-anchor='middle' fill='#082f49' font-weight='900'>Serve Trusted Data</text>
+<rect x='115' y='350' width='890' height='40' rx='14' fill='#e0f2fe' stroke='#075985'/><text x='560' y='375' text-anchor='middle' fill='#082f49' font-size='14' font-weight='800'>Pipeline explanation should show what enters, what changes, what is rejected, and what business output is produced.</text>
+</svg></div>
+<h3>Pipeline Logic Explanation Example</h3>
+<pre><code>The pipeline loads raw sales data into Bronze.
+It validates required columns such as OrderId, CustomerId, OrderDate, and Amount.
+Invalid records are moved to an exception dataset.
+Clean records are transformed into Silver.
+Aggregated sales KPIs are created in Gold for Power BI dashboards.</code></pre>
+</section><section id="contracts"><span class="tag">Data Contracts</span><h2>6. Communicating Data Contracts</h2>
+<p>A data contract defines expectations between data producers and data consumers. It prevents pipeline failures caused by unexpected source changes.</p>
+<div class='table'><table><thead><tr><th>Contract Element</th><th>Meaning</th><th>Example</th></tr></thead><tbody>
+<tr><td>Dataset Name</td><td>Name of source or target dataset</td><td>SalesOrders</td></tr>
+<tr><td>Owner</td><td>Team responsible for data</td><td>Sales Application Team</td></tr>
+<tr><td>Required Columns</td><td>Columns that must exist</td><td>OrderId, CustomerId, OrderDate, Amount</td></tr>
+<tr><td>Data Types</td><td>Expected type for each column</td><td>Amount = decimal, OrderDate = date</td></tr>
+<tr><td>Freshness SLA</td><td>When data should arrive</td><td>Daily before 1 AM</td></tr>
+<tr><td>Quality Rules</td><td>Validation rules</td><td>OrderId unique, Amount > 0</td></tr>
+<tr><td>Change Process</td><td>How schema changes are communicated</td><td>Notify 5 business days before change</td></tr>
+</tbody></table></div>
+<h3>Sample Data Contract</h3>
+<pre><code>Dataset: SalesOrders
+Owner: Sales Application Team
+Frequency: Daily
+Expected Arrival: Before 1 AM IST
+
+Required Columns:
+- OrderId: string, not null, unique
+- CustomerId: string, nullable only for guest checkout
+- OrderDate: date, not null
+- Amount: decimal, must be greater than 0
+- City: string, not null
+
+Schema Change Rule:
+Any column addition, removal, or type change must be communicated before deployment.</code></pre>
+<div class='box ok'><b>Best practice:</b> Data contracts reduce production surprises and improve trust between source-system teams and data platform teams.</div>
+</section><section id="impact"><span class="tag">Business Impact</span><h2>7. Connecting Data Issues to Business Impact</h2>
+<p>Stakeholders may not care about technical terms like schema drift or null percentage. They care about business impact.</p>
+<div class='table'><table><thead><tr><th>Technical Issue</th><th>Business Impact</th><th>Recommended Message</th></tr></thead><tbody>
+<tr><td>Duplicate OrderId</td><td>Revenue may be overstated</td><td>“Sales figures may be inflated unless duplicates are removed.”</td></tr>
+<tr><td>Missing CustomerId</td><td>Customer analytics incomplete</td><td>“Customer segmentation reports will miss these sales.”</td></tr>
+<tr><td>Invalid dates</td><td>Trend reports inaccurate</td><td>“Monthly growth numbers may be wrong.”</td></tr>
+<tr><td>Delayed file arrival</td><td>Dashboard refresh delayed</td><td>“Morning leadership dashboard may not refresh on time.”</td></tr>
+<tr><td>Schema change</td><td>Pipeline failure risk</td><td>“Production pipeline may fail if schema changes are not communicated.”</td></tr>
+</tbody></table></div>
+<div class='box train'><b>Trainer explanation:</b> Always convert technical observations into business consequences. This improves stakeholder understanding and decision-making.</div>
+</section><section id="visual"><span class="tag">Visualization Foundations</span><h2>8. Visualization Foundations for Profiling Outputs</h2>
+<p>Visualization helps communicate profiling results quickly. Data engineers do not always need advanced charts; simple bar charts, line charts, and summary tables are enough for most profiling discussions.</p>
+<div class='table'><table><thead><tr><th>Visualization</th><th>Use Case</th><th>Example</th></tr></thead><tbody>
+<tr><td>Bar Chart</td><td>Compare categories</td><td>Null count by column, records by city</td></tr>
+<tr><td>Line Chart</td><td>Show trend over time</td><td>Daily sales trend, file arrival trend</td></tr>
+<tr><td>Pie / Donut Chart</td><td>Show percentage distribution</td><td>Payment mode share</td></tr>
+<tr><td>Heatmap</td><td>Show missing values or correlations</td><td>Null pattern across columns</td></tr>
+<tr><td>Summary Table</td><td>Show profiling output clearly</td><td>Column, type, null count, unique count</td></tr>
+</tbody></table></div>
+<h3>Bar Chart: Null Count by Column</h3>
+<pre><code>import pandas as pd
+import matplotlib.pyplot as plt
+
+null_counts = df.isnull().sum()
+null_counts = null_counts[null_counts > 0]
+
+null_counts.plot(kind="bar")
+plt.title("Null Count by Column")
+plt.xlabel("Column")
+plt.ylabel("Null Count")
+plt.tight_layout()
+plt.show()</code></pre>
+<h3>Line Chart: Daily Sales Trend</h3>
+<pre><code>daily_sales = df.groupby(df["OrderDate"].dt.date)["Amount"].sum()
+
+daily_sales.plot(kind="line")
+plt.title("Daily Sales Trend")
+plt.xlabel("Date")
+plt.ylabel("Sales Amount")
+plt.tight_layout()
+plt.show()</code></pre>
+<div class='box ok'><b>Best practice:</b> Use simple charts with clear titles. The chart should answer one business question.</div>
+</section><section id="requirements"><span class="tag">Pipeline Requirements</span><h2>9. Communicating Pipeline Requirements</h2>
+<p>Pipeline requirements should explain source, target, schedule, quality rules, error handling, and ownership.</p>
+<h3>Pipeline Requirement Template</h3>
+<pre><code>Pipeline Name: Daily Sales Ingestion
+
+Source:
+- System: POS Sales System
+- Format: CSV
+- Arrival Time: Daily before 1 AM
+
+Target:
+- Bronze: Raw sales file
+- Silver: Clean sales table
+- Gold: Sales summary table
+
+Validation Rules:
+- OrderId must be unique
+- Amount must be greater than 0
+- OrderDate must be valid
+- Required columns must exist
+
+Error Handling:
+- Invalid records move to exception table
+- Schema drift triggers alert
+- Pipeline failure sends notification to support team
+
+Business Output:
+- Power BI daily sales dashboard</code></pre>
+<div class='box warn'><b>Interview answer:</b> Pipeline requirements should clearly define input, output, frequency, quality rules, error handling, SLA, ownership, and downstream consumers.</div>
+</section><section id="dataops"><span class="tag">DataOps Thread Begins</span><h2>10. DataOps Foundations</h2>
+<p>DataOps applies software engineering practices to data pipelines. It improves collaboration, reliability, versioning, testing, deployment, and monitoring.</p>
+<div class='cards cards4'>
+<div class='card'><h3>Repository Structure</h3><p>Organize code, configs, tests, docs, and utilities.</p></div>
+<div class='card'><h3>Code Versioning</h3><p>Track changes using Git and meaningful commits.</p></div>
+<div class='card'><h3>Naming Conventions</h3><p>Use consistent names for files, tables, columns, and jobs.</p></div>
+<div class='card'><h3>Reusable Utilities</h3><p>Create common functions for logging, validation, config, and file handling.</p></div>
+</div>
+<h3>Recommended Repository Structure</h3>
+<pre><code>data-platform-project/
+├── README.md
+├── requirements.txt
+├── config/
+│   ├── dev.yaml
+│   ├── test.yaml
+│   └── prod.yaml
+├── src/
+│   ├── ingestion/
+│   ├── transformation/
+│   ├── validation/
+│   ├── utilities/
+│   └── pipelines/
+├── tests/
+├── notebooks/
+├── docs/
+└── deployment/</code></pre>
+<div class='box train'><b>Trainer explanation:</b> DataOps starts with discipline. Even a small pipeline should have clear structure, naming, versioning, and reusable utilities.</div>
+</section><section id="versioning"><span class="tag">DataOps Basics</span><h2>11. Code Versioning and Naming Conventions</h2>
+<p>Versioning helps teams track what changed, who changed it, and why it changed. Naming conventions reduce confusion and make projects easier to maintain.</p>
+<h3>Good Commit Messages</h3>
+<pre><code>feat: add sales ingestion pipeline
+fix: handle null CustomerId in sales validation
+refactor: move common validation logic to utility function
+docs: update data contract for SalesOrders
+test: add unit tests for schema validation</code></pre>
+<h3>Naming Convention Examples</h3>
+<div class='table'><table><thead><tr><th>Item</th><th>Good Naming</th><th>Poor Naming</th></tr></thead><tbody>
+<tr><td>Python file</td><td>sales_ingestion.py</td><td>script1.py</td></tr>
+<tr><td>Function</td><td>validate_required_columns()</td><td>check()</td></tr>
+<tr><td>Table</td><td>silver_sales_orders</td><td>table_new</td></tr>
+<tr><td>Column</td><td>order_date</td><td>dt1</td></tr>
+<tr><td>Branch</td><td>feature/sales-pipeline</td><td>mybranch</td></tr>
+</tbody></table></div>
+<div class='box ok'><b>Best practice:</b> Names should explain purpose. Avoid names like final, latest, temp, new, test1, and script2 in production repositories.</div>
+</section><section id="debugging"><span class="tag">DataOps Basics</span><h2>12. Debugging Basics for Data Engineers</h2>
+<p>Debugging means identifying why a pipeline failed or why output data is incorrect.</p>
+<div class='table'><table><thead><tr><th>Debugging Area</th><th>Question</th><th>Example Check</th></tr></thead><tbody>
+<tr><td>Input</td><td>Did the source arrive?</td><td>Check file path and record count</td></tr>
+<tr><td>Schema</td><td>Did columns change?</td><td>Compare actual vs expected columns</td></tr>
+<tr><td>Transformation</td><td>Did logic remove too many records?</td><td>Check row count before and after each step</td></tr>
+<tr><td>Data Quality</td><td>Did validation fail?</td><td>Check validation error report</td></tr>
+<tr><td>Output</td><td>Was target written correctly?</td><td>Check output table/file and row count</td></tr>
+</tbody></table></div>
+<h3>Debugging with Row Counts</h3>
+<pre><code>print("Initial rows:", len(df))
+
+df = df.drop_duplicates(subset=["OrderId"])
+print("After deduplication:", len(df))
+
+df = df[df["Amount"] > 0]
+print("After amount filter:", len(df))
+
+df = df[df["CustomerId"].notnull()]
+print("After customer validation:", len(df))</code></pre>
+<div class='box ok'><b>Best practice:</b> Log row counts before and after every major transformation. It helps identify where records were lost.</div>
+</section><section id="utilities"><span class="tag">Reusable Utility Functions</span><h2>13. Reusable Utility Functions</h2>
+<p>Reusable utility functions reduce duplicate code across pipelines.</p>
+<h3>Utility Function Examples</h3>
+<pre><code>import pandas as pd
+import logging
+
+def read_csv_file(file_path):
+    logging.info(f"Reading file: {file_path}")
+    return pd.read_csv(file_path)
+
+def validate_required_columns(df, required_columns):
+    missing = [col for col in required_columns if col not in df.columns]
+    if missing:
+        raise ValueError(f"Missing required columns: {missing}")
+    return True
+
+def log_row_count(df, step_name):
+    logging.info(f"{step_name}: {len(df)} rows")
+
+def save_csv_file(df, file_path):
+    logging.info(f"Writing file: {file_path}")
+    df.to_csv(file_path, index=False)</code></pre>
+<h3>Using Utilities in a Pipeline</h3>
+<pre><code>required_columns = ["OrderId", "CustomerId", "OrderDate", "Amount"]
+
+df = read_csv_file("source_sales.csv")
+log_row_count(df, "Source loaded")
+
+validate_required_columns(df, required_columns)
+
+df = df.drop_duplicates(subset=["OrderId"])
+log_row_count(df, "After deduplication")
+
+save_csv_file(df, "silver_sales.csv")</code></pre>
+</section><section id="claude"><span class="tag">Using Claude</span><h2>14. Using Claude for Data Engineering Communication</h2>
+<p>Claude can help data engineers convert technical findings into summaries, architecture notes, slide narratives, and code explanations.</p>
+<div class='table'><table><thead><tr><th>Task</th><th>Claude Can Generate</th><th>Example Prompt</th></tr></thead><tbody>
+<tr><td>Data Summary</td><td>Business-friendly explanation of profiling results</td><td>Summarize these EDA findings for business stakeholders.</td></tr>
+<tr><td>Architecture Notes</td><td>Pipeline design explanation</td><td>Create architecture notes for Bronze-Silver-Gold pipeline.</td></tr>
+<tr><td>Slide Narrative</td><td>Presentation script</td><td>Create 5-slide narrative explaining source issues and impact.</td></tr>
+<tr><td>Code Explanation</td><td>Line-by-line explanation</td><td>Explain this pandas transformation code for learners.</td></tr>
+<tr><td>Risk Notes</td><td>Governance and operational risks</td><td>Identify risks in this pipeline design.</td></tr>
+</tbody></table></div>
+<h3>Prompt: Data Summary</h3>
+<pre><code>Act as a senior data engineer.
+
+Convert the following EDA findings into a business-friendly summary:
+- 4.8% CustomerId values are null
+- 1.2% OrderId values are duplicate
+- 300 records have invalid OrderDate
+- Amount has negative values in 2% of rows
+
+Output:
+1. Executive summary
+2. Business impact
+3. Recommended pipeline rules
+4. Questions for source-system owner</code></pre>
+<h3>Prompt: Slide Narrative</h3>
+<pre><code>Act as a corporate data engineering trainer.
+
+Create a 5-slide narrative for stakeholders explaining:
+- Source-system quality issues
+- Schema drift risk
+- Data contract requirement
+- Pipeline validation logic
+- Business impact and next steps</code></pre>
+<h3>Prompt: Code Explanation</h3>
+<pre><code>Act as a Python data engineering instructor.
+
+Explain the following pandas code line by line.
+Mention what each step does, why it is needed, and what can go wrong in production.
+
+PASTE CODE HERE</code></pre>
+<div class='box ok'><b>Best practice:</b> Claude can draft communication, but the data engineer must verify technical accuracy and business context.</div>
+</section><section id="labs"><span class="tag">Practice Lab</span><h2>15. Hands-on Exercises</h2>
+<ol class='steps'>
+<li>Convert a pandas EDA report into a stakeholder summary.</li>
+<li>Create a table showing source issues, impact, and recommended action.</li>
+<li>Create a simple bar chart for null counts by column.</li>
+<li>Create a line chart for daily sales trend.</li>
+<li>Write a data contract for SalesOrders dataset.</li>
+<li>Create a repository structure for a sales pipeline project.</li>
+<li>Write five good Git commit messages for pipeline changes.</li>
+<li>Create reusable utility functions for read, validate, log, and write.</li>
+<li>Use Claude to generate a slide narrative for source-system issues.</li>
+<li>Use Claude to explain a pandas transformation code block.</li>
+</ol>
+</section><section id="interview"><span class="tag">Interview Preparation</span><h2>16. Interview Questions and Answers</h2>
+<div class='table'><table><thead><tr><th>Question</th><th>Best Answer</th></tr></thead><tbody>
+<tr><td>Why is storytelling important for data engineers?</td><td>It helps data engineers explain technical issues, pipeline logic, data quality risks, and business impact clearly to stakeholders.</td></tr>
+<tr><td>How do you communicate source-system issues?</td><td>Explain the issue with evidence, affected records, business impact, recommended action, and owner decision needed.</td></tr>
+<tr><td>What is a data contract?</td><td>A data contract defines expected schema, data types, freshness, quality rules, ownership, and change process between producer and consumer.</td></tr>
+<tr><td>Why are visualizations useful in profiling?</td><td>They help communicate nulls, duplicates, trends, distributions, and pipeline requirements quickly.</td></tr>
+<tr><td>What is DataOps?</td><td>DataOps applies software engineering and operational practices to data pipelines, including versioning, testing, deployment, monitoring, and collaboration.</td></tr>
+<tr><td>What should be included in a data repository?</td><td>Code, configuration, tests, documentation, reusable utilities, notebooks, and deployment scripts.</td></tr>
+<tr><td>How can Claude help data engineers?</td><td>Claude can generate summaries, architecture notes, slide narratives, code explanations, risk analysis, and stakeholder communication drafts.</td></tr>
+</tbody></table></div>
+</section><section id="summary"><span class="tag">Final Summary</span><h2>17. Final Summary</h2>
+<div class='box ok'><h3>One-line conclusion</h3><p>Data engineers must combine technical delivery with storytelling, visualization, DataOps discipline, and AI-assisted communication to create trusted and stakeholder-ready data solutions.</p></div>
+<div class='table'><table><thead><tr><th>Area</th><th>Key Learning</th></tr></thead><tbody>
+<tr><td>Storytelling</td><td>Explain context, problem, impact, and action.</td></tr>
+<tr><td>Source Issues</td><td>Translate technical defects into business consequences.</td></tr>
+<tr><td>Data Contracts</td><td>Define schema, quality, freshness, ownership, and change rules.</td></tr>
+<tr><td>Visualization</td><td>Use simple charts to communicate profiling and trends.</td></tr>
+<tr><td>DataOps</td><td>Start with repository structure, versioning, naming, debugging, and utilities.</td></tr>
+<tr><td>Claude</td><td>Use AI to draft summaries, architecture notes, slide narratives, and code explanations.</td></tr>
+</tbody></table></div>
+<div class='box train'><b>Trainer closing line:</b> A strong data engineer does not only build pipelines. A strong data engineer explains why the pipeline matters, what risks it controls, and how it creates business value.</div>
+</section><footer class="footer"><p><b>Prepared as Corporate Training Notes for Data Engineering Communication and DataOps</b></p><p>Topic: Storytelling, Visualization, DataOps Basics, and Claude-assisted Engineering Communication</p></footer></main></div></body></html>

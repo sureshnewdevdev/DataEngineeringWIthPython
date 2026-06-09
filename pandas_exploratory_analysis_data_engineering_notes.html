@@ -1,0 +1,285 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Exploratory Analysis with pandas - Corporate Training Notes</title><style>:root{--navy:#082f49;--blue:#075985;--cyan:#0891b2;--teal:#0f766e;--green:#15803d;--orange:#ea580c;--red:#b91c1c;--purple:#6d28d9;--bg:#f5f8fc;--text:#1e293b;--muted:#64748b;--border:#dbeafe;--code:#0f172a;--shadow:0 10px 28px rgba(8,47,73,.12)}*{box-sizing:border-box;scroll-behavior:smooth}body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:radial-gradient(circle at top left,rgba(14,165,233,.16),transparent 30%),var(--bg);color:var(--text);line-height:1.65}.layout{max-width:1360px;margin:auto;padding:22px;display:grid;grid-template-columns:310px 1fr;gap:22px}.sidebar{position:sticky;top:18px;height:calc(100vh - 36px);overflow:auto;background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--shadow)}.sidebar h3{margin:0 0 12px;color:var(--navy)}.sidebar a{display:block;margin:7px 0;padding:10px 12px;background:#f8fbff;border-radius:12px;color:var(--blue);text-decoration:none;font-weight:700;border:1px solid transparent}.sidebar a:hover{background:#ecfeff;border-color:#67e8f9}.hero{background:linear-gradient(135deg,var(--navy),var(--blue),var(--teal));color:#fff;padding:36px;border-radius:26px;box-shadow:var(--shadow);margin-bottom:22px}.hero h1{margin:0 0 12px;font-size:35px;line-height:1.2}.hero p{color:#dbeafe;font-size:17px;margin:0}.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}.tile{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:15px;padding:14px}.tile span{display:block;color:#bae6fd;font-size:12px;text-transform:uppercase;letter-spacing:.6px}.tile strong{display:block;margin-top:4px}section{background:#fff;border:1px solid var(--border);border-radius:18px;padding:26px;margin-bottom:22px;box-shadow:var(--shadow);transition:.22s}section:hover{transform:translateY(-2px);border-color:#67e8f9;box-shadow:0 16px 38px rgba(8,145,178,.17)}h2{color:var(--navy);margin:0 0 17px;padding-left:13px;border-left:7px solid var(--cyan);font-size:25px}h3{color:var(--blue);margin:22px 0 10px}.tag{display:inline-block;background:#ecfeff;border:1px solid #a5f3fc;color:var(--blue);padding:7px 12px;border-radius:999px;font-size:13px;font-weight:800;margin-bottom:10px}.box{border-radius:15px;padding:17px;margin:17px 0}.learn{background:#e0f2fe;border:1px solid #bae6fd;border-left:7px solid var(--blue)}.train{background:#ecfeff;border:1px solid #a5f3fc;border-left:7px solid var(--cyan)}.warn{background:#fff7ed;border:1px solid #fed7aa;border-left:7px solid var(--orange)}.ok{background:#ecfdf5;border:1px solid #bbf7d0;border-left:7px solid var(--green)}.case{background:#f3e8ff;border:1px solid #d8b4fe;border-left:7px solid var(--purple)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.cards4{grid-template-columns:repeat(4,1fr)}.card{background:#fbfdff;border:1px solid var(--border);border-radius:15px;padding:17px;position:relative}.card:before{content:'';position:absolute;left:0;top:0;width:100%;height:5px;background:linear-gradient(90deg,var(--cyan),var(--teal));border-radius:15px 15px 0 0}.card h3{margin-top:0}.table{overflow-x:auto;border:1px solid var(--border);border-radius:14px;margin:16px 0}table{width:100%;border-collapse:collapse;min-width:850px}th,td{border:1px solid var(--border);padding:12px;text-align:left;vertical-align:top;font-size:14px}th{background:var(--navy);color:#fff}tr:nth-child(even){background:#f8fbff}tr:hover{background:#ecfeff}pre{background:var(--code);color:#e2e8f0;padding:17px;border-radius:15px;overflow-x:auto;font-size:14px;line-height:1.5}code{font-family:Consolas,'Courier New',monospace}.in{background:#e2e8f0;color:#0f172a;padding:2px 7px;border-radius:7px;font-family:Consolas,'Courier New',monospace}.diagram{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;overflow-x:auto;margin:18px 0}svg{max-width:100%;height:auto;display:block;margin:auto}ol.steps{counter-reset:s;list-style:none;padding:0}ol.steps li{counter-increment:s;background:#fbfdff;border:1px solid var(--border);border-radius:14px;margin:10px 0;padding:13px 13px 13px 54px;position:relative}ol.steps li:before{content:counter(s);position:absolute;left:15px;top:13px;background:var(--cyan);color:#fff;width:27px;height:27px;border-radius:50%;text-align:center;line-height:27px;font-weight:800}.footer{text-align:center;color:var(--muted);padding:24px;font-size:13px}.sparkle{position:fixed;width:7px;height:7px;pointer-events:none;z-index:9999;border-radius:50%;background:radial-gradient(circle,#fff 0%,#67e8f9 45%,#0891b2 70%,transparent 100%);animation:fade .65s ease-out forwards}.sparkle:before,.sparkle:after{content:'';position:absolute;left:50%;top:50%;background:#0891b2;transform:translate(-50%,-50%)}.sparkle:before{width:2px;height:13px}.sparkle:after{height:2px;width:13px}@keyframes fade{0%{opacity:1;transform:scale(.5)}100%{opacity:0;transform:scale(.1) rotate(180deg) translateY(-16px)}}@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto}.tiles,.cards,.cards4{grid-template-columns:1fr 1fr}}@media(max-width:720px){.layout{padding:12px}.hero{padding:24px}.hero h1{font-size:26px}.tiles,.cards,.cards4{grid-template-columns:1fr}section{padding:20px}}</style></head><body><div class="layout"><aside class="sidebar"><h3>Class Notes Menu</h3><a href="#objective">1. Learning Objective</a><a href="#overview">2. What is Exploratory Analysis in Data Engineering?</a><a href="#diagram">3. EDA Workflow for Source-System Understanding</a><a href="#load">4. Loading and Inspecting Source Data</a><a href="#source">5. Understanding Source-System Characteristics</a><a href="#schema">6. Schema Issues and Data Type Problems</a><a href="#quality">7. Data Quality Checks using pandas</a><a href="#patterns">8. Business Data Pattern Discovery</a><a href="#outliers">9. Outlier and Anomaly Detection</a><a href="#profiling">10. Automated Profiling Report with pandas</a><a href="#usecase">11. Corporate Use Case: Sales Source-System EDA</a><a href="#pipeline">12. How EDA Converts into Pipeline Rules</a><a href="#labs">13. Hands-on Exercises</a><a href="#interview">14. Interview Questions and Answers</a><a href="#summary">15. Final Summary</a></aside><main><header class="hero"><h1>Exploratory Analysis using pandas for Source-System Characteristics, Schema Issues, and Business Data Patterns</h1><p>Corporate trainer style classroom notes for using pandas to profile source data, identify quality and schema issues, understand business patterns, and convert findings into data engineering pipeline rules.</p><div class="tiles"><div class="tile"><span>Level</span><strong>Beginner to Intermediate</strong></div><div class="tile"><span>Audience</span><strong>Data Engineers</strong></div><div class="tile"><span>Tool</span><strong>Python pandas</strong></div><div class="tile"><span>Focus</span><strong>Source Profiling</strong></div></div></header><section id="objective"><span class="tag">Classroom Opening</span><h2>1. Learning Objective</h2>
+<p>Exploratory analysis is the first practical step before building a reliable data pipeline. It helps data engineers understand the source system, data shape, schema issues, quality problems, and business patterns.</p>
+<div class='box learn'><h3>By the end of this session, learners will understand:</h3>
+<ul>
+<li>How to inspect source data using pandas.</li>
+<li>How to identify schema issues, missing values, duplicates, and invalid data.</li>
+<li>How to profile source-system characteristics.</li>
+<li>How to discover business data patterns before pipeline design.</li>
+<li>How to create reusable exploratory analysis functions.</li>
+<li>How exploratory analysis supports ingestion, transformation, and data quality rules.</li>
+</ul></div>
+<div class='box train'><b>Trainer note:</b> Explain that exploratory analysis is not only for data analysts. Data engineers use it to understand the source before designing ingestion and transformation logic.</div>
+</section><section id="overview"><span class="tag">Core Concept</span><h2>2. What is Exploratory Analysis in Data Engineering?</h2>
+<p>Exploratory Data Analysis, or EDA, means examining source data to understand its structure, quality, distribution, and behavior. For data engineering, EDA is mainly used to prepare better pipeline rules.</p>
+<div class='cards cards4'>
+<div class='card'><h3>Source Understanding</h3><p>Find how many rows, columns, files, and tables exist.</p></div>
+<div class='card'><h3>Schema Profiling</h3><p>Check column names, data types, date formats, and unexpected fields.</p></div>
+<div class='card'><h3>Quality Checks</h3><p>Identify nulls, duplicates, invalid values, and outliers.</p></div>
+<div class='card'><h3>Business Patterns</h3><p>Analyze trends by date, region, customer, product, or category.</p></div>
+</div>
+<div class='box warn'><b>Interview answer:</b> Exploratory analysis in data engineering is the process of profiling source data using tools such as pandas to identify schema, quality, and business pattern issues before building production pipelines.</div>
+</section><section id="diagram"><span class="tag">Visual Workflow</span><h2>3. EDA Workflow for Source-System Understanding</h2>
+<div class='diagram'><svg width='1120' height='430' viewBox='0 0 1120 430' xmlns='http://www.w3.org/2000/svg'>
+<defs><marker id='a' markerWidth='10' markerHeight='10' refX='8' refY='3' orient='auto'><path d='M0,0 L0,6 L9,3 z' fill='#075985'/></marker></defs>
+<rect x='35' y='35' width='1030' height='335' rx='26' fill='#f8fbff' stroke='#dbeafe'/>
+<rect x='60' y='85' width='160' height='75' rx='15' fill='#082f49'/><text x='140' y='116' text-anchor='middle' fill='#fff' font-weight='800'>Source Data</text><text x='140' y='140' text-anchor='middle' fill='#dbeafe' font-size='12'>CSV / DB / API</text>
+<rect x='270' y='85' width='160' height='75' rx='15' fill='#075985'/><text x='350' y='116' text-anchor='middle' fill='#fff' font-weight='800'>Load in pandas</text><text x='350' y='140' text-anchor='middle' fill='#dbeafe' font-size='12'>DataFrame</text>
+<rect x='480' y='85' width='160' height='75' rx='15' fill='#0891b2'/><text x='560' y='116' text-anchor='middle' fill='#fff' font-weight='800'>Profile Schema</text><text x='560' y='140' text-anchor='middle' fill='#ecfeff' font-size='12'>Columns / Types</text>
+<rect x='690' y='85' width='160' height='75' rx='15' fill='#0f766e'/><text x='770' y='116' text-anchor='middle' fill='#fff' font-weight='800'>Check Quality</text><text x='770' y='140' text-anchor='middle' fill='#dcfce7' font-size='12'>Nulls / Duplicates</text>
+<rect x='900' y='85' width='140' height='75' rx='15' fill='#6d28d9'/><text x='970' y='116' text-anchor='middle' fill='#fff' font-weight='800'>Find Patterns</text><text x='970' y='140' text-anchor='middle' fill='#f3e8ff' font-size='12'>Business insights</text>
+<line x1='220' y1='122' x2='270' y2='122' stroke='#075985' stroke-width='3' marker-end='url(#a)'/><line x1='430' y1='122' x2='480' y2='122' stroke='#075985' stroke-width='3' marker-end='url(#a)'/><line x1='640' y1='122' x2='690' y2='122' stroke='#075985' stroke-width='3' marker-end='url(#a)'/><line x1='850' y1='122' x2='900' y2='122' stroke='#075985' stroke-width='3' marker-end='url(#a)'/>
+<rect x='165' y='250' width='210' height='65' rx='14' fill='#ecfeff' stroke='#0891b2'/><text x='270' y='289' text-anchor='middle' fill='#082f49' font-weight='900'>Pipeline Rules</text>
+<rect x='455' y='250' width='210' height='65' rx='14' fill='#fff7ed' stroke='#ea580c'/><text x='560' y='289' text-anchor='middle' fill='#082f49' font-weight='900'>Data Quality Rules</text>
+<rect x='745' y='250' width='210' height='65' rx='14' fill='#ecfdf5' stroke='#15803d'/><text x='850' y='289' text-anchor='middle' fill='#082f49' font-weight='900'>Transformation Logic</text>
+<rect x='115' y='350' width='890' height='40' rx='14' fill='#e0f2fe' stroke='#075985'/><text x='560' y='375' text-anchor='middle' fill='#082f49' font-size='14' font-weight='800'>EDA output becomes the foundation for ingestion design, schema mapping, validation, and transformation rules.</text>
+</svg></div>
+</section><section id="load"><span class="tag">Topic 1</span><h2>4. Loading and Inspecting Source Data</h2>
+<p>The first step is to load the source data into a pandas DataFrame and inspect the structure.</p>
+<h3>Read CSV File</h3>
+<pre><code>import pandas as pd
+
+df = pd.read_csv("source_sales.csv")
+
+print(df.head())
+print(df.tail())
+print(df.shape)
+print(df.columns)</code></pre>
+<h3>Read Excel File</h3>
+<pre><code>import pandas as pd
+
+df = pd.read_excel("source_sales.xlsx", sheet_name="Sales")
+
+print(df.head())</code></pre>
+<h3>Basic Data Inspection</h3>
+<pre><code>print("Rows and columns:", df.shape)
+print("Column names:", df.columns.tolist())
+print("Data types:")
+print(df.dtypes)
+
+print("Sample records:")
+print(df.sample(5))</code></pre>
+<div class='box train'><b>Trainer explanation:</b> <span class='in'>head()</span> shows the first records, <span class='in'>shape</span> shows row and column count, and <span class='in'>dtypes</span> shows how pandas understood the schema.</div>
+</section><section id="source"><span class="tag">Topic 2</span><h2>5. Understanding Source-System Characteristics</h2>
+<p>Source-system characteristics help us understand how the data behaves before building the pipeline.</p>
+<div class='table'><table><thead><tr><th>Characteristic</th><th>Question</th><th>pandas Check</th></tr></thead><tbody>
+<tr><td>Volume</td><td>How many rows and columns?</td><td>df.shape</td></tr>
+<tr><td>Schema</td><td>What are the column names and types?</td><td>df.dtypes</td></tr>
+<tr><td>Freshness</td><td>What is the latest transaction date?</td><td>df["OrderDate"].max()</td></tr>
+<tr><td>Uniqueness</td><td>Is the business key unique?</td><td>df["OrderId"].duplicated().sum()</td></tr>
+<tr><td>Completeness</td><td>Are important fields missing?</td><td>df.isnull().sum()</td></tr>
+<tr><td>Distribution</td><td>Which category has more records?</td><td>df["City"].value_counts()</td></tr>
+</tbody></table></div>
+<h3>Source Profiling Code</h3>
+<pre><code>print("Total rows:", len(df))
+print("Total columns:", len(df.columns))
+print("Memory usage:")
+print(df.memory_usage(deep=True))
+
+print("Date range:")
+print("Min date:", df["OrderDate"].min())
+print("Max date:", df["OrderDate"].max())
+
+print("Records by city:")
+print(df["City"].value_counts())</code></pre>
+</section><section id="schema"><span class="tag">Topic 3</span><h2>6. Schema Issues and Data Type Problems</h2>
+<p>Schema issues are common in source systems. Examples include wrong data types, inconsistent column names, missing columns, and date format issues.</p>
+<h3>Common Schema Issues</h3>
+<div class='table'><table><thead><tr><th>Issue</th><th>Example</th><th>Impact</th><th>Action</th></tr></thead><tbody>
+<tr><td>Wrong data type</td><td>Amount loaded as text</td><td>Aggregation fails</td><td>Convert using pd.to_numeric()</td></tr>
+<tr><td>Date format mismatch</td><td>01/02/2026 vs 2026-02-01</td><td>Wrong date interpretation</td><td>Use pd.to_datetime()</td></tr>
+<tr><td>Column name mismatch</td><td>Customer Id vs CustomerID</td><td>Pipeline fails</td><td>Standardize column names</td></tr>
+<tr><td>Missing column</td><td>TaxAmount not available</td><td>Transformation fails</td><td>Add validation rule</td></tr>
+<tr><td>Extra column</td><td>Unexpected source field</td><td>Schema drift</td><td>Log and review</td></tr>
+</tbody></table></div>
+<h3>Schema Validation Code</h3>
+<pre><code>expected_columns = ["OrderId", "CustomerId", "OrderDate", "Amount", "City"]
+
+actual_columns = df.columns.tolist()
+
+missing_columns = [col for col in expected_columns if col not in actual_columns]
+extra_columns = [col for col in actual_columns if col not in expected_columns]
+
+print("Missing columns:", missing_columns)
+print("Extra columns:", extra_columns)</code></pre>
+<h3>Data Type Conversion</h3>
+<pre><code>df["OrderDate"] = pd.to_datetime(df["OrderDate"], errors="coerce")
+df["Amount"] = pd.to_numeric(df["Amount"], errors="coerce")
+
+print(df.dtypes)</code></pre>
+<div class='box warn'><b>Interview answer:</b> Schema profiling helps identify missing columns, unexpected columns, wrong data types, schema drift, and date parsing issues before production ingestion.</div>
+</section><section id="quality"><span class="tag">Topic 4</span><h2>7. Data Quality Checks using pandas</h2>
+<p>Data quality checks help identify bad records before they enter Silver or Gold layers.</p>
+<h3>Null Check</h3>
+<pre><code>null_summary = df.isnull().sum().reset_index()
+null_summary.columns = ["Column", "NullCount"]
+
+print(null_summary)</code></pre>
+<h3>Duplicate Check</h3>
+<pre><code>duplicate_count = df.duplicated().sum()
+duplicate_order_count = df["OrderId"].duplicated().sum()
+
+print("Duplicate rows:", duplicate_count)
+print("Duplicate OrderId:", duplicate_order_count)</code></pre>
+<h3>Invalid Value Check</h3>
+<pre><code>invalid_amount = df[df["Amount"] <= 0]
+invalid_dates = df[df["OrderDate"].isnull()]
+
+print("Invalid amount records:", len(invalid_amount))
+print("Invalid date records:", len(invalid_dates))</code></pre>
+<h3>Reusable Quality Summary Function</h3>
+<pre><code>def data_quality_summary(df):
+    summary = {
+        "total_rows": len(df),
+        "total_columns": len(df.columns),
+        "duplicate_rows": df.duplicated().sum(),
+        "null_counts": df.isnull().sum().to_dict()
+    }
+    return summary
+
+quality_report = data_quality_summary(df)
+print(quality_report)</code></pre>
+<div class='box ok'><b>Best practice:</b> Convert repeated checks into reusable functions and include them in the pipeline validation step.</div>
+</section><section id="patterns"><span class="tag">Topic 5</span><h2>8. Business Data Pattern Discovery</h2>
+<p>Business pattern discovery helps identify trends, seasonality, high-value categories, unusual behavior, and data distribution.</p>
+<h3>Sales by City</h3>
+<pre><code>city_sales = df.groupby("City")["Amount"].sum().reset_index()
+city_sales = city_sales.sort_values("Amount", ascending=False)
+
+print(city_sales)</code></pre>
+<h3>Sales by Date</h3>
+<pre><code>df["OrderDate"] = pd.to_datetime(df["OrderDate"], errors="coerce")
+
+daily_sales = df.groupby(df["OrderDate"].dt.date)["Amount"].sum().reset_index()
+daily_sales.columns = ["SalesDate", "TotalSales"]
+
+print(daily_sales)</code></pre>
+<h3>Top Customers</h3>
+<pre><code>top_customers = df.groupby("CustomerId")["Amount"].sum().reset_index()
+top_customers = top_customers.sort_values("Amount", ascending=False).head(10)
+
+print(top_customers)</code></pre>
+<h3>Category Distribution</h3>
+<pre><code>print(df["PaymentMode"].value_counts())
+print(df["City"].value_counts(normalize=True) * 100)</code></pre>
+<div class='box train'><b>Trainer explanation:</b> Pattern analysis helps data engineers understand business rules. For example, if 80% of records come from one city, partitioning or skew handling may be important.</div>
+</section><section id="outliers"><span class="tag">Topic 6</span><h2>9. Outlier and Anomaly Detection</h2>
+<p>Outliers are values that are unusually high, low, or different from normal records. They may be valid business cases or data quality issues.</p>
+<h3>Describe Numeric Data</h3>
+<pre><code>print(df["Amount"].describe())</code></pre>
+<h3>Find High-Value Transactions</h3>
+<pre><code>high_value_orders = df[df["Amount"] > df["Amount"].quantile(0.95)]
+
+print(high_value_orders)</code></pre>
+<h3>IQR-based Outlier Check</h3>
+<pre><code>q1 = df["Amount"].quantile(0.25)
+q3 = df["Amount"].quantile(0.75)
+iqr = q3 - q1
+
+lower_limit = q1 - 1.5 * iqr
+upper_limit = q3 + 1.5 * iqr
+
+outliers = df[(df["Amount"] < lower_limit) | (df["Amount"] > upper_limit)]
+
+print("Outlier count:", len(outliers))</code></pre>
+<div class='box warn'><b>Important:</b> Do not remove outliers blindly. Confirm with business users whether they are valid transactions or data errors.</div>
+</section><section id="profiling"><span class="tag">Topic 7</span><h2>10. Automated Profiling Report with pandas</h2>
+<p>A profiling report gives a quick summary of schema, data types, nulls, duplicates, and key statistics.</p>
+<pre><code>def create_profile_report(df):
+    profile = []
+
+    for column in df.columns:
+        profile.append({
+            "column_name": column,
+            "data_type": str(df[column].dtype),
+            "null_count": df[column].isnull().sum(),
+            "null_percentage": round(df[column].isnull().mean() * 100, 2),
+            "unique_count": df[column].nunique(),
+            "sample_value": df[column].dropna().iloc[0] if df[column].dropna().shape[0] > 0 else None
+        })
+
+    return pd.DataFrame(profile)
+
+profile_df = create_profile_report(df)
+print(profile_df)</code></pre>
+<h3>Save Profiling Report</h3>
+<pre><code>profile_df.to_csv("source_profile_report.csv", index=False)</code></pre>
+<div class='box ok'><b>Best practice:</b> Save the profiling report and share it with business analysts, data architects, and source-system owners before finalizing pipeline rules.</div>
+</section><section id="usecase"><span class="tag">Corporate Use Case</span><h2>11. Corporate Use Case: Sales Source-System EDA</h2>
+<div class='box case'><h3>Business Scenario</h3><p>A retail company sends daily sales files. Before building the ingestion pipeline, the data engineer must explore the file to understand schema issues, nulls, duplicates, invalid amount values, date issues, and sales patterns.</p></div>
+<h3>Complete EDA Script</h3>
+<pre><code>import pandas as pd
+
+df = pd.read_csv("source_sales.csv")
+
+print("Basic Information")
+print("Rows and columns:", df.shape)
+print("Columns:", df.columns.tolist())
+print(df.dtypes)
+
+print("Null Summary")
+print(df.isnull().sum())
+
+print("Duplicate Summary")
+print("Duplicate rows:", df.duplicated().sum())
+print("Duplicate OrderId:", df["OrderId"].duplicated().sum())
+
+df["OrderDate"] = pd.to_datetime(df["OrderDate"], errors="coerce")
+df["Amount"] = pd.to_numeric(df["Amount"], errors="coerce")
+
+print("Invalid Records")
+print("Invalid dates:", df["OrderDate"].isnull().sum())
+print("Invalid amounts:", (df["Amount"] <= 0).sum())
+
+print("Business Patterns")
+print("Sales by city")
+print(df.groupby("City")["Amount"].sum().sort_values(ascending=False))
+
+print("Top customers")
+print(df.groupby("CustomerId")["Amount"].sum().sort_values(ascending=False).head(10))</code></pre>
+</section><section id="pipeline"><span class="tag">Topic 8</span><h2>12. How EDA Converts into Pipeline Rules</h2>
+<p>The output of exploratory analysis should become actual ingestion, transformation, and data quality rules.</p>
+<div class='table'><table><thead><tr><th>EDA Finding</th><th>Pipeline Rule</th><th>Example</th></tr></thead><tbody>
+<tr><td>OrderId has duplicates</td><td>Deduplicate by OrderId</td><td>drop_duplicates(["OrderId"])</td></tr>
+<tr><td>Amount has negative values</td><td>Reject invalid amount records</td><td>Amount > 0</td></tr>
+<tr><td>OrderDate has invalid values</td><td>Convert and quarantine invalid dates</td><td>pd.to_datetime(errors="coerce")</td></tr>
+<tr><td>CustomerId has nulls</td><td>Reject or send to exception table</td><td>CustomerId not null</td></tr>
+<tr><td>Unexpected column found</td><td>Handle schema drift</td><td>Log and alert</td></tr>
+<tr><td>High skew in city</td><td>Review partition strategy</td><td>Avoid poor partitioning</td></tr>
+</tbody></table></div>
+<div class='box train'><b>Trainer explanation:</b> EDA is not the end. It should produce practical engineering rules for Bronze-to-Silver processing.</div>
+</section><section id="labs"><span class="tag">Practice Lab</span><h2>13. Hands-on Exercises</h2>
+<ol class='steps'>
+<li>Read a CSV file using pandas and print shape, columns, and data types.</li>
+<li>Create a null summary for all columns.</li>
+<li>Find duplicate rows and duplicate business keys.</li>
+<li>Convert date and numeric columns safely using errors="coerce".</li>
+<li>Find invalid amount records.</li>
+<li>Create a profile report for all columns.</li>
+<li>Calculate sales by city and payment mode.</li>
+<li>Find top 10 customers by sales amount.</li>
+<li>Identify outliers using quantile or IQR method.</li>
+<li>Create a final EDA summary report and list pipeline rules.</li>
+</ol>
+</section><section id="interview"><span class="tag">Interview Preparation</span><h2>14. Interview Questions and Answers</h2>
+<div class='table'><table><thead><tr><th>Question</th><th>Best Answer</th></tr></thead><tbody>
+<tr><td>What is exploratory analysis in data engineering?</td><td>It is the process of profiling source data to understand schema, data quality, volume, and business patterns before building a pipeline.</td></tr>
+<tr><td>Why is pandas useful for exploratory analysis?</td><td>pandas provides DataFrame operations to inspect data, check nulls, find duplicates, analyze data types, and summarize business patterns quickly.</td></tr>
+<tr><td>What schema issues do data engineers check?</td><td>Missing columns, extra columns, wrong data types, date format issues, schema drift, and inconsistent column names.</td></tr>
+<tr><td>How do you check missing values in pandas?</td><td>Use df.isnull().sum() to find null counts column-wise.</td></tr>
+<tr><td>How do you check duplicates?</td><td>Use df.duplicated().sum() for full row duplicates or df["BusinessKey"].duplicated().sum() for key duplicates.</td></tr>
+<tr><td>What is schema drift?</td><td>Schema drift means the source schema changes unexpectedly, such as new columns, missing columns, or changed data types.</td></tr>
+<tr><td>How does EDA help pipeline design?</td><td>EDA findings become data validation rules, transformation rules, schema mapping, rejection logic, and monitoring checks.</td></tr>
+</tbody></table></div>
+</section><section id="summary"><span class="tag">Final Summary</span><h2>15. Final Summary</h2>
+<div class='box ok'><h3>One-line conclusion</h3><p>Exploratory analysis using pandas helps data engineers understand source-system behavior, detect schema and quality problems, and convert findings into reliable pipeline rules.</p></div>
+<div class='table'><table><thead><tr><th>EDA Area</th><th>Purpose</th><th>pandas Method</th></tr></thead><tbody>
+<tr><td>Structure</td><td>Understand rows, columns, and sample data.</td><td>head(), shape, columns</td></tr>
+<tr><td>Schema</td><td>Understand data types and column issues.</td><td>dtypes, columns</td></tr>
+<tr><td>Nulls</td><td>Find missing values.</td><td>isnull().sum()</td></tr>
+<tr><td>Duplicates</td><td>Find duplicate records or keys.</td><td>duplicated().sum()</td></tr>
+<tr><td>Patterns</td><td>Analyze business trends.</td><td>groupby(), value_counts()</td></tr>
+<tr><td>Outliers</td><td>Find unusual values.</td><td>describe(), quantile()</td></tr>
+</tbody></table></div>
+<div class='box train'><b>Trainer closing line:</b> A good data pipeline starts with good source understanding. pandas EDA helps convert unknown source data into clear engineering rules.</div>
+</section><footer class="footer"><p><b>Prepared as Corporate Training Notes for pandas Exploratory Analysis</b></p><p>Topic: Source-System Characteristics, Schema Issues, and Business Data Patterns</p></footer></main></div><script>document.addEventListener("DOMContentLoaded",function(){let t=0;document.addEventListener("mousemove",function(e){let n=Date.now();if(n-t<55)return;t=n;let s=document.createElement("span");s.className="sparkle";s.style.left=e.clientX+(Math.random()-.5)*18+"px";s.style.top=e.clientY+(Math.random()-.5)*18+"px";document.body.appendChild(s);setTimeout(()=>s.remove(),700)})});</script></body></html>

@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Storytelling and Presentation Thinking for Data Engineers</title>
+<style>
+:root{--navy:#082f49;--blue:#075985;--cyan:#0891b2;--teal:#0f766e;--green:#15803d;--orange:#ea580c;--red:#b91c1c;--purple:#6d28d9;--bg:#f5f8fc;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#dbeafe;--code:#0f172a;--shadow:0 10px 28px rgba(8,47,73,.12)}
+*{box-sizing:border-box;scroll-behavior:smooth}
+body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:radial-gradient(circle at top left,rgba(14,165,233,.16),transparent 30%),radial-gradient(circle at top right,rgba(20,184,166,.14),transparent 25%),var(--bg);color:var(--text);line-height:1.65}
+.layout{max-width:1360px;margin:auto;padding:22px;display:grid;grid-template-columns:310px 1fr;gap:22px}
+.sidebar{position:sticky;top:18px;height:calc(100vh - 36px);overflow:auto;background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--shadow)}
+.sidebar h3{margin:0 0 12px;color:var(--navy)}
+.sidebar a{display:block;margin:7px 0;padding:10px 12px;background:#f8fbff;border-radius:12px;color:var(--blue);text-decoration:none;font-weight:700;border:1px solid transparent}
+.sidebar a:hover{background:#ecfeff;border-color:#67e8f9}
+.hero{background:linear-gradient(135deg,var(--navy),var(--blue),var(--teal));color:#fff;padding:36px;border-radius:26px;box-shadow:var(--shadow);margin-bottom:22px;position:relative;overflow:hidden}
+.hero:after{content:'';position:absolute;right:-90px;top:-90px;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.12)}
+.hero h1{margin:0 0 12px;font-size:35px;line-height:1.2}.hero p{color:#dbeafe;font-size:17px;margin:0;max-width:1040px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px;position:relative;z-index:2}
+.tile{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:15px;padding:14px}.tile span{display:block;color:#bae6fd;font-size:12px;text-transform:uppercase;letter-spacing:.6px}.tile strong{display:block;margin-top:4px}
+section{background:#fff;border:1px solid var(--border);border-radius:18px;padding:26px;margin-bottom:22px;box-shadow:var(--shadow);transition:.22s}
+section:hover{transform:translateY(-2px);border-color:#67e8f9;box-shadow:0 16px 38px rgba(8,145,178,.17)}
+h2{color:var(--navy);margin:0 0 17px;padding-left:13px;border-left:7px solid var(--cyan);font-size:25px}h3{color:var(--blue);margin:22px 0 10px}
+.tag{display:inline-block;background:#ecfeff;border:1px solid #a5f3fc;color:var(--blue);padding:7px 12px;border-radius:999px;font-size:13px;font-weight:800;margin-bottom:10px}
+.box{border-radius:15px;padding:17px;margin:17px 0}.learn{background:#e0f2fe;border:1px solid #bae6fd;border-left:7px solid var(--blue)}.train{background:#ecfeff;border:1px solid #a5f3fc;border-left:7px solid var(--cyan)}.warn{background:#fff7ed;border:1px solid #fed7aa;border-left:7px solid var(--orange)}.risk{background:#fef2f2;border:1px solid #fecaca;border-left:7px solid var(--red)}.ok{background:#ecfdf5;border:1px solid #bbf7d0;border-left:7px solid var(--green)}.case{background:#f3e8ff;border:1px solid #d8b4fe;border-left:7px solid var(--purple)}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.cards4{grid-template-columns:repeat(4,1fr)}.cards2{grid-template-columns:repeat(2,1fr)}
+.card{background:#fbfdff;border:1px solid var(--border);border-radius:15px;padding:17px;position:relative}.card:before{content:'';position:absolute;left:0;top:0;width:100%;height:5px;background:linear-gradient(90deg,var(--cyan),var(--teal));border-radius:15px 15px 0 0}.card h3{margin-top:0}
+.table{overflow-x:auto;border:1px solid var(--border);border-radius:14px;margin:16px 0}table{width:100%;border-collapse:collapse;min-width:850px}th,td{border:1px solid var(--border);padding:12px;text-align:left;vertical-align:top;font-size:14px}th{background:var(--navy);color:#fff}tr:nth-child(even){background:#f8fbff}tr:hover{background:#ecfeff}
+pre{background:var(--code);color:#e2e8f0;padding:17px;border-radius:15px;overflow-x:auto;font-size:14px;line-height:1.5}code{font-family:Consolas,'Courier New',monospace}.in{background:#e2e8f0;color:#0f172a;padding:2px 7px;border-radius:7px;font-family:Consolas,'Courier New',monospace}
+.diagram{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;overflow-x:auto;margin:18px 0}svg{max-width:100%;height:auto;display:block;margin:auto}
+ol.steps{counter-reset:s;list-style:none;padding:0}ol.steps li{counter-increment:s;background:#fbfdff;border:1px solid var(--border);border-radius:14px;margin:10px 0;padding:13px 13px 13px 54px;position:relative}ol.steps li:before{content:counter(s);position:absolute;left:15px;top:13px;background:var(--cyan);color:#fff;width:27px;height:27px;border-radius:50%;text-align:center;line-height:27px;font-weight:800}
+.footer{text-align:center;color:var(--muted);padding:24px;font-size:13px}
+.sparkle{position:fixed;width:7px;height:7px;pointer-events:none;z-index:9999;border-radius:50%;background:radial-gradient(circle,#fff 0%,#67e8f9 45%,#0891b2 70%,transparent 100%);animation:fade .65s ease-out forwards}.sparkle:before,.sparkle:after{content:'';position:absolute;left:50%;top:50%;background:#0891b2;transform:translate(-50%,-50%)}.sparkle:before{width:2px;height:13px}.sparkle:after{height:2px;width:13px}@keyframes fade{0%{opacity:1;transform:scale(.5)}100%{opacity:0;transform:scale(.1) rotate(180deg) translateY(-16px)}}
+@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto}.tiles,.cards,.cards4,.cards2{grid-template-columns:1fr 1fr}}@media(max-width:720px){.layout{padding:12px}.hero{padding:24px}.hero h1{font-size:26px}.tiles,.cards,.cards4,.cards2{grid-template-columns:1fr}section{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<h3>Class Notes Menu</h3>
+<a href="#objective">Learning Objective</a>
+<a href="#why">Why Storytelling</a>
+<a href="#framework">Story Framework</a>
+<a href="#diagram">Communication Diagram</a>
+<a href="#source">Source-System Issues</a>
+<a href="#pipeline">Pipeline Logic</a>
+<a href="#contracts">Data Contracts</a>
+<a href="#impact">Business Impact</a>
+<a href="#step2">Outcome of Step 2</a>
+<a href="#templates">Presentation Templates</a>
+<a href="#labs">Hands-on Labs</a>
+<a href="#interview">Interview Q&A</a>
+<a href="#summary">Final Summary</a>
+</aside>
+<main>
+<header class="hero">
+<h1>Storytelling and Presentation Thinking for Data Engineers</h1>
+<p>Corporate trainer style classroom notes on how data engineers communicate source-system issues, pipeline logic, data contracts, and business impact to stakeholders, including a clear Outcome of Step 2.</p>
+<div class="tiles">
+<div class="tile"><span>Level</span><strong>Intermediate</strong></div>
+<div class="tile"><span>Audience</span><strong>Data Engineers</strong></div>
+<div class="tile"><span>Focus</span><strong>Stakeholder Communication</strong></div>
+<div class="tile"><span>Output</span><strong>Presentation Ready</strong></div>
+</div>
+</header>
+
+<section id="objective"><span class="tag">Classroom Opening</span><h2>1. Learning Objective</h2>
+<p>Data engineers often focus on pipelines, code, schemas, and performance. But stakeholders care about business meaning, risks, impact, timelines, and decisions. Storytelling helps convert technical findings into stakeholder-ready communication.</p>
+<div class="box learn"><h3>By the end of this session, learners will understand:</h3><ul><li>How to communicate technical data issues in business language.</li><li>How to explain source-system issues clearly.</li><li>How to present pipeline logic without overloading stakeholders.</li><li>How to define and explain data contracts.</li><li>How to connect data engineering work to business impact.</li><li>How to prepare the Outcome of Step 2 after exploratory analysis.</li></ul></div>
+<div class="box train"><b>Trainer note:</b> Tell learners: “A good data engineer does not only build pipelines. A good data engineer helps stakeholders understand what the data means and what decisions are needed.”</div>
+</section>
+
+<section id="why"><span class="tag">Core Concept</span><h2>2. Why Storytelling Matters for Data Engineers</h2>
+<p>Data engineering storytelling is the ability to explain data problems, pipeline decisions, risks, and outcomes in a way that business and technical stakeholders can understand.</p>
+<div class="cards cards4">
+<div class="card"><h3>Clarity</h3><p>Converts technical findings into simple messages.</p></div>
+<div class="card"><h3>Trust</h3><p>Shows data quality issues transparently.</p></div>
+<div class="card"><h3>Decision Support</h3><p>Helps stakeholders approve rules and priorities.</p></div>
+<div class="card"><h3>Business Value</h3><p>Connects pipeline work to reports, KPIs, and outcomes.</p></div>
+</div>
+<div class="box warn"><b>Interview answer:</b> Storytelling for data engineers means explaining technical findings such as schema issues, data quality problems, pipeline logic, and data contracts in business-friendly language so stakeholders can make informed decisions.</div>
+</section>
+
+<section id="framework"><span class="tag">Communication Framework</span><h2>3. Data Engineering Storytelling Framework</h2>
+<div class="table"><table><thead><tr><th>Story Part</th><th>Question to Answer</th><th>Example</th></tr></thead><tbody>
+<tr><td>Context</td><td>What data are we working with?</td><td>Sales data from POS and e-commerce systems.</td></tr>
+<tr><td>Observation</td><td>What did we find?</td><td>12% of records have missing CustomerId.</td></tr>
+<tr><td>Risk</td><td>Why does it matter?</td><td>Customer-level sales reporting may be inaccurate.</td></tr>
+<tr><td>Decision Needed</td><td>What should stakeholders decide?</td><td>Should missing CustomerId records be rejected or loaded as Unknown?</td></tr>
+<tr><td>Action Plan</td><td>What will the data team do?</td><td>Add validation rule and exception reporting.</td></tr>
+<tr><td>Business Impact</td><td>How will this help?</td><td>Improves dashboard trust and reduces manual reconciliation.</td></tr>
+</tbody></table></div>
+<div class="box ok"><b>Simple formula:</b> Context → Finding → Risk → Decision → Action → Business Impact.</div>
+</section>
+
+<section id="diagram"><span class="tag">Visual Diagram</span><h2>4. Stakeholder Communication Flow Diagram</h2>
+<div class="diagram"><svg width="1120" height="440" viewBox="0 0 1120 440" xmlns="http://www.w3.org/2000/svg"><defs><marker id="a" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L9,3 z" fill="#075985"/></marker></defs><rect x="35" y="35" width="1050" height="350" rx="26" fill="#f8fbff" stroke="#dbeafe"/><rect x="70" y="85" width="170" height="75" rx="15" fill="#082f49"/><text x="155" y="117" text-anchor="middle" fill="#fff" font-weight="800">Technical Finding</text><text x="155" y="140" text-anchor="middle" fill="#dbeafe" font-size="12">Nulls / schema issues</text><rect x="300" y="85" width="170" height="75" rx="15" fill="#075985"/><text x="385" y="117" text-anchor="middle" fill="#fff" font-weight="800">Business Meaning</text><text x="385" y="140" text-anchor="middle" fill="#dbeafe" font-size="12">KPI impact</text><rect x="530" y="85" width="170" height="75" rx="15" fill="#0891b2"/><text x="615" y="117" text-anchor="middle" fill="#fff" font-weight="800">Risk</text><text x="615" y="140" text-anchor="middle" fill="#ecfeff" font-size="12">Wrong report</text><rect x="760" y="85" width="170" height="75" rx="15" fill="#0f766e"/><text x="845" y="117" text-anchor="middle" fill="#fff" font-weight="800">Decision</text><text x="845" y="140" text-anchor="middle" fill="#dcfce7" font-size="12">Rule approval</text><line x1="240" y1="122" x2="300" y2="122" stroke="#075985" stroke-width="3" marker-end="url(#a)"/><line x1="470" y1="122" x2="530" y2="122" stroke="#075985" stroke-width="3" marker-end="url(#a)"/><line x1="700" y1="122" x2="760" y2="122" stroke="#075985" stroke-width="3" marker-end="url(#a)"/><rect x="155" y="250" width="230" height="65" rx="14" fill="#ecfeff" stroke="#0891b2"/><text x="270" y="289" text-anchor="middle" fill="#082f49" font-weight="900">Pipeline Rule</text><rect x="445" y="250" width="230" height="65" rx="14" fill="#fff7ed" stroke="#ea580c"/><text x="560" y="289" text-anchor="middle" fill="#082f49" font-weight="900">Data Contract</text><rect x="735" y="250" width="230" height="65" rx="14" fill="#ecfdf5" stroke="#15803d"/><text x="850" y="289" text-anchor="middle" fill="#082f49" font-weight="900">Business Trust</text><rect x="110" y="350" width="900" height="40" rx="14" fill="#e0f2fe" stroke="#075985"/><text x="560" y="375" text-anchor="middle" fill="#082f49" font-size="14" font-weight="800">Good storytelling turns technical issues into business decisions and pipeline actions.</text></svg></div>
+</section>
+
+<section id="source"><span class="tag">Topic 1</span><h2>5. How to Communicate Source-System Issues</h2>
+<p>Source-system issues should be communicated with facts, examples, and business impact. Avoid blaming the source team. Focus on data behavior and pipeline impact.</p>
+<div class="table"><table><thead><tr><th>Issue</th><th>Technical Explanation</th><th>Stakeholder-Friendly Explanation</th><th>Decision Needed</th></tr></thead><tbody>
+<tr><td>Missing CustomerId</td><td>CustomerId has 12% nulls.</td><td>Some sales records cannot be linked to customers.</td><td>Load as Unknown or reject?</td></tr>
+<tr><td>Schema Drift</td><td>New column added in source file.</td><td>Source format changed and may break pipeline.</td><td>Should new column be added to contract?</td></tr>
+<tr><td>Duplicate OrderId</td><td>OrderId appears multiple times.</td><td>Sales may be counted twice in reports.</td><td>Which record should be retained?</td></tr>
+<tr><td>Invalid Amount</td><td>Amount has negative values.</td><td>Revenue may be understated or incorrect.</td><td>Are negative values refunds or errors?</td></tr>
+</tbody></table></div>
+<h3>Example Communication</h3>
+<pre><code>Finding:
+12% of sales records have missing CustomerId.
+
+Business Meaning:
+These records cannot be linked to customer-level dashboards.
+
+Risk:
+Customer revenue, repeat purchase, and churn analysis may be incomplete.
+
+Decision Needed:
+Should we reject these records, map them to Unknown Customer, or ask source team to correct them?
+
+Recommended Action:
+Load them into an exception table and continue processing valid records.</code></pre>
+</section>
+
+<section id="pipeline"><span class="tag">Topic 2</span><h2>6. How to Explain Pipeline Logic</h2>
+<p>Stakeholders do not need every line of code. They need to understand what the pipeline does, what rules are applied, what data is rejected, and how the final output is produced.</p>
+<div class="table"><table><thead><tr><th>Pipeline Step</th><th>Technical Logic</th><th>Business Explanation</th></tr></thead><tbody>
+<tr><td>Ingest</td><td>Read sales CSV from SFTP.</td><td>Collect daily sales data from store system.</td></tr>
+<tr><td>Validate</td><td>Check required columns and data types.</td><td>Ensure required business fields are available.</td></tr>
+<tr><td>Clean</td><td>Remove duplicates and invalid amounts.</td><td>Prevent double-counting and incorrect revenue.</td></tr>
+<tr><td>Transform</td><td>Calculate tax and net sales.</td><td>Prepare finance-ready sales metrics.</td></tr>
+<tr><td>Load</td><td>Write Gold table.</td><td>Make data available for Power BI dashboard.</td></tr>
+</tbody></table></div>
+<div class="box train"><b>Trainer explanation:</b> Explain pipeline logic as business rules, not only technical operations.</div>
+</section>
+
+<section id="contracts"><span class="tag">Topic 3</span><h2>7. How to Communicate Data Contracts</h2>
+<p>A data contract is an agreement between data producers and consumers. It defines expected schema, data types, required fields, quality rules, freshness, and ownership.</p>
+<div class="table"><table><thead><tr><th>Contract Area</th><th>Example</th><th>Why It Matters</th></tr></thead><tbody>
+<tr><td>Schema</td><td>OrderId, CustomerId, OrderDate, Amount</td><td>Prevents pipeline breakage.</td></tr>
+<tr><td>Data Type</td><td>Amount must be decimal.</td><td>Prevents calculation errors.</td></tr>
+<tr><td>Required Fields</td><td>OrderId and Amount are mandatory.</td><td>Ensures minimum reporting quality.</td></tr>
+<tr><td>Freshness</td><td>File must arrive before 1 AM daily.</td><td>Ensures dashboard refresh.</td></tr>
+<tr><td>Ownership</td><td>Sales system team owns source quality.</td><td>Clarifies responsibility.</td></tr>
+</tbody></table></div>
+<h3>Sample Data Contract Summary</h3>
+<pre><code>Dataset: Daily Sales File
+Owner: Sales System Team
+Consumer: Data Engineering and BI Team
+Frequency: Daily
+Expected Arrival: Before 1 AM
+Mandatory Columns: OrderId, CustomerId, OrderDate, Amount
+Quality Rules:
+- OrderId should be unique
+- Amount should be greater than or equal to 0
+- OrderDate should be valid
+Action on Failure:
+- Critical issue: stop pipeline
+- Non-critical issue: move to exception table</code></pre>
+</section>
+
+<section id="impact"><span class="tag">Topic 4</span><h2>8. How to Communicate Business Impact</h2>
+<p>Every technical issue should be connected to business impact. This helps stakeholders understand priority and urgency.</p>
+<div class="table"><table><thead><tr><th>Technical Issue</th><th>Possible Business Impact</th><th>Priority</th></tr></thead><tbody>
+<tr><td>Duplicate orders</td><td>Revenue may be over-reported.</td><td>High</td></tr>
+<tr><td>Missing customer IDs</td><td>Customer analytics may be incomplete.</td><td>Medium</td></tr>
+<tr><td>Delayed source file</td><td>Dashboard refresh may be delayed.</td><td>High</td></tr>
+<tr><td>Invalid product codes</td><td>Category-level sales may be incorrect.</td><td>Medium</td></tr>
+<tr><td>Schema drift</td><td>Pipeline may fail or ignore new data.</td><td>High</td></tr>
+</tbody></table></div>
+<div class="box ok"><b>Best practice:</b> Present technical issue + business risk + recommended action + owner + deadline.</div>
+</section>
+
+<section id="step2"><span class="tag">Outcome of Step 2</span><h2>9. Outcome of Step 2: Exploratory Analysis and Stakeholder Communication</h2>
+<p>After completing Step 2, learners should be able to convert exploratory analysis findings into a stakeholder-ready summary.</p>
+<div class="box ok"><h3>Expected Outcome</h3><p>Learners can analyze a source dataset using pandas, identify schema and data quality issues, summarize business data patterns, and present findings in a business-friendly format with recommended pipeline rules.</p></div>
+<h3>Deliverables from Step 2</h3>
+<div class="table"><table><thead><tr><th>Deliverable</th><th>Description</th><th>Example</th></tr></thead><tbody>
+<tr><td>Source-System Summary</td><td>Basic understanding of file/table/API source.</td><td>Daily sales CSV from POS system.</td></tr>
+<tr><td>Schema Assessment</td><td>Columns, data types, missing fields, unexpected columns.</td><td>Amount is text but expected decimal.</td></tr>
+<tr><td>Data Quality Findings</td><td>Nulls, duplicates, invalid values, outliers.</td><td>2.5% records have invalid OrderDate.</td></tr>
+<tr><td>Business Pattern Summary</td><td>Trends, category distribution, top customers, sales patterns.</td><td>Online sales are highest on weekends.</td></tr>
+<tr><td>Pipeline Rule Recommendation</td><td>Recommended validation and transformation rules.</td><td>Reject records where Amount is negative unless marked as refund.</td></tr>
+<tr><td>Stakeholder Decision List</td><td>Open questions requiring business approval.</td><td>How should missing CustomerId be handled?</td></tr>
+</tbody></table></div>
+<h3>Step 2 Output Template</h3>
+<pre><code>Step 2 Outcome: Source Data Understanding Summary
+
+Dataset:
+Daily Sales File
+
+Key Findings:
+1. OrderId is unique for 97.8% of records.
+2. CustomerId is missing in 12% of records.
+3. Amount has negative values in 1.5% of records.
+4. OrderDate has multiple date formats.
+
+Business Impact:
+- Missing CustomerId affects customer analytics.
+- Negative Amount may represent refunds or source errors.
+- Multiple date formats may delay pipeline processing.
+
+Recommended Pipeline Rules:
+- Validate mandatory columns before processing.
+- Move missing CustomerId records to exception table.
+- Confirm negative Amount business meaning with Finance.
+- Standardize OrderDate during Silver transformation.
+
+Stakeholder Decisions Needed:
+- Should missing CustomerId records be rejected or loaded as Unknown?
+- Are negative Amount records valid refund transactions?
+- Should new source columns be accepted automatically?</code></pre>
+</section>
+
+<section id="templates"><span class="tag">Presentation Templates</span><h2>10. Presentation Templates for Data Engineers</h2>
+<h3>One-Slide Summary Format</h3>
+<pre><code>Title:
+Source Data Assessment - Daily Sales
+
+What We Analyzed:
+Daily sales file from POS system.
+
+What We Found:
+- 12% missing CustomerId
+- Duplicate OrderId in 2.2% records
+- Amount column includes negative values
+- OrderDate has inconsistent formats
+
+Why It Matters:
+These issues can impact revenue reporting and customer analytics.
+
+Recommended Action:
+Add validation rules, exception handling, and data contract approval.
+
+Decision Needed:
+Confirm handling rule for missing CustomerId and negative Amount.</code></pre>
+<h3>Executive-Friendly Explanation</h3>
+<pre><code>The data pipeline can be built, but source data quality issues must be resolved or controlled.
+The biggest risks are missing customer identifiers and inconsistent date formats.
+If not handled, dashboards may show incomplete customer-level reporting.
+We recommend adding validation rules and creating an exception report for business review.</code></pre>
+</section>
+
+<section id="labs"><span class="tag">Practice Lab</span><h2>11. Hands-on Exercises</h2>
+<ol class="steps"><li>Take a sample sales dataset and identify top 5 schema issues.</li><li>Write a stakeholder-friendly explanation for missing CustomerId.</li><li>Create a data contract summary for a daily sales file.</li><li>Convert a technical data quality issue into business impact language.</li><li>Prepare a one-slide source data assessment summary.</li><li>Create a decision-needed list for business stakeholders.</li><li>Explain pipeline logic to a non-technical manager in five bullet points.</li><li>Create an exception handling recommendation for invalid records.</li></ol>
+</section>
+
+<section id="interview"><span class="tag">Interview Preparation</span><h2>12. Interview Questions and Answers</h2>
+<div class="table"><table><thead><tr><th>Question</th><th>Best Answer</th></tr></thead><tbody>
+<tr><td>Why does storytelling matter for data engineers?</td><td>It helps communicate technical data issues, pipeline logic, risks, and business impact clearly to stakeholders.</td></tr>
+<tr><td>How do you explain source-system issues?</td><td>Explain the issue, show evidence, describe business impact, recommend action, and identify the decision needed.</td></tr>
+<tr><td>What is a data contract?</td><td>A data contract is an agreement between producers and consumers defining schema, quality rules, freshness, ownership, and failure handling.</td></tr>
+<tr><td>How do you communicate pipeline logic?</td><td>Explain pipeline steps as business rules: collect, validate, clean, transform, load, and monitor.</td></tr>
+<tr><td>What is the outcome of exploratory analysis?</td><td>A clear summary of schema issues, data quality findings, business patterns, risks, and recommended pipeline rules.</td></tr>
+<tr><td>How do you connect technical issues to business impact?</td><td>Map each technical problem to its effect on reporting accuracy, operational delay, compliance risk, or business decision quality.</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="summary"><span class="tag">Final Summary</span><h2>13. Final Summary</h2>
+<div class="box ok"><h3>One-line conclusion</h3><p>Storytelling helps data engineers convert technical findings into clear business decisions, trusted pipeline rules, and stakeholder-ready communication.</p></div>
+<div class="table"><table><thead><tr><th>Communication Area</th><th>What to Explain</th></tr></thead><tbody>
+<tr><td>Source-System Issues</td><td>What is wrong, how often it happens, and why it matters.</td></tr>
+<tr><td>Pipeline Logic</td><td>What rules are applied and how data flows from source to target.</td></tr>
+<tr><td>Data Contracts</td><td>Expected schema, quality, freshness, ownership, and failure handling.</td></tr>
+<tr><td>Business Impact</td><td>How technical issues affect dashboards, KPIs, finance, operations, and decisions.</td></tr>
+<tr><td>Outcome of Step 2</td><td>Stakeholder-ready source data assessment with recommended pipeline rules.</td></tr>
+</tbody></table></div>
+<div class="box train"><b>Trainer closing line:</b> A data engineer who can explain data clearly becomes more valuable than one who only writes pipeline code.</div>
+</section>
+
+<footer class="footer"><p><b>Prepared as Corporate Training Notes for Storytelling and Presentation Thinking for Data Engineers</b></p><p>Topic: Source-System Issues, Pipeline Logic, Data Contracts, Business Impact, and Outcome of Step 2</p></footer>
+</main>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded",function(){let t=0;document.addEventListener("mousemove",function(e){let n=Date.now();if(n-t<55)return;t=n;let s=document.createElement("span");s.className="sparkle";s.style.left=e.clientX+(Math.random()-.5)*18+"px";s.style.top=e.clientY+(Math.random()-.5)*18+"px";document.body.appendChild(s);setTimeout(()=>s.remove(),700)})});
+</script>
+</body>
+</html>

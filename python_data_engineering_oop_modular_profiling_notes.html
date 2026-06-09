@@ -1,0 +1,241 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Python for Data Engineering - Corporate Training Notes</title><style>:root{--navy:#082f49;--blue:#075985;--cyan:#0891b2;--teal:#0f766e;--green:#15803d;--orange:#ea580c;--red:#b91c1c;--purple:#6d28d9;--bg:#f5f8fc;--card:#fff;--text:#1e293b;--muted:#64748b;--border:#dbeafe;--code:#0f172a;--shadow:0 10px 28px rgba(8,47,73,.12)}*{box-sizing:border-box;scroll-behavior:smooth}body{margin:0;font-family:'Segoe UI',Arial,sans-serif;background:radial-gradient(circle at top left,rgba(14,165,233,.16),transparent 30%),var(--bg);color:var(--text);line-height:1.65}.layout{max-width:1360px;margin:auto;padding:22px;display:grid;grid-template-columns:310px 1fr;gap:22px}.sidebar{position:sticky;top:18px;height:calc(100vh - 36px);overflow:auto;background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--shadow)}.sidebar h3{margin:0 0 12px;color:var(--navy)}.sidebar a{display:block;margin:7px 0;padding:10px 12px;background:#f8fbff;border-radius:12px;color:var(--blue);text-decoration:none;font-weight:700;border:1px solid transparent}.sidebar a:hover{background:#ecfeff;border-color:#67e8f9}.hero{background:linear-gradient(135deg,var(--navy),var(--blue),var(--teal));color:#fff;padding:36px;border-radius:26px;box-shadow:var(--shadow);margin-bottom:22px}.hero h1{margin:0 0 12px;font-size:35px;line-height:1.2}.hero p{color:#dbeafe;font-size:17px;margin:0}.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}.tile{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.22);border-radius:15px;padding:14px}.tile span{display:block;color:#bae6fd;font-size:12px;text-transform:uppercase;letter-spacing:.6px}.tile strong{display:block;margin-top:4px}section{background:#fff;border:1px solid var(--border);border-radius:18px;padding:26px;margin-bottom:22px;box-shadow:var(--shadow);transition:.22s}section:hover{transform:translateY(-2px);border-color:#67e8f9;box-shadow:0 16px 38px rgba(8,145,178,.17)}h2{color:var(--navy);margin:0 0 17px;padding-left:13px;border-left:7px solid var(--cyan);font-size:25px}h3{color:var(--blue);margin:22px 0 10px}.tag{display:inline-block;background:#ecfeff;border:1px solid #a5f3fc;color:var(--blue);padding:7px 12px;border-radius:999px;font-size:13px;font-weight:800;margin-bottom:10px}.box{border-radius:15px;padding:17px;margin:17px 0}.learn{background:#e0f2fe;border:1px solid #bae6fd;border-left:7px solid var(--blue)}.train{background:#ecfeff;border:1px solid #a5f3fc;border-left:7px solid var(--cyan)}.warn{background:#fff7ed;border:1px solid #fed7aa;border-left:7px solid var(--orange)}.ok{background:#ecfdf5;border:1px solid #bbf7d0;border-left:7px solid var(--green)}.case{background:#f3e8ff;border:1px solid #d8b4fe;border-left:7px solid var(--purple)}.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.cards4{grid-template-columns:repeat(4,1fr)}.card{background:#fbfdff;border:1px solid var(--border);border-radius:15px;padding:17px;position:relative}.card:before{content:'';position:absolute;left:0;top:0;width:100%;height:5px;background:linear-gradient(90deg,var(--cyan),var(--teal));border-radius:15px 15px 0 0}.card h3{margin-top:0}.table{overflow-x:auto;border:1px solid var(--border);border-radius:14px;margin:16px 0}table{width:100%;border-collapse:collapse;min-width:850px}th,td{border:1px solid var(--border);padding:12px;text-align:left;vertical-align:top;font-size:14px}th{background:var(--navy);color:#fff}tr:nth-child(even){background:#f8fbff}tr:hover{background:#ecfeff}pre{background:var(--code);color:#e2e8f0;padding:17px;border-radius:15px;overflow-x:auto;font-size:14px;line-height:1.5}code{font-family:Consolas,'Courier New',monospace}.in{background:#e2e8f0;color:#0f172a;padding:2px 7px;border-radius:7px;font-family:Consolas,'Courier New',monospace}.diagram{background:#fff;border:1px solid var(--border);border-radius:18px;padding:18px;overflow-x:auto;margin:18px 0}svg{max-width:100%;height:auto;display:block;margin:auto}ol.steps{counter-reset:s;list-style:none;padding:0}ol.steps li{counter-increment:s;background:#fbfdff;border:1px solid var(--border);border-radius:14px;margin:10px 0;padding:13px 13px 13px 54px;position:relative}ol.steps li:before{content:counter(s);position:absolute;left:15px;top:13px;background:var(--cyan);color:#fff;width:27px;height:27px;border-radius:50%;text-align:center;line-height:27px;font-weight:800}.footer{text-align:center;color:var(--muted);padding:24px;font-size:13px}@media(max-width:1100px){.layout{grid-template-columns:1fr}.sidebar{position:static;height:auto}.tiles,.cards,.cards4{grid-template-columns:1fr 1fr}}@media(max-width:720px){.layout{padding:12px}.hero{padding:24px}.hero h1{font-size:26px}.tiles,.cards,.cards4{grid-template-columns:1fr}section{padding:20px}}</style></head><body><div class="layout"><aside class="sidebar"><h3>Class Notes Menu</h3><a href="#objective">1. Learning Objective</a><a href="#overview">2. Python for Data Engineering</a><a href="#diagram">3. Python Data Engineering Pipeline Architecture</a><a href="#functions">4. Reusable Functions</a><a href="#oop">5. OOP Concepts for Data Engineering</a><a href="#classes">6. Pipeline Classes</a><a href="#modules">7. Modular Scripting</a><a href="#config">8. Configuration and Logging</a><a href="#profiling">9. Profiling Concepts</a><a href="#quality">10. Data Quality with Reusable Validators</a><a href="#usecase">11. Real-World Use Case: Modular Sales ETL Pipeline</a><a href="#labs">12. Hands-on Exercises</a><a href="#interview">13. Interview Questions and Answers</a><a href="#summary">14. Final Summary</a></aside><main><header class="hero"><h1>Python for Data Engineering with OOP, Reusable Functions, Modular Scripting, and Profiling Concepts</h1><p>Corporate trainer style classroom notes explaining how Python is used to build maintainable, reusable, testable, and performance-aware data engineering pipelines.</p><div class="tiles"><div class="tile"><span>Level</span><strong>Intermediate</strong></div><div class="tile"><span>Audience</span><strong>Data Engineers</strong></div><div class="tile"><span>Focus</span><strong>Production Python</strong></div><div class="tile"><span>Style</span><strong>Classroom Notes</strong></div></div></header><section id="objective"><span class="tag">Classroom Opening</span><h2>1. Learning Objective</h2>
+<p>Python for Data Engineering is not only about writing simple scripts. In production, Python code must be reusable, modular, configurable, testable, logged, and performance-aware.</p>
+<div class='box learn'><h3>By the end of this session, learners will understand:</h3>
+<ul><li>How Python is used in data engineering workflows.</li><li>How reusable functions reduce duplicate code.</li><li>How OOP helps organize pipeline components.</li><li>How modular scripting improves maintainability.</li><li>How configuration and logging support production pipelines.</li><li>How profiling identifies performance bottlenecks.</li></ul></div>
+<div class='box train'><b>Trainer note:</b> A beginner writes one long script. A professional data engineer writes reusable and maintainable pipeline code.</div>
+</section><section id="overview"><span class="tag">Core Concept</span><h2>2. Python for Data Engineering</h2>
+<p>Python connects to files, databases, APIs, cloud storage, Spark jobs, orchestration tools, and data quality frameworks.</p>
+<div class='cards cards4'><div class='card'><h3>Ingestion</h3><p>Read CSV, JSON, Excel, APIs, databases, and cloud files.</p></div><div class='card'><h3>Transformation</h3><p>Clean, validate, enrich, aggregate, and prepare data.</p></div><div class='card'><h3>Automation</h3><p>Schedule scripts, trigger jobs, and automate operational tasks.</p></div><div class='card'><h3>Monitoring</h3><p>Log execution, capture errors, validate records, and profile performance.</p></div></div>
+<div class='box warn'><b>Interview answer:</b> Python is useful in data engineering for ingestion, transformation, orchestration, automation, validation, API integration, file processing, and reusable pipeline components.</div>
+</section><section id="diagram"><span class="tag">Visual Architecture</span><h2>3. Python Data Engineering Pipeline Architecture</h2>
+<div class='diagram'><svg width='1100' height='430' viewBox='0 0 1100 430' xmlns='http://www.w3.org/2000/svg'><defs><marker id='a' markerWidth='10' markerHeight='10' refX='8' refY='3' orient='auto'><path d='M0,0 L0,6 L9,3 z' fill='#075985'/></marker></defs><rect x='35' y='35' width='1030' height='335' rx='26' fill='#f8fbff' stroke='#dbeafe'/><rect x='70' y='85' width='170' height='75' rx='15' fill='#082f49'/><text x='155' y='117' text-anchor='middle' fill='#fff' font-weight='800'>Sources</text><text x='155' y='140' text-anchor='middle' fill='#dbeafe' font-size='12'>Files / DB / API</text><rect x='300' y='85' width='170' height='75' rx='15' fill='#075985'/><text x='385' y='117' text-anchor='middle' fill='#fff' font-weight='800'>Ingestion</text><text x='385' y='140' text-anchor='middle' fill='#dbeafe' font-size='12'>Reusable readers</text><rect x='530' y='85' width='170' height='75' rx='15' fill='#0891b2'/><text x='615' y='117' text-anchor='middle' fill='#fff' font-weight='800'>Transform</text><text x='615' y='140' text-anchor='middle' fill='#ecfeff' font-size='12'>Functions / Classes</text><rect x='760' y='85' width='170' height='75' rx='15' fill='#0f766e'/><text x='845' y='117' text-anchor='middle' fill='#fff' font-weight='800'>Load</text><text x='845' y='140' text-anchor='middle' fill='#dcfce7' font-size='12'>Target tables</text><line x1='240' y1='122' x2='300' y2='122' stroke='#075985' stroke-width='3' marker-end='url(#a)'/><line x1='470' y1='122' x2='530' y2='122' stroke='#075985' stroke-width='3' marker-end='url(#a)'/><line x1='700' y1='122' x2='760' y2='122' stroke='#075985' stroke-width='3' marker-end='url(#a)'/><rect x='185' y='250' width='190' height='65' rx='14' fill='#ecfeff' stroke='#0891b2'/><text x='280' y='289' text-anchor='middle' fill='#082f49' font-weight='900'>Config</text><rect x='465' y='250' width='190' height='65' rx='14' fill='#fff7ed' stroke='#ea580c'/><text x='560' y='289' text-anchor='middle' fill='#082f49' font-weight='900'>Logging</text><rect x='745' y='250' width='190' height='65' rx='14' fill='#ecfdf5' stroke='#15803d'/><text x='840' y='289' text-anchor='middle' fill='#082f49' font-weight='900'>Profiling</text><rect x='115' y='350' width='890' height='40' rx='14' fill='#e0f2fe' stroke='#075985'/><text x='560' y='375' text-anchor='middle' fill='#082f49' font-size='14' font-weight='800'>Production Python pipeline = reusable code + modular design + logging + profiling + data quality.</text></svg></div>
+</section><section id="functions"><span class="tag">Topic 1</span><h2>4. Reusable Functions</h2>
+<p>Reusable functions help avoid duplicate code. A function should ideally do one clear task.</p>
+<h3>Beginner Style</h3><pre><code>import pandas as pd
+
+sales_df = pd.read_csv("sales.csv")
+customer_df = pd.read_csv("customers.csv")
+product_df = pd.read_csv("products.csv")</code></pre>
+<h3>Reusable Function</h3><pre><code>import pandas as pd
+
+def read_csv_file(file_path):
+    """Read a CSV file and return a DataFrame."""
+    return pd.read_csv(file_path)
+
+sales_df = read_csv_file("sales.csv")
+customer_df = read_csv_file("customers.csv")</code></pre>
+<h3>Validation Function</h3><pre><code>def validate_required_columns(df, required_columns):
+    missing_columns = [c for c in required_columns if c not in df.columns]
+    if missing_columns:
+        raise ValueError(f"Missing columns: {missing_columns}")
+    return True</code></pre>
+<div class='box ok'><b>Best practice:</b> Write small functions with clear names. Avoid one function doing too many responsibilities.</div>
+</section><section id="oop"><span class="tag">Topic 2</span><h2>5. OOP Concepts for Data Engineering</h2>
+<p>OOP groups related data and behavior together. In data engineering, OOP is useful for readers, transformers, validators, and loaders.</p>
+<div class='table'><table><thead><tr><th>OOP Concept</th><th>Meaning</th><th>Data Engineering Example</th></tr></thead><tbody><tr><td>Class</td><td>Blueprint for objects.</td><td>CsvReader, DataValidator</td></tr><tr><td>Object</td><td>Instance of a class.</td><td>reader = CsvReader("sales.csv")</td></tr><tr><td>Encapsulation</td><td>Keep related data and methods together.</td><td>Reader class has file path and read method.</td></tr><tr><td>Inheritance</td><td>Reuse common behavior.</td><td>BaseReader parent, CsvReader child.</td></tr><tr><td>Polymorphism</td><td>Same method name, different behavior.</td><td>read() for CSV, JSON, API.</td></tr></tbody></table></div>
+<pre><code>class CsvReader:
+    def __init__(self, file_path):
+        self.file_path = file_path
+
+    def read(self):
+        import pandas as pd
+        return pd.read_csv(self.file_path)
+
+reader = CsvReader("sales.csv")
+sales_df = reader.read()</code></pre>
+<div class='box train'><b>Trainer explanation:</b> A class is useful when a function needs to work with state, configuration, or multiple related operations.</div>
+</section><section id="classes"><span class="tag">Topic 3</span><h2>6. Pipeline Classes</h2>
+<p>A pipeline usually has extract, transform, validate, and load steps. We can represent this using a class.</p>
+<pre><code>import pandas as pd
+
+class SalesPipeline:
+    def __init__(self, source_path, target_path):
+        self.source_path = source_path
+        self.target_path = target_path
+        self.df = None
+
+    def extract(self):
+        self.df = pd.read_csv(self.source_path)
+        return self
+
+    def transform(self):
+        self.df = self.df.drop_duplicates()
+        self.df = self.df[self.df["Amount"] > 0]
+        self.df["TaxAmount"] = self.df["Amount"] * 0.18
+        return self
+
+    def load(self):
+        self.df.to_csv(self.target_path, index=False)
+        return self
+
+pipeline = SalesPipeline("bronze_sales.csv", "silver_sales.csv")
+pipeline.extract().transform().load()</code></pre>
+<div class='box ok'><b>Best practice:</b> For small scripts, functions are enough. For larger reusable pipelines, classes make the design cleaner.</div>
+</section><section id="modules"><span class="tag">Topic 4</span><h2>7. Modular Scripting</h2>
+<p>Modular scripting means splitting code into multiple files based on responsibility.</p>
+<pre><code>data_engineering_project/
+├── config/
+│   └── config.yaml
+├── src/
+│   ├── readers.py
+│   ├── transformers.py
+│   ├── validators.py
+│   ├── loaders.py
+│   └── pipeline.py
+├── tests/
+│   └── test_validators.py
+├── logs/
+└── main.py</code></pre>
+<h3>readers.py</h3><pre><code>import pandas as pd
+
+def read_csv(file_path):
+    return pd.read_csv(file_path)</code></pre>
+<h3>transformers.py</h3><pre><code>def clean_sales_data(df):
+    df = df.drop_duplicates()
+    df = df[df["Amount"] > 0]
+    df["TaxAmount"] = df["Amount"] * 0.18
+    return df</code></pre>
+<h3>main.py</h3><pre><code>from src.readers import read_csv
+from src.transformers import clean_sales_data
+
+df = read_csv("bronze_sales.csv")
+clean_df = clean_sales_data(df)
+clean_df.to_csv("silver_sales.csv", index=False)</code></pre>
+<div class='box warn'><b>Interview answer:</b> Modular scripting separates code into logical modules such as readers, transformers, validators, loaders, and pipeline runners.</div>
+</section><section id="config"><span class="tag">Topic 5</span><h2>8. Configuration and Logging</h2>
+<p>Production pipelines should not hardcode file paths, database names, or environment settings.</p>
+<h3>config.yaml</h3><pre><code>source_path: "bronze_sales.csv"
+target_path: "silver_sales.csv"
+minimum_amount: 0
+tax_percentage: 18</code></pre>
+<h3>Read Configuration</h3><pre><code>import yaml
+
+def load_config(config_path):
+    with open(config_path, "r") as file:
+        return yaml.safe_load(file)
+
+config = load_config("config/config.yaml")</code></pre>
+<h3>Logging Example</h3><pre><code>import logging
+
+logging.basicConfig(
+    filename="logs/pipeline.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+
+logging.info("Pipeline started")
+
+try:
+    logging.info("Pipeline completed successfully")
+except Exception as ex:
+    logging.error(f"Pipeline failed: {ex}")
+    raise</code></pre>
+<div class='box ok'><b>Best practice:</b> Use configuration for values that change between development, test, and production. Use logging to understand execution.</div>
+</section><section id="profiling"><span class="tag">Topic 6</span><h2>9. Profiling Concepts</h2>
+<p>Profiling means measuring code performance to find slow parts, memory-heavy operations, and bottlenecks.</p>
+<div class='table'><table><thead><tr><th>Profiling Area</th><th>Question</th><th>Tool / Method</th></tr></thead><tbody><tr><td>Execution Time</td><td>Which step is slow?</td><td>time, timeit, cProfile</td></tr><tr><td>Memory Usage</td><td>Which operation uses high memory?</td><td>memory_profiler, pandas info()</td></tr><tr><td>Data Volume</td><td>How many records are processed?</td><td>len(df), count()</td></tr><tr><td>I/O Time</td><td>Is reading/writing slow?</td><td>Log start and end time</td></tr></tbody></table></div>
+<h3>Simple Time Profiling</h3><pre><code>import time
+import pandas as pd
+
+start_time = time.time()
+
+df = pd.read_csv("large_sales.csv")
+df = df[df["Amount"] > 0]
+
+end_time = time.time()
+print("Execution time:", end_time - start_time, "seconds")</code></pre>
+<h3>Profiling Decorator</h3><pre><code>import time
+
+def profile_time(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"{func.__name__} took {end - start:.2f} seconds")
+        return result
+    return wrapper
+
+@profile_time
+def transform_sales(df):
+    return df[df["Amount"] > 0]</code></pre>
+<div class='box train'><b>Trainer explanation:</b> Do not optimize blindly. First measure, then optimize the actual slow part.</div>
+</section><section id="quality"><span class="tag">Topic 7</span><h2>10. Data Quality with Reusable Validators</h2>
+<p>Data quality checks should be reusable and fail early when important rules are broken.</p>
+<pre><code>class DataValidator:
+    def __init__(self, df):
+        self.df = df
+        self.errors = []
+
+    def check_not_null(self, column):
+        null_count = self.df[column].isnull().sum()
+        if null_count > 0:
+            self.errors.append(f"{column} has {null_count} null values")
+        return self
+
+    def check_positive(self, column):
+        invalid_count = (self.df[column] <= 0).sum()
+        if invalid_count > 0:
+            self.errors.append(f"{column} has {invalid_count} invalid values")
+        return self
+
+    def validate(self):
+        if self.errors:
+            raise ValueError(self.errors)
+        return True
+
+validator = DataValidator(sales_df)
+validator.check_not_null("OrderId").check_positive("Amount").validate()</code></pre>
+<div class='box ok'><b>Best practice:</b> Keep validations close to the pipeline and fail early when critical data quality rules are broken.</div>
+</section><section id="usecase"><span class="tag">Corporate Use Case</span><h2>11. Real-World Use Case: Modular Sales ETL Pipeline</h2>
+<div class='box case'><h3>Business Scenario</h3><p>A retail company receives daily sales files. The Data Engineering team must build a reusable Python pipeline to read the sales file, clean invalid records, validate required columns, add tax amount, and write the cleaned file for analytics.</p></div>
+<pre><code>import pandas as pd
+import logging
+import time
+
+class SalesETLPipeline:
+    def __init__(self, source_path, target_path):
+        self.source_path = source_path
+        self.target_path = target_path
+        self.df = None
+
+    def extract(self):
+        logging.info("Reading source file")
+        self.df = pd.read_csv(self.source_path)
+        return self
+
+    def validate(self):
+        required_columns = ["OrderId", "CustomerId", "Amount"]
+        for column in required_columns:
+            if column not in self.df.columns:
+                raise ValueError(f"Missing required column: {column}")
+        return self
+
+    def transform(self):
+        self.df = self.df.drop_duplicates(subset=["OrderId"])
+        self.df = self.df[self.df["Amount"] > 0]
+        self.df["TaxAmount"] = self.df["Amount"] * 0.18
+        return self
+
+    def load(self):
+        self.df.to_csv(self.target_path, index=False)
+        return self
+
+    def run(self):
+        start = time.time()
+        self.extract().validate().transform().load()
+        end = time.time()
+        logging.info(f"Pipeline completed in {end - start:.2f} seconds")
+
+logging.basicConfig(level=logging.INFO)
+
+pipeline = SalesETLPipeline("bronze_sales.csv", "silver_sales.csv")
+pipeline.run()</code></pre>
+</section><section id="labs"><span class="tag">Practice Lab</span><h2>12. Hands-on Exercises</h2>
+<ol class='steps'><li>Create a reusable function to read a CSV file.</li><li>Create a function to remove duplicates.</li><li>Create a function to validate required columns.</li><li>Create a class called CsvReader with a read method.</li><li>Create a class called DataValidator with null and positive number checks.</li><li>Create a modular folder structure for a Python data engineering project.</li><li>Create a YAML configuration file and read it in Python.</li><li>Add logging to an ETL pipeline.</li><li>Measure execution time for reading and transforming a file.</li><li>Build a SalesETLPipeline class with extract, validate, transform, load, and run methods.</li></ol>
+</section><section id="interview"><span class="tag">Interview Preparation</span><h2>13. Interview Questions and Answers</h2>
+<div class='table'><table><thead><tr><th>Question</th><th>Best Answer</th></tr></thead><tbody><tr><td>Why is Python used in data engineering?</td><td>Python is used for ingestion, transformation, automation, validation, API integration, orchestration, and reusable pipeline scripts.</td></tr><tr><td>What is a reusable function?</td><td>A reusable function performs one specific task and can be called multiple times.</td></tr><tr><td>Why use OOP in data engineering?</td><td>OOP organizes readers, transformers, validators, and loaders into reusable and maintainable classes.</td></tr><tr><td>What is modular scripting?</td><td>Separating code into files based on responsibility, such as readers.py, transformers.py, validators.py, and loaders.py.</td></tr><tr><td>Why is logging important?</td><td>Logging tracks pipeline execution, debug failures, monitor progress, and support production troubleshooting.</td></tr><tr><td>What is profiling?</td><td>Profiling measures execution time, memory usage, and bottlenecks to improve performance and reduce cost.</td></tr><tr><td>When should you use functions vs classes?</td><td>Use functions for simple reusable tasks. Use classes for state, configuration, related methods, or reusable pipeline components.</td></tr></tbody></table></div>
+</section><section id="summary"><span class="tag">Final Summary</span><h2>14. Final Summary</h2>
+<div class='box ok'><h3>One-line conclusion</h3><p>Python for Data Engineering becomes powerful when scripts are reusable, modular, object-oriented, logged, validated, and performance-aware.</p></div>
+<div class='table'><table><thead><tr><th>Concept</th><th>Purpose</th><th>Example</th></tr></thead><tbody><tr><td>Reusable Functions</td><td>Avoid duplicate code.</td><td>read_csv_file()</td></tr><tr><td>OOP</td><td>Organize related pipeline logic.</td><td>SalesPipeline class</td></tr><tr><td>Modular Scripting</td><td>Improve maintainability.</td><td>readers.py, validators.py</td></tr><tr><td>Configuration</td><td>Avoid hardcoding.</td><td>config.yaml</td></tr><tr><td>Logging</td><td>Track execution and failures.</td><td>pipeline.log</td></tr><tr><td>Profiling</td><td>Find performance bottlenecks.</td><td>time, cProfile</td></tr></tbody></table></div>
+<div class='box train'><b>Trainer closing line:</b> A professional data engineer does not only make code work. A professional data engineer makes code reusable, readable, testable, traceable, and scalable.</div>
+</section><footer class="footer"><p><b>Prepared as Corporate Training Notes for Python for Data Engineering</b></p><p>Topic: OOP, Reusable Functions, Modular Scripting, and Profiling Concepts</p></footer></main></div></body></html>
