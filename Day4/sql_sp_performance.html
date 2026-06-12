@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SQL Server · Stored Procedure Performance Best Practices</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap');
+
+/* ─────────────────────────────────────────
+   TOKENS  — "blueprint paper" aesthetic:
+   navy bg · amber accent · mono code feel
+   Signature: the sticky progress dashboard
+   that looks like a terminal readout
+───────────────────────────────────────── */
+:root{
+  --bg:     #0B0F1A;
+  --bg1:    #111827;
+  --bg2:    #1A2235;
+  --bg3:    #222D42;
+  --bg4:    #2B3855;
+  --border: rgba(255,255,255,.07);
+  --brd2:   rgba(255,255,255,.13);
+
+  --tx0:    #E8EDF8;
+  --tx1:    #9AA5BE;
+  --tx2:    #5C6882;
+  --tx3:    #2E3850;
+
+  /* Amber — the ONE bold element */
+  --am:     #F5A623;
+  --am2:    #FFBF4D;
+  --am-bg:  rgba(245,166,35,.09);
+  --am-bd:  rgba(245,166,35,.25);
+
+  /* Supporting accents — restrained */
+  --gr:     #3ED9A0;
+  --gr-bg:  rgba(62,217,160,.07);
+  --gr-bd:  rgba(62,217,160,.22);
+
+  --rd:     #F56060;
+  --rd-bg:  rgba(245,96,96,.07);
+  --rd-bd:  rgba(245,96,96,.22);
+
+  --bl:     #5B9BF5;
+  --bl-bg:  rgba(91,155,245,.07);
+  --bl-bd:  rgba(91,155,245,.22);
+
+  --pu:     #A78BFA;
+  --pu-bg:  rgba(167,139,250,.07);
+  --pu-bd:  rgba(167,139,250,.22);
+
+  --display:'Outfit', sans-serif;
+  --mono:   'JetBrains Mono', monospace;
+  --r:      8px;
+  --rl:     14px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--display);
+  background:var(--bg);
+  color:var(--tx0);
+  font-size:15px;
+  line-height:1.75;
+  display:grid;
+  grid-template-columns:270px 1fr;
+  min-height:100vh;
+}
+
+/* ─── SIDEBAR ─────────────────────────── */
+.sidebar{
+  position:sticky;top:0;
+  height:100vh;overflow-y:auto;
+  background:var(--bg1);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  scrollbar-width:thin;scrollbar-color:var(--bg4) transparent;
+}
+
+.sb-brand{
+  padding:22px 20px 18px;
+  border-bottom:1px solid var(--border);
+}
+.sb-label{
+  font-family:var(--mono);font-size:10px;font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;
+  color:var(--am);margin-bottom:10px;
+  display:flex;align-items:center;gap:7px;
+}
+.sb-label::before{
+  content:'';width:3px;height:14px;
+  background:var(--am);border-radius:2px;display:inline-block;
+}
+.sb-title{font-size:14px;font-weight:700;color:var(--tx0);line-height:1.35;}
+.sb-sub{font-family:var(--mono);font-size:11px;color:var(--tx2);margin-top:4px;}
+
+/* ── Progress dashboard (signature element) */
+.prog-dash{
+  margin:14px 14px 0;
+  background:var(--bg);
+  border:1px solid var(--am-bd);
+  border-radius:var(--r);
+  padding:14px 14px 12px;
+  font-family:var(--mono);
+}
+.prog-title{
+  font-size:9.5px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--am);margin-bottom:10px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.prog-bar-wrap{
+  background:var(--bg3);border-radius:100px;
+  height:6px;overflow:hidden;margin-bottom:8px;
+}
+.prog-bar-fill{
+  height:100%;border-radius:100px;
+  background:linear-gradient(90deg,var(--am),var(--am2));
+  transition:width .4s ease;
+  width:0%;
+}
+.prog-stats{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;
+}
+.ps-item{
+  background:var(--bg2);border-radius:6px;padding:7px 8px;text-align:center;
+}
+.ps-val{font-size:16px;font-weight:700;color:var(--am);display:block;line-height:1;}
+.ps-lbl{font-size:9px;color:var(--tx2);text-transform:uppercase;letter-spacing:.06em;margin-top:3px;}
+.prog-reset{
+  margin-top:10px;width:100%;padding:5px;
+  background:transparent;border:1px solid var(--border);
+  border-radius:5px;color:var(--tx2);font-family:var(--mono);
+  font-size:10px;cursor:pointer;transition:all .15s;
+  letter-spacing:.06em;
+}
+.prog-reset:hover{border-color:var(--rd-bd);color:var(--rd);}
+
+/* ── Nav links */
+.sb-nav{padding:12px 0 24px;flex:1;}
+.sb-group{font-family:var(--mono);font-size:9.5px;font-weight:600;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--tx3);
+  padding:10px 20px 3px;}
+.sb-link{
+  display:flex;align-items:center;gap:10px;
+  padding:6px 20px;font-size:12.5px;color:var(--tx1);
+  text-decoration:none;border-left:2px solid transparent;
+  transition:all .15s;font-weight:500;
+}
+.sb-link:hover{color:var(--tx0);background:var(--bg2);}
+.sb-link.active{color:var(--am);border-left-color:var(--am);background:var(--am-bg);}
+.sb-pip{width:5px;height:5px;border-radius:50%;flex-shrink:0;}
+
+/* ─── MAIN ────────────────────────────── */
+.main{min-width:0;}
+
+/* ── Hero ── */
+.hero{
+  background:var(--bg1);
+  border-bottom:1px solid var(--border);
+  padding:52px 56px 48px;
+  position:relative;overflow:hidden;
+}
+.hero-bg-grid{
+  position:absolute;inset:0;pointer-events:none;
+  background-image:
+    linear-gradient(var(--border) 1px,transparent 1px),
+    linear-gradient(90deg,var(--border) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+.hero-glow{
+  position:absolute;
+  width:600px;height:300px;
+  background:radial-gradient(ellipse,rgba(245,166,35,.10) 0%,transparent 70%);
+  top:-80px;right:-100px;pointer-events:none;
+}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.1em;
+  color:var(--am);text-transform:uppercase;margin-bottom:16px;
+  display:flex;align-items:center;gap:10px;
+}
+.hero-eyebrow::after{content:'';height:1px;width:80px;background:var(--am-bd);}
+.hero h1{
+  font-size:clamp(26px,3vw,42px);font-weight:800;line-height:1.12;
+  color:var(--tx0);margin-bottom:6px;max-width:680px;
+}
+.hero h1 span{color:var(--am);}
+.hero-desc{color:var(--tx1);font-size:14.5px;max-width:580px;margin:14px 0 24px;}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;}
+.htag{
+  font-family:var(--mono);font-size:11px;padding:4px 11px;
+  border-radius:100px;border:1px solid;
+}
+.htag-a{background:var(--am-bg);border-color:var(--am-bd);color:var(--am);}
+.htag-g{background:var(--gr-bg);border-color:var(--gr-bd);color:var(--gr);}
+.htag-b{background:var(--bl-bg);border-color:var(--bl-bd);color:var(--bl);}
+.htag-r{background:var(--rd-bg);border-color:var(--rd-bd);color:var(--rd);}
+.htag-p{background:var(--pu-bg);border-color:var(--pu-bd);color:var(--pu);}
+
+/* ── PAGE SECTIONS ───────────────────── */
+.page-section{
+  padding:52px 56px 48px;
+  border-bottom:1px solid var(--border);
+  position:relative;
+}
+
+/* Page checkbox banner — sticky top of each section */
+.page-banner{
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--bg2);border:1px solid var(--brd2);
+  border-radius:var(--r);padding:10px 16px;margin-bottom:28px;
+  gap:12px;
+}
+.page-banner-left{display:flex;align-items:center;gap:12px;}
+.page-chk{
+  width:20px;height:20px;border-radius:5px;
+  border:2px solid var(--brd2);background:var(--bg);
+  cursor:pointer;appearance:none;flex-shrink:0;
+  position:relative;transition:all .2s;
+}
+.page-chk:checked{background:var(--am);border-color:var(--am);}
+.page-chk:checked::after{
+  content:'✓';position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:700;color:#0B0F1A;
+}
+.page-num{
+  font-family:var(--mono);font-size:11px;color:var(--tx2);
+  font-weight:500;letter-spacing:.06em;
+}
+.page-name{font-weight:600;font-size:13.5px;color:var(--tx0);}
+.page-status{
+  font-family:var(--mono);font-size:10.5px;padding:3px 9px;
+  border-radius:100px;border:1px solid;transition:all .2s;
+}
+.status-done{background:var(--gr-bg);border-color:var(--gr-bd);color:var(--gr);}
+.status-todo{background:var(--bg3);border-color:var(--border);color:var(--tx2);}
+
+.sect-eye{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.sect-tag{
+  font-family:var(--mono);font-size:10px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:3px 9px;border-radius:100px;border:1px solid;
+}
+.tag-a{background:var(--am-bg);border-color:var(--am-bd);color:var(--am);}
+.tag-g{background:var(--gr-bg);border-color:var(--gr-bd);color:var(--gr);}
+.tag-b{background:var(--bl-bg);border-color:var(--bl-bd);color:var(--bl);}
+.tag-r{background:var(--rd-bg);border-color:var(--rd-bd);color:var(--rd);}
+.tag-p{background:var(--pu-bg);border-color:var(--pu-bd);color:var(--pu);}
+
+h2.sh{
+  font-size:25px;font-weight:800;color:var(--tx0);
+  line-height:1.2;margin-bottom:6px;
+}
+.sh-sub{color:var(--tx1);font-size:14px;max-width:680px;margin-bottom:24px;}
+h3{
+  font-size:15.5px;font-weight:700;color:var(--tx0);
+  margin:28px 0 10px;display:flex;align-items:center;gap:8px;
+}
+h3::before{
+  content:'';display:inline-block;width:3px;height:15px;
+  background:var(--am);border-radius:2px;flex-shrink:0;
+}
+p{color:var(--tx1);font-size:14.5px;max-width:700px;margin-bottom:12px;}
+
+/* ── Code blocks ── */
+.cb{
+  background:#080B13;border:1px solid var(--brd2);
+  border-radius:var(--rl);overflow:hidden;margin:14px 0;
+}
+.cb-top{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 16px;background:rgba(255,255,255,.025);
+  border-bottom:1px solid var(--border);
+}
+.cb-file{
+  font-family:var(--mono);font-size:11.5px;color:var(--tx2);
+  display:flex;align-items:center;gap:8px;
+}
+.cb-file::before{
+  content:'';width:7px;height:7px;border-radius:50%;
+  background:var(--am);display:inline-block;
+}
+.cb-badge{
+  font-family:var(--mono);font-size:9.5px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:2px 8px;border-radius:100px;
+}
+.badge-tsql{background:var(--am-bg);border:1px solid var(--am-bd);color:var(--am);}
+.badge-bad {background:var(--rd-bg);border:1px solid var(--rd-bd);color:var(--rd);}
+.badge-good{background:var(--gr-bg);border:1px solid var(--gr-bd);color:var(--gr);}
+.badge-tip {background:var(--bl-bg);border:1px solid var(--bl-bd);color:var(--bl);}
+
+pre{
+  padding:20px;overflow-x:auto;
+  font-family:var(--mono);font-size:12.5px;line-height:1.85;
+}
+/* T-SQL syntax colours */
+.kw{color:#A78BFA;}
+.fn{color:#FBB040;}
+.st{color:#7DD3B0;}
+.cm{color:#2E3A55;font-style:italic;}
+.nm{color:#E8EDF8;}
+.nb{color:#5B9BF5;}
+.ct{color:#F56060;}
+.hl{background:rgba(245,166,35,.07);display:block;margin:0 -20px;padding:0 20px;border-left:2px solid var(--am);}
+
+/* ── Callouts ── */
+.note{
+  border-radius:var(--r);padding:13px 17px;margin:14px 0;
+  display:flex;gap:12px;align-items:flex-start;font-size:14px;
+}
+.note-icon{font-size:17px;flex-shrink:0;margin-top:1px;}
+.note-body p{margin:0;font-size:13.5px;max-width:none;}
+.note-title{font-weight:700;display:block;margin-bottom:3px;font-size:13px;}
+.note.tip  {background:var(--gr-bg);border:1px solid var(--gr-bd);}
+.note.tip  .note-title{color:var(--gr);}
+.note.tip  p{color:#7de0ba;}
+.note.warn {background:var(--am-bg);border:1px solid var(--am-bd);}
+.note.warn .note-title{color:var(--am);}
+.note.warn p{color:#d4a84e;}
+.note.bad  {background:var(--rd-bg);border:1px solid var(--rd-bd);}
+.note.bad  .note-title{color:var(--rd);}
+.note.bad  p{color:#e89090;}
+.note.info {background:var(--bl-bg);border:1px solid var(--bl-bd);}
+.note.info .note-title{color:var(--bl);}
+.note.info p{color:#8db8f5;}
+.note.key  {background:var(--pu-bg);border:1px solid var(--pu-bd);}
+.note.key  .note-title{color:var(--pu);}
+.note.key  p{color:#c5b4fd;}
+
+/* ── Tables ── */
+.tw{overflow-x:auto;margin:14px 0;border:1px solid var(--brd2);border-radius:var(--rl);}
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+thead tr{background:var(--bg2);}
+thead th{
+  padding:10px 14px;text-align:left;
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  color:var(--tx2);letter-spacing:.06em;text-transform:uppercase;
+  border-bottom:1px solid var(--brd2);
+}
+tbody tr{border-bottom:1px solid var(--border);transition:background .1s;}
+tbody tr:last-child{border-bottom:none;}
+tbody tr:hover{background:var(--bg2);}
+td{padding:10px 14px;color:var(--tx1);vertical-align:top;}
+td code{
+  font-family:var(--mono);font-size:11.5px;
+  background:var(--bg3);padding:2px 6px;
+  border-radius:4px;color:var(--am);
+}
+td strong{color:var(--tx0);font-weight:600;}
+
+/* ── Grid ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0;}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin:14px 0;}
+
+/* ── Cards ── */
+.card{
+  background:var(--bg2);border:1px solid var(--border);
+  border-radius:var(--rl);padding:18px;
+}
+.card h4{font-size:13px;font-weight:700;color:var(--tx0);margin-bottom:7px;}
+.card p{font-size:13px;margin:0;max-width:none;}
+.card-icon{font-size:22px;margin-bottom:9px;display:block;}
+.card.ca{border-top:2px solid var(--am);}
+.card.cg{border-top:2px solid var(--gr);}
+.card.cb{border-top:2px solid var(--bl);}
+.card.cr{border-top:2px solid var(--rd);}
+.card.cp{border-top:2px solid var(--pu);}
+
+/* ── Before/After compare ── */
+.compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:12px 0;}
+.clabel{
+  font-family:var(--mono);font-size:10px;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;
+  padding:6px 12px;border-radius:6px 6px 0 0;
+}
+.clabel-b{background:var(--rd-bg);color:var(--rd);border:1px solid var(--rd-bd);border-bottom:none;}
+.clabel-g{background:var(--gr-bg);color:var(--gr);border:1px solid var(--gr-bd);border-bottom:none;}
+.compare .cb{margin:0;border-radius:0 var(--r) var(--r) var(--r);}
+
+/* ── Impact badge ── */
+.imp{
+  display:inline-flex;align-items:center;gap:5px;
+  font-family:var(--mono);font-size:10px;font-weight:600;
+  padding:2px 8px;border-radius:100px;border:1px solid;
+  letter-spacing:.06em;
+}
+.imp-high{background:var(--rd-bg);border-color:var(--rd-bd);color:var(--rd);}
+.imp-med {background:var(--am-bg);border-color:var(--am-bd);color:var(--am);}
+.imp-low {background:var(--gr-bg);border-color:var(--gr-bd);color:var(--gr);}
+
+/* ── Summary ── */
+.summary-band{
+  background:linear-gradient(135deg,rgba(245,166,35,.08) 0%,rgba(91,155,245,.06) 100%);
+  border:1px solid var(--am-bd);border-radius:var(--rl);
+  padding:26px 28px;margin:20px 0;
+}
+
+/* ── Inline code ── */
+ic{
+  font-family:var(--mono);font-size:12px;
+  background:var(--bg3);padding:1px 6px;
+  border-radius:4px;color:var(--am);
+}
+
+/* ── Footer ── */
+footer{
+  padding:22px 56px;background:var(--bg1);
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-between;
+  flex-wrap:wrap;gap:10px;
+  font-family:var(--mono);font-size:11px;color:var(--tx3);
+}
+
+/* ── Responsive ── */
+@media(max-width:900px){
+  body{grid-template-columns:1fr;}
+  .sidebar{position:static;height:auto;}
+  .hero,.page-section{padding-left:22px;padding-right:22px;}
+  .g2,.g3,.compare{grid-template-columns:1fr;}
+  footer{padding:18px 22px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<nav class="sidebar">
+  <div class="sb-brand">
+    <div class="sb-label">SQL Server Expert Guide</div>
+    <div class="sb-title">Stored Procedure<br/>Performance</div>
+    <div class="sb-sub">12 best-practice pages</div>
+  </div>
+
+  <!-- ── Progress Dashboard (signature element) ── -->
+  <div class="prog-dash" role="region" aria-label="Study progress">
+    <div class="prog-title">
+      <span>Study Progress</span>
+      <span id="pct-label">0%</span>
+    </div>
+    <div class="prog-bar-wrap">
+      <div class="prog-bar-fill" id="prog-fill"></div>
+    </div>
+    <div class="prog-stats">
+      <div class="ps-item">
+        <span class="ps-val" id="stat-done">0</span>
+        <div class="ps-lbl">Done</div>
+      </div>
+      <div class="ps-item">
+        <span class="ps-val" id="stat-left">12</span>
+        <div class="ps-lbl">Left</div>
+      </div>
+      <div class="ps-item">
+        <span class="ps-val" id="stat-total">12</span>
+        <div class="ps-lbl">Total</div>
+      </div>
+    </div>
+    <button class="prog-reset" id="reset-btn" title="Clear all progress">⟳ Reset progress</button>
+  </div>
+
+  <div class="sb-nav">
+    <div class="sb-group">Query Design</div>
+    <a href="#p1" class="sb-link" data-page="1"><span class="sb-pip" style="background:var(--am)"></span>P1 · Avoid SELECT *</a>
+    <a href="#p2" class="sb-link" data-page="2"><span class="sb-pip" style="background:var(--am)"></span>P2 · SARGable WHERE Clauses</a>
+    <a href="#p3" class="sb-link" data-page="3"><span class="sb-pip" style="background:var(--am)"></span>P3 · SET NOCOUNT ON</a>
+    <div class="sb-group">Compilation & Plans</div>
+    <a href="#p4" class="sb-link" data-page="4"><span class="sb-pip" style="background:var(--gr)"></span>P4 · Parameter Sniffing</a>
+    <a href="#p5" class="sb-link" data-page="5"><span class="sb-pip" style="background:var(--gr)"></span>P5 · WITH RECOMPILE</a>
+    <a href="#p6" class="sb-link" data-page="6"><span class="sb-pip" style="background:var(--gr)"></span>P6 · Schema Prefix Objects</a>
+    <div class="sb-group">Transactions & Locking</div>
+    <a href="#p7" class="sb-link" data-page="7"><span class="sb-pip" style="background:var(--bl)"></span>P7 · Keep Transactions Short</a>
+    <a href="#p8" class="sb-link" data-page="8"><span class="sb-pip" style="background:var(--bl)"></span>P8 · Avoid Cursors</a>
+    <div class="sb-group">Indexing & Data</div>
+    <a href="#p9" class="sb-link" data-page="9"><span class="sb-pip" style="background:var(--pu)"></span>P9 · Temp Tables vs TVPs</a>
+    <a href="#p10" class="sb-link" data-page="10"><span class="sb-pip" style="background:var(--pu)"></span>P10 · Index Awareness</a>
+    <div class="sb-group">Error & Maintenance</div>
+    <a href="#p11" class="sb-link" data-page="11"><span class="sb-pip" style="background:var(--rd)"></span>P11 · TRY/CATCH Properly</a>
+    <a href="#p12" class="sb-link" data-page="12"><span class="sb-pip" style="background:var(--rd)"></span>P12 · Monitoring & Profiling</div>
+  </div>
+</nav>
+
+<!-- ══════════ MAIN ══════════ -->
+<main class="main">
+
+<!-- Hero -->
+<header class="hero">
+  <div class="hero-bg-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-eyebrow">SQL Server DBA · Performance Engineering</div>
+  <h1>Stored Procedure<br/><span>Performance</span> Best Practices</h1>
+  <p class="hero-desc">
+    12 expert-level practices every SQL Server developer must know — from query design
+    and plan caching to locking, indexing, and real-time monitoring. Each page has
+    code examples, before/after comparisons, and impact ratings.
+  </p>
+  <div class="hero-tags">
+    <span class="htag htag-a">SQL Server 2016–2022</span>
+    <span class="htag htag-g">Execution Plans</span>
+    <span class="htag htag-b">Locking &amp; Transactions</span>
+    <span class="htag htag-r">Parameter Sniffing</span>
+    <span class="htag htag-p">Indexing</span>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════
+  PAGE 1 — Avoid SELECT *
+════════════════════════════════════ -->
+<section class="page-section" id="p1">
+  <div class="page-banner" id="banner-1">
+    <div class="page-banner-left">
+      <input type="checkbox" class="page-chk" id="chk-1" data-page="1" aria-label="Mark page 1 as studied"/>
+      <span class="page-num">Page 01 / 12</span>
+      <span class="page-name">Avoid SELECT * — Fetch Only What You Need</span>
+    </div>
+    <span class="page-status status-todo" id="status-1">Not studied</span>
+  </div>
+
+  <div class="sect-eye"><span class="sect-tag tag-a">Query Design</span><span class="imp imp-high">⬆ High Impact</span></div>
+  <h2 class="sh">Avoid SELECT * — Fetch Only What You Need</h2>
+  <p class="sh-sub">SELECT * is the single most common performance anti-pattern. It forces SQL Server to read every column, blocks covering index usage, and breaks procedures when table schemas change.</p>
+
+  <h3>Why SELECT * hurts performance</h3>
+  <div class="g3">
+    <div class="card ca"><span class="card-icon">🏋️</span><h4>Extra I/O</h4><p>Reading all columns means more data pages from disk — even when you only display 3 of 40 columns.</p></div>
+    <div class="card ca"><span class="card-icon">🔍</span><h4>Kills covering indexes</h4><p>A covering index can satisfy a query entirely from the index. SELECT * forces a Key Lookup back to the clustered index, making the index useless.</p></div>
+    <div class="card ca"><span class="card-icon">💥</span><h4>Fragile to schema changes</h4><p>Adding a column to a table silently changes your SP output. Column order changes can break applications relying on positional column reading.</p></div>
+  </div>
+
+  <div class="compare">
+    <div>
+      <div class="clabel clabel-b">❌ Anti-pattern</div>
+      <div class="cb">
+        <div class="cb-top"><span class="cb-file">bad_select.sql</span><span class="cb-badge badge-bad">Bad</span></div>
+        <pre><span class="kw">CREATE PROCEDURE</span> <span class="nm">usp_GetOrders</span>
+    <span class="ct">@CustomerID</span> <span class="kw">INT</span>
+<span class="kw">AS</span>
+<span class="kw">BEGIN</span>
+    <span class="cm">-- Pulls all columns including large TEXT/BLOB fields</span>
+    <span class="kw">SELECT</span> <span class="nm">*</span>
+    <span class="kw">FROM</span>   <span class="nm">dbo.Orders</span>
+    <span class="kw">WHERE</span>  <span class="nm">CustomerID</span> <span class="op">=</span> <span class="ct">@CustomerID</span>;
+<span class="kw">END</span></pre>
+      </div>
+    </div>
+    <div>
+      <div class="clabel clabel-g">✅ Best practice</div>
+      <div class="cb">
+        <div class="cb-top"><span class="cb-file">good_select.sql</span><span class="cb-badge badge-good">Good</span></div>
+        <pre><span class="kw">CREATE PROCEDURE</span> <span class="nm">usp_GetOrders</span>
+    <span class="ct">@CustomerID</span> <span class="kw">INT</span>
+<span class="kw">AS</span>
+<span class="kw">BEGIN</span>
+    <span class="kw">SET</span> <span class="nm">NOCOUNT</span> <span class="kw">ON</span>;
+    <span class="cm">-- Only the 4 columns the app actually uses</span>
+    <span class="kw">SELECT</span>
+        <span class="nm">OrderID</span>
+        ,<span class="nm">OrderDate</span>
+        ,<span class="nm">TotalAmount</span>
+        ,<span class="nm">Status</span>
+    <span class="kw">FROM</span>   <span class="nm">dbo.Orders</span>
+    <span class="kw">WHERE</span>  <span class="nm">CustomerID</span> <span class="op">=</span> <span class="ct">@CustomerID</span>;
+<span class="kw">END</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="note tip"><span class="note-icon">💡</span><div class="note-body"><span class="note-title">Rule of thumb</span><p>If a covering index exists on <ic>(CustomerID) INCLUDE (OrderID, OrderDate, TotalAmount, Status)</ic>, the explicit SELECT will be satisfied entirely from the index — zero clustered index lookups. SELECT * will always require a Key Lookup, negating the index benefit.</p></div></div>
+</section>
+
+<!-- ════════════════════════════════════
+  PAGE 2 — SARGable WHERE Clauses
+════════════════════════════════════ -->
+<section class="page-section" id="p2">
+  <div class="page-banner" id="banner-2">
+    <div class="page-banner-left">
+      <input type="checkbox" class="page-chk" id="chk-2" data-page="2" aria-label="Mark page 2 as studied"/>
+      <span class="page-num">Page 02 / 12</span>
+      <span class="page-name">SARGable WHERE Clauses</span>
+    </div>
+    <span class="page-status status-todo" id="status-2">Not studied</span>
+  </div>
+
+  <div class="sect-eye"><span class="sect-tag tag-a">Query Design</span><span class="imp imp-high">⬆ High Impact</span></div>
+  <h2 class="sh">SARGable WHERE Clauses</h2>
+  <p class="sh-sub">A SARGable (Search ARGument able) predicate lets SQL Server use an index seek instead of a full scan. Non-SARGable predicates wrap the indexed column in a function or calculation — invalidating the index entirely.</p>
+
+  <h3>Non-SARGable patterns that kill indexes</h3>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Anti-pattern</th><th>Why it's non-SARGable</th><th>SARGable fix</th></tr></thead>
+      <tbody>
+        <tr><td><code>WHERE YEAR(OrderDate) = 2024</code></td><td>Function wraps the column; index on OrderDate unusable</td><td><code>WHERE OrderDate >= '2024-01-01' AND OrderDate < '2025-01-01'</code></td></tr>
+        <tr><td><code>WHERE CONVERT(VARCHAR, ID) = '100'</code></td><td>Type conversion hides the column from the optimizer</td><td><code>WHERE ID = 100</code> (use correct type)</td></tr>
+        <tr><td><code>WHERE UPPER(LastName) = 'SMITH'</code></td><td>Function on column prevents seek</td><td>Use case-insensitive collation, or computed column with index</td></tr>
+        <tr><td><code>WHERE Amount * 1.1 > 500</code></td><td>Arithmetic on column side invalidates index</td><td><code>WHERE Amount > 500 / 1.1</code> (move calc to value side)</td></tr>
+        <tr><td><code>WHERE LastName LIKE '%son'</code></td><td>Leading wildcard forces full scan</td><td><code>WHERE LastName LIKE 'John%'</code> (trailing wildcard OK)</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cb">
+    <div class="cb-top"><span class="cb-file">sargable_fix.sql</span><span class="cb-badge badge-tsql">T-SQL</span></div>
+    <pre><span class="cm">-- ❌ Non-SARGable: function on indexed column → Table Scan</span>
+<span class="kw">WHERE</span> <span class="fn">DATEPART</span>(<span class="nb">YEAR</span>, <span class="nm">OrderDate</span>) <span class="op">=</span> <span class="nb">2024</span>
+
+<span class="cm">-- ✅ SARGable: range on the column directly → Index Seek</span>
+<span class="kw">WHERE</span> <span class="nm">OrderDate</span> <span class="op">&gt;=</span> <span class="st">'2024-01-01'</span>
+  <span class="kw">AND</span> <span class="nm">OrderDate</span>  <span class="op">&lt;</span>  <span class="st">'2025-01-01'</span>
+
+<span class="cm">-- ❌ Non-SARGable: leading wildcard</span>
+<span class="kw">WHERE</span> <span class="nm">ProductCode</span> <span class="kw">LIKE</span> <span class="st">'%XYZ'</span>      <span class="cm">-- full scan</span>
+
+<span class="cm">-- ✅ If suffix search needed: Full-Text Index or REVERSE() persisted column</span>
+<span class="kw">WHERE</span> <span class="nm">ProductCode</span> <span class="kw">LIKE</span> <span class="st">'XYZ%'</span>      <span class="cm">-- index seek (trailing wildcard)</span></pre>
+  </div>
+
+  <div class="note warn"><span class="note-icon">⚠️</span><div class="note-body"><span class="note-title">Check your execution plans</span><p>Run your SP with <ic>SET STATISTICS IO ON</ic> and examine the execution plan. A <strong>Table Scan</strong> or <strong>Clustered Index Scan</strong> on a large table is almost always a SARGability problem. Seek = fast. Scan = slow.</p></div></div>
+</section>
+
+<!-- ════════════════════════════════════
+  PAGE 3 — SET NOCOUNT ON
+════════════════════════════════════ -->
+<section class="page-section" id="p3">
+  <div class="page-banner" id="banner-3">
+    <div class="page-banner-left">
+      <input type="checkbox" class="page-chk" id="chk-3" data-page="3" aria-label="Mark page 3 as studied"/>
+      <span class="page-num">Page 03 / 12</span>
+      <span class="page-name">SET NOCOUNT ON</span>
+    </div>
+    <span class="page-status status-todo" id="status-3">Not studied</span>
+  </div>
+
+  <div class="sect-eye"><span class="sect-tag tag-a">Query Design</span><span class="imp imp-med">↑ Medium Impact</span></div>
+  <h2 class="sh">SET NOCOUNT ON</h2>
+  <p class="sh-sub">Every INSERT, UPDATE, DELETE, and SELECT in SQL Server sends a "rows affected" message back to the client. In a stored procedure that runs hundreds of DML statements, this generates thousands of extra network round-trips.</p>
+
+  <div class="cb">
+    <div class="cb-top"><span class="cb-file">nocount.sql</span><span class="cb-badge badge-tsql">T-SQL</span></div>
+    <pre><span class="kw">CREATE PROCEDURE</span> <span class="nm">usp_ProcessOrders</span>
+<span class="kw">AS</span>
+<span class="kw">BEGIN</span>
+<span class="hl">    <span class="kw">SET</span> <span class="nm">NOCOUNT</span> <span class="kw">ON</span>;  <span class="cm">-- ← First line of EVERY stored procedure</span></span>
+
+    <span class="cm">-- Without NOCOUNT ON, each statement below sends
+    -- a "X rows affected" message to the client.
+    -- With NOCOUNT ON, none of them do. </span>
+
+    <span class="kw">UPDATE</span> <span class="nm">dbo.Orders</span>  <span class="kw">SET</span> <span class="nm">Status</span> <span class="op">=</span> <span class="st">'Processing'</span>
+    <span class="kw">WHERE</span>  <span class="nm">Status</span> <span class="op">=</span> <span class="st">'Pending'</span>;
+
+    <span class="kw">INSERT INTO</span> <span class="nm">dbo.AuditLog</span> (<span class="nm">Event</span>, <span class="nm">LogDate</span>)
+    <span class="kw">VALUES</span> (<span class="st">'Orders processed'</span>, <span class="fn">GETDATE</span>());
+
+    <span class="cm">-- Return value still works normally</span>
+    <span class="kw">RETURN</span> <span class="nb">0</span>;
+<span class="kw">END</span></pre>
+  </div>
+
+  <div class="note info"><span class="note-icon">📌</span><div class="note-body"><span class="note-title">Impact at scale</span><p>In a tight loop or cursor (even when you shouldn't be using one) executing 50,000 DML statements, <ic>SET NOCOUNT ON</ic> eliminates 50,000 network messages. In heavily loaded systems, this measurably reduces CPU and network overhead. Make it a reflex — first line, always.</p></div></div>
+</section>
+
+<!-- ════════════════════════════════════
+  PAGE 4 — Parameter Sniffing
+════════════════════════════════════ -->
+<section class="page-section" id="p4">
+  <div class="page-banner" id="banner-4">
+    <div class="page-banner-left">
+      <input type="checkbox" class="page-chk" id="chk-4" data-page="4" aria-label="Mark page 4 as studied"/>
+      <span class="page-num">Page 04 / 12</span>
+      <span class="page-name">Parameter Sniffing — Understand & Solve It</span>
+    </div>
+    <span class="page-status status-todo" id="status-4">Not studied</span>
+  </div>
+
+  <div class="sect-eye"><span class="sect-tag tag-g">Compilation &amp; Plans</span><span class="imp imp-high">⬆ High Impact</span></div>
+  <h2 class="sh">Parameter Sniffing — Understand &amp; Solve It</h2>
+  <p class="sh-sub">SQL Server compiles a stored procedure's execution plan using the first parameter value it sees. If that value is atypical, the cached plan is optimal for the sniffed value but terrible for all others.</p>
+
+  <h3>What happens during sniffing</h3>
+  <p>First call: <ic>@CustomerID = 1</ic> — this customer has 2 orders → plan uses Index Seek. Cached. Second call: <ic>@CustomerID = 99</ic> — this customer has 50,000 orders → reuses the same Seek plan, which is now suboptimal (a Scan would be better). The SP runs slowly for customer 99 but fast for customer 1.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Solution</th><th>When to use</th><th>Trade-off</th></tr></thead>
+      <tbody>
+        <tr><td><code>OPTION (OPTIMIZE FOR UNKNOWN)</code></td><td>Parameter distribution is unknown or highly variable</td><td>Uses average statistics; not optimal for any specific value</td></tr>
+        <tr><td><code>OPTION (RECOMPILE)</code></td><td>Plan varies significantly per execution; SP not called very frequently</td><td>Recompiles every call — CPU overhead on high-frequency SPs</td></tr>
+        <tr><td>Local variable trick</td><td>Legacy SQL Server versions; simple SPs</td><td>Optimizer can't use statistics; may choose bad plan</td></tr>
+        <tr><td>Multiple SPs by data profile</td><td>Clearly bimodal data (e.g. VIP vs standard customers)</td><td>Code duplication; maintenance overhead</td></tr>
+        <tr><td>Query Store forced plan</td><td>SQL Server 2016+; known good plan exists</td><td>Plan may become outdated as data grows</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cb">
+    <div class="cb-top"><span class="cb-file">parameter_sniff_fix.sql</span><span class="cb-badge badge-tsql">T-SQL</span></div>
+    <pre><span class="cm">-- SOLUTION 1: OPTIMIZE FOR UNKNOWN (recommended first approach)</span>
+<span class="kw">CREATE PROCEDURE</span> <span class="nm">usp_GetCustomerOrders</span>
+    <span class="ct">@CustomerID</span> <span class="kw">INT</span>
+<span class="kw">AS</span>
+<span class="kw">BEGIN</span>
+    <span class="kw">SET</span> <span class="nm">NOCOUNT</span> <span class="kw">ON</span>;
+    <span class="kw">SELECT</span> <span class="nm">OrderID</span>, <span class="nm">OrderDate</span>, <span class="nm">TotalAmount</span>
+    <span class="kw">FROM</span>   <span class="nm">dbo.Orders</span>
+    <span class="kw">WHERE</span>  <span class="nm">CustomerID</span> <span class="op">=</span> <span class="ct">@CustomerID</span>
+<span class="hl">    <span class="kw">OPTION</span> (<span class="fn">OPTIMIZE FOR</span> (<span class="ct">@CustomerID</span> <span class="kw">UNKNOWN</span>));</span>
+<span class="kw">END</span>;
+
+<span class="cm">-- SOLUTION 2: Statement-level RECOMPILE for problematic queries only</span>
+<span class="kw">SELECT</span> <span class="nm">OrderID</span>, <span class="nm">OrderDate</span>
+<span class="kw">FROM</span>   <span class="nm">dbo.Orders</span>
+<span class="kw">WHERE</span>  <span class="nm">CustomerID</span> <span class="op">=</span> <span class="ct">@CustomerID</span>
+<span class="kw">OPTION</span> (<span class="nm">RECOMPILE</span>);  <span class="cm">-- recompiles this SELECT only, not the whole SP</span>
+
+<span class="cm">-- SOLUTION 3: Local variable (use with caution — loses statistics)</span>
+<span class="kw">DECLARE</span> <span class="ct">@LocalID</span> <span class="kw">INT</span> <span class="op">=</span> <span class="ct">@CustomerID</span>;
+<span class="kw">SELECT</span> <span class="op">*</span> <span class="kw">FROM</span> <span class="nm">dbo.Orders</span> <span class="kw">WHERE</span> <span class="nm">CustomerID</span> <span class="op">=</span> <span class="ct">@LocalID</span>;</pre>
+  </div>
+
+  <div class="note key"><span class="note-icon">🔑</span><div class="note-body"><span class="note-title">Diagnose with Query Store (SQL Server 2016+)</span><p>Run: <ic>SELECT TOP 10 * FROM sys.query_store_plan ORDER BY avg_duration DESC</ic> to find SPs with multiple plans and high variance. A stored procedure showing 10× duration difference between executions with the same parameter type is a classic sniffing victim.</p></div></div>
+</section>
+
+<!-- ════════════════════════════════════
+  PAGE 5 — WITH RECOMPILE
+════════════════════════════════════ -->
+<section class="page-section" id="p5">
+  <div class="page-banner" id="banner-5">
+    <div class="page-banner-left">
+      <input type="checkbox" class="page-chk" id="chk-5" data-page="5" aria-label="Mark page 5 as studied"/>
+      <span class="page-num">Page 05 / 12</span>
+      <span class="page-name">WITH RECOMPILE — When to Use It</span>
+    </div>
+    <span class="page-status status-todo" id="status-5">Not studied</span>
+  </div>
+
+  <div class="sect-eye"><span class="sect-tag tag-g">Compilation &amp; Plans</span><span class="imp imp-med">↑ Medium Impact</span></div>
+  <h2 class="sh">WITH RECOMPILE — When to Use It</h2>
+  <p class="sh-sub">Recompilation forces SQL Server to generate a fresh execution plan on every call — optimal for that run's parameters, but at the cost of compilation CPU each time.</p>
+
+  <div class="g2">
+    <div class="card cg"><span class="card-icon">✅</span><h4>Use WITH RECOMPILE when</h4><p>The SP uses dynamic or highly variable filters · Data distribution is extremely skewed · SP is called infrequently (batch jobs, reports) · A parameter sniffing fix is urgently needed</p></div>
+    <div class="card cr"><span class="card-icon">❌</span><h4>Do NOT use when</h4><p>The SP is called hundreds of times per second · The query plan is stable regardless of parameters · Compilation time exceeds query execution time · You're using it to mask a missing index problem</p></div>
+  </div>
+
+  <div class="cb">
+    <div class="cb-top"><span class="cb-file">recompile_usage.sql</span><span class="cb-badge badge-tsql">T-SQL</span></div>
+    <pre><span class="cm">-- SP-level recompile: every call rebuilds the whole plan</span>
+<span class="kw">CREATE PROCEDURE</span> <span class="nm">usp_DynamicReport</span>
+    <span class="ct">@StartDate</span>  <span class="kw">DATE</span>
+    ,<span class="ct">@EndDate</span>    <span class="kw">DATE</span>
+    ,<span class="ct">@StoreID</span>   <span class="kw">INT</span> <span class="op">=</span> <span class="kw">NULL</span>
+<span class="kw">WITH RECOMPILE</span>   <span class="cm">-- Use for infrequently called, highly variable SPs</span>
+<span class="kw">AS</span>
+<span class="kw">BEGIN</span>
+    <span class="kw">SET</span> <span class="nm">NOCOUNT</span> <span class="kw">ON</span>;
+    <span class="kw">SELECT</span> <span class="nm">s</span>.<span class="nm">StoreName</span>, <span class="fn">SUM</span>(<span class="nm">o</span>.<span class="nm">TotalAmount</span>) <span class="kw">AS</span> <span class="nm">Revenue</span>
+    <span class="kw">FROM</span>       <span class="nm">dbo.Orders</span>  <span class="nm">o</span>
+    <span class="kw">INNER JOIN</span> <span class="nm">dbo.Stores</span>  <span class="nm">s</span>  <span class="kw">ON</span> <span class="nm">o</span>.<span class="nm">StoreID</span> <span class="op">=</span> <span class="nm">s</span>.<span class="nm">StoreID</span>
+    <span class="kw">WHERE</span> <span class="nm">o</span>.<span class="nm">OrderDate</span> <span class="kw">BETWEEN</span> <span class="ct">@StartDate</span> <span class="kw">AND</span> <span class="ct">@EndDate</span>
+      <span class="kw">AND</span> (<span class="ct">@StoreID</span> <span class="kw">IS NULL</span> <span class="kw">OR</span> <span class="nm">o</span>.<span class="nm">StoreID</span> <span class="op">=</span> <span class="ct">@StoreID</span>)
+    <span class="kw">GROUP BY</span> <span class="nm">s</span>.<span class="nm">StoreName</span>;
+<span class="kw">END</span>;</pre>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+  PAGE 6 — Schema Prefix
+════════════════════════════════════ -->
+<section class="page-section" id="p6">
+  <div class="page-banner" id="banner-6">
+    <div class="page-banner-left">
+      <input type="checkbox" class="page-chk" id="chk-6" data-page="6" aria-label="Mark page 6 as studied"/>
+      <span class="page-num">Page 06 / 12</span>
+      <span class="page-name">Always Schema-Prefix Object Names</span>
+    </div>
+    <span class="page-status status-todo" id="status-6">Not studied</span>
+  </div>
+
+  <div class="sect-eye"><span class="sect-tag tag-g">Compilation &amp; Plans</span><span class="imp imp-med">↑ Medium Impact</span></div>
+  <h2 class="sh">Always Schema-Prefix Object Names</h2>
+  <p class="sh-sub">Referencing a table as <ic>Orders</ic> instead of <ic>dbo.Orders</ic> forces SQL Server to resolve the schema at runtime — potentially preventing plan cache reuse and adding overhead on every execution.</p>
+
+  <div class="compare">
+    <div>
+      <div class="clabel clabel-b">❌ No schema prefix</div>
+      <div class="cb">
+        <div class="cb-top"><span class="cb-file">no_schema.sql</span><span class="cb-badge badge-bad">Bad</span></div>
+        <pre><span class="kw">SELECT</span> <span class="nm">OrderID</span>, <span class="nm">TotalAmount</span>
+<span class="kw">FROM</span>   <span class="nm">Orders</span>          <span class="cm">-- Which schema?</span>
+<span class="kw">WHERE</span>  <span class="nm">CustomerID</span> <span class="op">=</span> <span class="nb">42</span>;
+
+<span class="kw">EXEC</span>   <span class="nm">usp_ProcessOrder</span> <span class="ct">@ID</span> <span class="op">=</span> <span class="nb">1</span>;</pre>
+      </div>
+    </div>
+    <div>
+      <div class="clabel clabel-g">✅ Always schema-prefixed</div>
+      <div class="cb">
+        <div class="cb-top"><span class="cb-file">with_schema.sql</span><span class="cb-badge badge-good">Good</span></div>
+        <pre><span class="kw">SELECT</span> <span class="nm">OrderID</span>, <span class="nm">TotalAmount</span>
+<span class="kw">FROM</span>   <span class="nm">dbo</span>.<span class="nm">Orders</span>        <span class="cm">-- Unambiguous</span>
+<span class="kw">WHERE</span>  <span class="nm">CustomerID</span> <span class="op">=</span> <span class="nb">42</span>;
+
+<span class="kw">EXEC</span>   <span class="nm">dbo</span>.<span class="nm">usp_ProcessOrder</span> <span class="ct">@ID</span> <span class="op">=</span> <span class="nb">1</span>;</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="note info"><span class="note-icon">📌</span><div class="note-body"><span class="note-title">Plan cache benefit</span><p>When two users call the same SP, SQL Server can reuse the cached plan only if the compiled object names match exactly. Without schema prefixes, plans may be compiled separately per user's default schema — wasting plan cache memory and CPU on repeated compilations.</p></div></div>
+</section>
+
+<!-- ════════════════════════════════════
+  PAGE 7 — Short Transactions
+════════════════════════════════════ -->
+<section class="page-section" id="p7">
+  <div class="page-banner" id="banner-7">
+    <div class="page-banner-left">
+      <input type="checkbox" class="page-chk" id="chk-7" data-page="7" aria-label="Mark page 7 as studied"/>
+      <span class="page-num">Page 07 / 12</span>
+      <span class="page-name">Keep Transactions Short &amp; Focused</span>
+    </div>
+    <span class="page-status status-todo" id="status-7">Not studied</span>
+  </div>
+
+  <div class="sect-eye"><span class="sect-tag tag-b">Transactions &amp; Locking</span><span class="imp imp-high">⬆ High Impact</span></div>
+  <h2 class="sh">Keep Transactions Short &amp; Focused</h2>
+  <p class="sh-sub">Every row touched inside a transaction holds a lock until the transaction commits or rolls back. Long transactions = long locks = blocked queries = deadlocks. This is the #1 cause of production performance emergencies.</p>
+
+  <div class="compare">
+    <div>
+      <div class="clabel clabel-b">❌ Long transaction with slow operations</div>
+      <div class="cb">
+        <div class="cb-top"><span class="cb-file">long_txn.sql</span><span class="cb-badge badge-bad">Dangerous</span></div>
+        <pre><span class="kw">BEGIN TRANSACTION</span>;
+    <span class="cm">-- Lock held during all 3 steps!</span>
+    <span class="kw">UPDATE</span> <span class="nm">dbo.Orders</span> <span class="kw">SET</span> <span class="nm">Status</span> <span class="op">=</span> <span class="st">'Processing'</span>
+    <span class="kw">WHERE</span>  <span class="nm">OrderID</span> <span class="op">=</span> <span class="ct">@ID</span>;
+
+    <span class="cm">-- ❌ Slow email API call INSIDE transaction!</span>
+    <span class="kw">EXEC</span> <span class="nm">dbo.usp_SendConfirmationEmail</span> <span class="ct">@OrderID</span><span class="op">=</span><span class="ct">@ID</span>;
+
+    <span class="cm">-- ❌ Slow SELECT aggregation INSIDE transaction</span>
+    <span class="kw">UPDATE</span> <span class="nm">dbo.CustomerStats</span>
+    <span class="kw">SET</span>    <span class="nm">TotalSpend</span> <span class="op">=</span> (<span class="kw">SELECT</span> <span class="fn">SUM</span>(<span class="nm">Amount</span>)
+                          <span class="kw">FROM</span> <span class="nm">dbo.Orders</span>
+                          <span class="kw">WHERE</span> <span class="nm">CustID</span> <span class="op">=</span> <span class="ct">@CustID</span>);
+<span class="kw">COMMIT</span>;</pre>
+      </div>
+    </div>
+    <div>
+      <div class="clabel clabel-g">✅ Prepare outside, commit fast</div>
+      <div class="cb">
+        <div class="cb-top"><span class="cb-file">short_txn.sql</span><span class="cb-badge badge-good">Safe</span></div>
+        <pre><span class="cm">-- Pre-compute OUTSIDE the transaction</span>
+<span class="kw">DECLARE</span> <span class="ct">@NewTotal</span> <span class="kw">DECIMAL</span>(<span class="nb">14</span>,<span class="nb">2</span>);
+<span class="kw">SELECT</span> <span class="ct">@NewTotal</span> <span class="op">=</span> <span class="fn">SUM</span>(<span class="nm">Amount</span>)
+<span class="kw">FROM</span>   <span class="nm">dbo.Orders</span>
+<span class="kw">WHERE</span>  <span class="nm">CustID</span> <span class="op">=</span> <span class="ct">@CustID</span>;
+
+<span class="cm">-- Short, focused transaction</span>
+<span class="kw">BEGIN TRANSACTION</span>;
+    <span class="kw">UPDATE</span> <span class="nm">dbo.Orders</span> <span class="kw">SET</span> <span class="nm">Status</span><span class="op">=</span><span class="st">'Processing'</span>
+    <span class="kw">WHERE</span>  <span class="nm">OrderID</span> <span class="op">=</span> <span class="ct">@ID</span>;
+
+    <span class="kw">UPDATE</span> <span class="nm">dbo.CustomerStats</span>
+    <span class="kw">SET</span>    <span class="nm">TotalSpend</span> <span class="op">=</span> <span class="ct">@NewTotal</span>
+    <span class="kw">WHERE</span>  <span class="nm">CustID</span> <span class="op">=</span> <span class="ct">@CustID</span>;
+<span class="kw">COMMIT</span>;
+
+<span class="cm">-- Email OUTSIDE transaction (no locks held)</span>
+<span class="kw">EXEC</span> <span class="nm">dbo.usp_SendConfirmationEmail</span> <span class="ct">@OrderID</span><span class="op">=</span><span class="ct">@ID</span>;</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="note bad"><span class="note-icon">🚨</span><div class="note-body"><span class="note-title">Never do these inside a transaction</span><p>External API calls · Email sending · File I/O · Large SELECT aggregations · User input waits · WAITFOR DELAY · Any operation that can fail for reasons outside SQL Server's control</p></div></div>
+</section>
+
+<!-- ════════════════════════════════════
+  PAGE 8 — Avoid Cursors
+════════════════════════════════════ -->
+<section class="page-section" id="p8">
+  <div class="page-banner" id="banner-8">
+    <div class="page-banner-left">
+      <input type="checkbox" class="page-chk" id="chk-8" data-page="8" aria-label="Mark page 8 as studied"/>
+      <span class="page-num">Page 08 / 12</span>
+      <span class="page-name">Avoid Cursors — Use Set-Based Logic</span>
+    </div>
+    <span class="page-status status-todo" id="status-8">Not studied</span>
+  </div>
+
+  <div class="sect-eye"><span class="sect-tag tag-b">Transactions &amp; Locking</span><span class="imp imp-high">⬆ High Impact</span></div>
+  <h2 class="sh">Avoid Cursors — Use Set-Based Logic</h2>
+  <p class="sh-sub">SQL Server is a set-based engine. Processing rows one at a time with a cursor is like driving a truck one wheel at a time. For 10,000 rows, a cursor can be 100× slower than an equivalent UPDATE or window function.</p>
+
+  <div class="compare">
+    <div>
+      <div class="clabel clabel-b">❌ Cursor approach (slow)</div>
+      <div class="cb">
+        <div class="cb-top"><span class="cb-file">cursor_bad.sql</span><span class="cb-badge badge-bad">Avoid</span></div>
+        <pre><span class="kw">DECLARE</span> <span class="ct">@OrderID</span> <span class="kw">INT</span>, <span class="ct">@Amount</span> <span class="kw">DECIMAL</span>(<span class="nb">14</span>,<span class="nb">2</span>);
+
+<span class="kw">DECLARE</span> <span class="nm">order_cursor</span> <span class="kw">CURSOR FOR</span>
+    <span class="kw">SELECT</span> <span class="nm">OrderID</span>, <span class="nm">TotalAmount</span>
+    <span class="kw">FROM</span>   <span class="nm">dbo.Orders</span>
+    <span class="kw">WHERE</span>  <span class="nm">Status</span> <span class="op">=</span> <span class="st">'Pending'</span>;
+
+<span class="kw">OPEN</span> <span class="nm">order_cursor</span>;
+<span class="kw">FETCH NEXT FROM</span> <span class="nm">order_cursor</span>
+    <span class="kw">INTO</span> <span class="ct">@OrderID</span>, <span class="ct">@Amount</span>;
+
+<span class="kw">WHILE</span> <span class="ct">@@FETCH_STATUS</span> <span class="op">=</span> <span class="nb">0</span>
+<span class="kw">BEGIN</span>
+    <span class="kw">UPDATE</span> <span class="nm">dbo.Orders</span>
+    <span class="kw">SET</span>    <span class="nm">TaxAmount</span> <span class="op">=</span> <span class="ct">@Amount</span> <span class="op">*</span> <span class="nb">0.18</span>
+    <span class="kw">WHERE</span>  <span class="nm">OrderID</span> <span class="op">=</span> <span class="ct">@OrderID</span>;
+    <span class="kw">FETCH NEXT FROM</span> <span class="nm">order_cursor</span>
+        <span class="kw">INTO</span> <span class="ct">@OrderID</span>, <span class="ct">@Amount</span>;
+<span class="kw">END</span>
+<span class="kw">CLOSE</span> <span class="nm">order_cursor</span>;
+<span class="kw">DEALLOCATE</span> <span class="nm">order_cursor</span>;</pre>
+      </div>
+    </div>
+    <div>
+      <div class="clabel clabel-g">✅ Set-based (fast)</div>
+      <div class="cb">
+        <div class="cb-top"><span class="cb-file">set_based_good.sql</span><span class="cb-badge badge-good">Fast</span></div>
+        <pre><span class="cm">-- One statement replaces the entire cursor loop.
+-- SQL Server processes all rows simultaneously
+-- using its parallel execution engine.</span>
+
+<span class="kw">UPDATE</span> <span class="nm">dbo.Orders</span>
+<span class="kw">SET</span>    <span class="nm">TaxAmount</span> <span class="op">=</span> <span class="nm">TotalAmount</span> <span class="op">*</span> <span class="nb">0.18</span>
+<span class="kw">WHERE</span>  <span class="nm">Status</span> <span class="op">=</span> <span class="st">'Pending'</span>;
+
+<span class="cm">-- Running totals: use window function, not cursor</span>
+<span class="kw">SELECT</span>
+    <span class="nm">OrderID</span>
+    ,<span class="nm">TotalAmount</span>
+    ,<span class="fn">SUM</span>(<span class="nm">TotalAmount</span>) <span class="fn">OVER</span> (
+        <span class="kw">PARTITION BY</span> <span class="nm">CustomerID</span>
+        <span class="kw">ORDER BY</span> <span class="nm">OrderDate</span>
+        <span class="nm">ROWS BETWEEN UNBOUNDED PRECEDING</span>
+             <span class="kw">AND</span> <span class="nm">CURRENT ROW</span>
+    ) <span class="kw">AS</span> <span class="nm">RunningTotal</span>
+<span class="kw">FROM</span> <span class="nm">dbo.Orders</span>;</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="note tip"><span class="note-icon">💡</span><div class="note-body"><span class="note-title">When cursors are acceptable</span><p>Cursors are justified for: generating dynamic SQL that differs per row · calling a stored procedure once per record when no set-based equivalent exists · administrative tasks on system metadata. Even then, declare them <ic>FAST_FORWARD</ic> and <ic>READ_ONLY</ic> to minimize overhead.</p></div></div>
+</section>
+
+<!-- ════════════════════════════════════
+  PAGE 9 — Temp Tables vs TVPs
+════════════════════════════════════ -->
+<section class="page-section" id="p9">
+  <div class="page-banner" id="banner-9">
+    <div class="page-banner-left">
+      <input type="checkbox" class="page-chk" id="chk-9" data-page="9" aria-label="Mark page 9 as studied"/>
+      <span class="page-num">Page 09 / 12</span>
+      <span class="page-name">Temp Tables vs Table Variables vs TVPs</span>
+    </div>
+    <span class="page-status status-todo" id="status-9">Not studied</span>
+  </div>
+
+  <div class="sect-eye"><span class="sect-tag tag-p">Indexing &amp; Data</span><span class="imp imp-med">↑ Medium Impact</span></div>
+  <h2 class="sh">Temp Tables vs Table Variables vs TVPs</h2>
+  <p class="sh-sub">Choosing the wrong temporary storage type is a common source of surprising slowdowns. Each has different statistics, locking, and scope characteristics.</p>
+
+  <div class="tw">
+    <table>
+      <thead><tr><th>Type</th><th>Statistics</th><th>Indexes</th><th>Scope</th><th>Best for</th></tr></thead>
+      <tbody>
+        <tr><td><strong>#TempTable</strong></td><td>Yes — full statistics</td><td>Can add explicit indexes</td><td>Session / nested SP calls</td><td>Large result sets, joins, complex filtering</td></tr>
+        <tr><td><strong>@TableVariable</strong></td><td>No — always 1 row estimate</td><td>Only PK/UNIQUE</td><td>Batch scope only</td><td>Small lookups (&lt;1000 rows), transaction rollback sensitivity</td></tr>
+        <tr><td><strong>TVP (Table-Valued Parameter)</strong></td><td>No by default</td><td>Read-only</td><td>Parameter to SP</td><td>Passing a set of rows into an SP from the application</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="cb">
+    <div class="cb-top"><span class="cb-file">temp_tables.sql</span><span class="cb-badge badge-tsql">T-SQL</span></div>
+    <pre><span class="cm">-- ✅ Temp table with explicit index for large sets</span>
+<span class="kw">CREATE TABLE</span> <span class="nm">#FilteredOrders</span> (
+    <span class="nm">OrderID</span>     <span class="kw">INT</span>          <span class="kw">NOT NULL</span>
+    ,<span class="nm">TotalAmount</span> <span class="kw">DECIMAL</span>(<span class="nb">14</span>,<span class="nb">2</span>)
+    ,<span class="kw">PRIMARY KEY</span> (<span class="nm">OrderID</span>)           <span class="cm">-- statistics + clustered index</span>
+);
+
+<span class="kw">INSERT INTO</span> <span class="nm">#FilteredOrders</span>
+<span class="kw">SELECT</span> <span class="nm">OrderID</span>, <span class="nm">TotalAmount</span>
+<span class="kw">FROM</span>   <span class="nm">dbo.Orders</span>
+<span class="kw">WHERE</span>  <span class="nm">OrderDate</span> <span class="op">&gt;=</span> <span class="st">'2024-01-01'</span>;
+
+<span class="cm">-- SQL Server now has accurate statistics on #FilteredOrders
+-- and will build an optimal plan for the next JOIN</span>
+<span class="kw">SELECT</span> <span class="nm">f</span>.<span class="nm">OrderID</span>, <span class="nm">c</span>.<span class="nm">CustomerName</span>
+<span class="kw">FROM</span>       <span class="nm">#FilteredOrders</span>   <span class="nm">f</span>
+<span class="kw">INNER JOIN</span> <span class="nm">dbo.Customers</span>      <span class="nm">c</span>  <span class="kw">ON</span> <span class="nm">f</span>.<span class="nm">OrderID</span> <span class="op">=</span> <span class="nm">c</span>.<span class="nm">CustomerID</span>;
+
+<span class="kw">DROP TABLE</span> <span class="nm">#FilteredOrders</span>;   <span class="cm">-- always clean up explicitly</span></pre>
+  </div>
+
+  <div class="note warn"><span class="note-icon">⚠️</span><div class="note-body"><span class="note-title">The @TableVariable cardinality trap</span><p>SQL Server always estimates a table variable has <strong>1 row</strong> (pre-SQL2019) regardless of actual size. A table variable with 100,000 rows will generate a Nested Loop join plan because the optimizer thinks it has 1 row. Use a <ic>#TempTable</ic> whenever the row count might exceed a few thousand.</p></div></div>
+</section>
+
+<!-- ════════════════════════════════════
+  PAGE 10 — Index Awareness
+════════════════════════════════════ -->
+<section class="page-section" id="p10">
+  <div class="page-banner" id="banner-10">
+    <div class="page-banner-left">
+      <input type="checkbox" class="page-chk" id="chk-10" data-page="10" aria-label="Mark page 10 as studied"/>
+      <span class="page-num">Page 10 / 12</span>
+      <span class="page-name">Write SP Queries With Index Awareness</span>
+    </div>
+    <span class="page-status status-todo" id="status-10">Not studied</span>
+  </div>
+
+  <div class="sect-eye"><span class="sect-tag tag-p">Indexing &amp; Data</span><span class="imp imp-high">⬆ High Impact</span></div>
+  <h2 class="sh">Write SP Queries With Index Awareness</h2>
+  <p class="sh-sub">An SP is only as fast as the indexes that support it. Writing a perfect stored procedure that hits an unindexed 10M-row table will always be slow. Index design and SP design must happen together.</p>
+
+  <div class="g2">
+    <div class="card ca"><span class="card-icon">🎯</span><h4>Covering Index</h4><p>Includes all columns needed by the query in the index itself — zero Key Lookups. Most impactful optimization for read-heavy SPs.</p></div>
+    <div class="card ca"><span class="card-icon">📊</span><h4>Missing Index DMV</h4><p><ic>sys.dm_db_missing_index_details</ic> and <ic>sys.dm_db_missing_index_groups</ic> list indexes SQL Server wishes existed based on actual query workload.</p></div>
+  </div>
+
+  <div class="cb">
+    <div class="cb-top"><span class="cb-file">index_diagnostics.sql</span><span class="cb-badge badge-tip">Diagnostics</span></div>
+    <pre><span class="cm">-- ── Find missing indexes SQL Server recommends ──────────────</span>
+<span class="kw">SELECT TOP</span> <span class="nb">20</span>
+    <span class="nm">mid</span>.<span class="nm">statement</span>                       <span class="kw">AS</span> <span class="nm">TableName</span>
+    ,<span class="nm">migs</span>.<span class="nm">avg_total_user_cost</span>
+        <span class="op">*</span> <span class="nm">migs</span>.<span class="nm">avg_user_impact</span>
+        <span class="op">*</span> (<span class="nm">migs</span>.<span class="nm">user_seeks</span> <span class="op">+</span> <span class="nm">migs</span>.<span class="nm">user_scans</span>)
+                                          <span class="kw">AS</span> <span class="nm">ImprovementMeasure</span>
+    ,<span class="nm">mid</span>.<span class="nm">equality_columns</span>
+    ,<span class="nm">mid</span>.<span class="nm">inequality_columns</span>
+    ,<span class="nm">mid</span>.<span class="nm">included_columns</span>
+    ,<span class="st">'CREATE INDEX IX_'</span> <span class="op">+</span>
+      <span class="fn">OBJECT_NAME</span>(<span class="nm">mid</span>.<span class="nm">object_id</span>) <span class="op">+</span> <span class="st">'_missing ON '</span> <span class="op">+</span>
+      <span class="nm">mid</span>.<span class="nm">statement</span> <span class="op">+</span> <span class="st">' ('</span> <span class="op">+</span>
+      <span class="fn">ISNULL</span>(<span class="nm">mid</span>.<span class="nm">equality_columns</span>,<span class="st">''</span>) <span class="op">+</span> <span class="st">')'</span> <span class="op">+</span>
+      <span class="kw">CASE</span> <span class="kw">WHEN</span> <span class="nm">mid</span>.<span class="nm">included_columns</span> <span class="kw">IS NOT NULL</span>
+           <span class="kw">THEN</span> <span class="st">' INCLUDE ('</span><span class="op">+</span><span class="nm">mid</span>.<span class="nm">included_columns</span><span class="op">+</span><span class="st">')'</span>
+           <span class="kw">ELSE</span> <span class="st">''</span> <span class="kw">END</span>    <span class="kw">AS</span> <span class="nm">CreateIndexStatement</span>
+<span class="kw">FROM</span>       <span class="nm">sys</span>.<span class="nm">dm_db_missing_index_groups</span>  <span class="nm">mig</span>
+<span class="kw">INNER JOIN</span> <span class="nm">sys</span>.<span class="nm">dm_db_missing_index_group_stats</span> <span class="nm">migs</span>
+           <span class="kw">ON</span> <span class="nm">migs</span>.<span class="nm">group_handle</span> <span class="op">=</span> <span class="nm">mig</span>.<span class="nm">index_group_handle</span>
+<span class="kw">INNER JOIN</span> <span class="nm">sys</span>.<span class="nm">dm_db_missing_index_details</span>  <span class="nm">mid</span>
+           <span class="kw">ON</span> <span class="nm">mid</span>.<span class="nm">index_handle</span>  <span class="op">=</span> <span class="nm">mig</span>.<span class="nm">index_handle</span>
+<span class="kw">ORDER BY</span>   <span class="nm">ImprovementMeasure</span> <span class="kw">DESC</span>;
+
+<span class="cm">-- ── Find unused indexes (overhead without benefit) ───────────</span>
+<span class="kw">SELECT</span>
+    <span class="fn">OBJECT_NAME</span>(<span class="nm">i</span>.<span class="nm">object_id</span>)  <span class="kw">AS</span> <span class="nm">TableName</span>
+    ,<span class="nm">i</span>.<span class="nm">name</span>                    <span class="kw">AS</span> <span class="nm">IndexName</span>
+    ,<span class="nm">ius</span>.<span class="nm">user_seeks</span>
+    ,<span class="nm">ius</span>.<span class="nm">user_scans</span>
+    ,<span class="nm">ius</span>.<span class="nm">user_updates</span>          <span class="cm">-- maintenance cost with 0 reads = pure overhead</span>
+<span class="kw">FROM</span>       <span class="nm">sys</span>.<span class="nm">indexes</span>                      <span class="nm">i</span>
+<span class="kw">LEFT  JOIN</span> <span class="nm">sys</span>.<span class="nm">dm_db_index_usage_stats</span>     <span class="nm">ius</span>
+           <span class="kw">ON</span> <span class="nm">ius</span>.<span class="nm">object_id</span>  <span class="op">=</span> <span class="nm">i</span>.<span class="nm">object_id</span>
+          <span class="kw">AND</span> <span class="nm">ius</span>.<span class="nm">index_id</span>   <span class="op">=</span> <span class="nm">i</span>.<span class="nm">index_id</span>
+<span class="kw">WHERE</span>  <span class="nm">i</span>.<span class="nm">type_desc</span> <span class="op">!=</span> <span class="st">'HEAP'</span>
+  <span class="kw">AND</span> (<span class="nm">ius</span>.<span class="nm">user_seeks</span> <span class="op">=</span> <span class="nb">0</span> <span class="kw">OR</span> <span class="nm">ius</span>.<span class="nm">user_seeks</span> <span class="kw">IS NULL</span>)
+<span class="kw">ORDER BY</span>   <span class="nm">ius</span>.<span class="nm">user_updates</span> <span class="kw">DESC</span>;</pre>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════
+  PAGE 11 — TRY/CATCH
+════════════════════════════════════ -->
+<section class="page-section" id="p11">
+  <div class="page-banner" id="banner-11">
+    <div class="page-banner-left">
+      <input type="checkbox" class="page-chk" id="chk-11" data-page="11" aria-label="Mark page 11 as studied"/>
+      <span class="page-num">Page 11 / 12</span>
+      <span class="page-name">TRY/CATCH — Correct Error Handling</span>
+    </div>
+    <span class="page-status status-todo" id="status-11">Not studied</span>
+  </div>
+
+  <div class="sect-eye"><span class="sect-tag tag-r">Error &amp; Maintenance</span><span class="imp imp-med">↑ Medium Impact</span></div>
+  <h2 class="sh">TRY/CATCH — Correct Error Handling</h2>
+  <p class="sh-sub">Poor error handling leaves open transactions, fills the transaction log, and corrupts data silently. Structured TRY/CATCH ensures transactions are always left in a known state.</p>
+
+  <div class="cb">
+    <div class="cb-top"><span class="cb-file">try_catch_template.sql</span><span class="cb-badge badge-tsql">T-SQL Template</span></div>
+    <pre><span class="kw">CREATE PROCEDURE</span> <span class="nm">dbo</span>.<span class="nm">usp_TransferStock</span>
+    <span class="ct">@ProductID</span>     <span class="kw">INT</span>
+    ,<span class="ct">@FromWarehouse</span> <span class="kw">INT</span>
+    ,<span class="ct">@ToWarehouse</span>   <span class="kw">INT</span>
+    ,<span class="ct">@Quantity</span>      <span class="kw">INT</span>
+<span class="kw">AS</span>
+<span class="kw">BEGIN</span>
+    <span class="kw">SET</span> <span class="nm">NOCOUNT</span> <span class="kw">ON</span>;
+    <span class="kw">SET</span> <span class="nm">XACT_ABORT</span> <span class="kw">ON</span>;  <span class="cm">-- auto-rollback on any runtime error</span>
+
+    <span class="kw">BEGIN TRY</span>
+        <span class="kw">BEGIN TRANSACTION</span>;
+
+        <span class="kw">UPDATE</span> <span class="nm">dbo</span>.<span class="nm">Stock</span>
+        <span class="kw">SET</span>    <span class="nm">Qty</span> <span class="op">=</span> <span class="nm">Qty</span> <span class="op">-</span> <span class="ct">@Quantity</span>
+        <span class="kw">WHERE</span>  <span class="nm">ProductID</span>   <span class="op">=</span> <span class="ct">@ProductID</span>
+          <span class="kw">AND</span>  <span class="nm">WarehouseID</span> <span class="op">=</span> <span class="ct">@FromWarehouse</span>;
+
+        <span class="kw">UPDATE</span> <span class="nm">dbo</span>.<span class="nm">Stock</span>
+        <span class="kw">SET</span>    <span class="nm">Qty</span> <span class="op">=</span> <span class="nm">Qty</span> <span class="op">+</span> <span class="ct">@Quantity</span>
+        <span class="kw">WHERE</span>  <span class="nm">ProductID</span>   <span class="op">=</span> <span class="ct">@ProductID</span>
+          <span class="kw">AND</span>  <span class="nm">WarehouseID</span> <span class="op">=</span> <span class="ct">@ToWarehouse</span>;
+
+        <span class="kw">COMMIT TRANSACTION</span>;
+    <span class="kw">END TRY</span>
+    <span class="kw">BEGIN CATCH</span>
+        <span class="cm">-- Only rollback if a transaction is active</span>
+        <span class="kw">IF</span> <span class="fn">XACT_STATE</span>() <span class="op">&lt;&gt;</span> <span class="nb">0</span>
+            <span class="kw">ROLLBACK TRANSACTION</span>;
+
+        <span class="cm">-- Re-raise the error with full context</span>
+        <span class="kw">THROW</span>;
+    <span class="kw">END CATCH</span>;
+<span class="kw">END</span>;</pre>
+  </div>
+
+  <div class="note key"><span class="note-icon">🔑</span><div class="note-body"><span class="note-title">Always use SET XACT_ABORT ON</span><p><ic>SET XACT_ABORT ON</ic> ensures that any runtime error automatically triggers a rollback — even if the CATCH block doesn't execute (e.g. a connection drop). Without it, an uncaught error can leave a transaction open, blocking everyone who touches those rows.</p></div></div>
+</section>
+
+<!-- ════════════════════════════════════
+  PAGE 12 — Monitoring & Profiling
+════════════════════════════════════ -->
+<section class="page-section" id="p12">
+  <div class="page-banner" id="banner-12">
+    <div class="page-banner-left">
+      <input type="checkbox" class="page-chk" id="chk-12" data-page="12" aria-label="Mark page 12 as studied"/>
+      <span class="page-num">Page 12 / 12</span>
+      <span class="page-name">Monitoring &amp; Profiling SP Performance</span>
+    </div>
+    <span class="page-status status-todo" id="status-12">Not studied</span>
+  </div>
+
+  <div class="sect-eye"><span class="sect-tag tag-r">Error &amp; Maintenance</span><span class="imp imp-high">⬆ High Impact</span></div>
+  <h2 class="sh">Monitoring &amp; Profiling SP Performance</h2>
+  <p class="sh-sub">You cannot improve what you cannot measure. These DMVs and tools give you precise, real-time visibility into which stored procedures are consuming the most resources.</p>
+
+  <div class="cb">
+    <div class="cb-top"><span class="cb-file">sp_monitoring.sql</span><span class="cb-badge badge-tip">DMV Queries</span></div>
+    <pre><span class="cm">-- ── TOP 10 most expensive SPs (by average CPU) ──────────────</span>
+<span class="kw">SELECT TOP</span> <span class="nb">10</span>
+    <span class="fn">OBJECT_NAME</span>(<span class="nm">qs</span>.<span class="nm">object_id</span>)   <span class="kw">AS</span> <span class="nm">ProcedureName</span>
+    ,<span class="nm">qs</span>.<span class="nm">execution_count</span>
+    ,<span class="nm">qs</span>.<span class="nm">total_worker_time</span> <span class="op">/</span> <span class="nb">1000</span> <span class="kw">AS</span> <span class="nm">TotalCPU_ms</span>
+    ,<span class="nm">qs</span>.<span class="nm">total_worker_time</span>
+        <span class="op">/</span> <span class="nm">qs</span>.<span class="nm">execution_count</span>
+        <span class="op">/</span> <span class="nb">1000</span>                  <span class="kw">AS</span> <span class="nm">AvgCPU_ms</span>
+    ,<span class="nm">qs</span>.<span class="nm">total_elapsed_time</span>
+        <span class="op">/</span> <span class="nm">qs</span>.<span class="nm">execution_count</span>
+        <span class="op">/</span> <span class="nb">1000</span>                  <span class="kw">AS</span> <span class="nm">AvgDuration_ms</span>
+    ,<span class="nm">qs</span>.<span class="nm">total_logical_reads</span>
+        <span class="op">/</span> <span class="nm">qs</span>.<span class="nm">execution_count</span>   <span class="kw">AS</span> <span class="nm">AvgLogicalReads</span>
+    ,<span class="nm">qs</span>.<span class="nm">last_execution_time</span>
+<span class="kw">FROM</span>   <span class="nm">sys</span>.<span class="nm">dm_exec_procedure_stats</span>  <span class="nm">qs</span>
+<span class="kw">WHERE</span>  <span class="nm">qs</span>.<span class="nm">database_id</span> <span class="op">=</span> <span class="fn">DB_ID</span>()
+<span class="kw">ORDER BY</span> <span class="nm">AvgCPU_ms</span> <span class="kw">DESC</span>;
+
+<span class="cm">-- ── Identify blocking sessions right now ────────────────────</span>
+<span class="kw">SELECT</span>
+    <span class="nm">blocking_session_id</span>        <span class="kw">AS</span> <span class="nm">BlockingSpid</span>
+    ,<span class="nm">session_id</span>                 <span class="kw">AS</span> <span class="nm">BlockedSpid</span>
+    ,<span class="nm">wait_type</span>
+    ,<span class="nm">wait_time</span> <span class="op">/</span> <span class="nb">1000</span>          <span class="kw">AS</span> <span class="nm">WaitSecs</span>
+    ,<span class="fn">SUBSTRING</span>(
+        <span class="nm">st</span>.<span class="nm">text</span>
+        ,(<span class="nm">r</span>.<span class="nm">statement_start_offset</span><span class="op">/</span><span class="nb">2</span>)<span class="op">+</span><span class="nb">1</span>
+        ,<span class="nb">256</span>
+    )                           <span class="kw">AS</span> <span class="nm">CurrentStatement</span>
+<span class="kw">FROM</span>       <span class="nm">sys</span>.<span class="nm">dm_exec_requests</span>   <span class="nm">r</span>
+<span class="kw">CROSS APPLY</span> <span class="fn">sys.dm_exec_sql_text</span>(<span class="nm">r</span>.<span class="nm">sql_handle</span>)  <span class="nm">st</span>
+<span class="kw">WHERE</span>  <span class="nm">blocking_session_id</span> <span class="op">&gt;</span> <span class="nb">0</span>;
+
+<span class="cm">-- ── Enable Query Store for continuous monitoring (2016+) ─────</span>
+<span class="kw">ALTER DATABASE</span> <span class="nm">YourDatabase</span>
+<span class="kw">SET</span> <span class="nm">QUERY_STORE</span> <span class="op">=</span> <span class="kw">ON</span>
+    (<span class="nm">OPERATION_MODE</span>  <span class="op">=</span> <span class="nm">READ_WRITE</span>
+    ,<span class="nm">MAX_STORAGE_SIZE_MB</span> <span class="op">=</span> <span class="nb">1024</span>
+    ,<span class="nm">QUERY_CAPTURE_MODE</span> <span class="op">=</span> <span class="nm">AUTO</span>);</pre>
+  </div>
+
+  <div class="g3">
+    <div class="card ca"><span class="card-icon">📊</span><h4>Query Store</h4><p>SQL Server 2016+ built-in performance history. Shows plan regressions, top consumers, and forced plan management — no third-party tools needed.</p></div>
+    <div class="card ca"><span class="card-icon">⚡</span><h4>Execution Plans</h4><p>Always check actual (not estimated) plans. Look for thick arrows (many rows), yellow warnings, Key Lookups, and spills to tempdb.</p></div>
+    <div class="card ca"><span class="card-icon">📋</span><h4>SET STATISTICS IO</h4><p><ic>SET STATISTICS IO ON</ic> reports logical reads per table. High logical reads = missing index or poor query design. This is your first diagnostic tool.</p></div>
+  </div>
+
+  <!-- Summary -->
+  <div class="summary-band" style="margin-top:32px;">
+    <h3>Complete Best Practices Summary</h3>
+    <div class="tw" style="margin-top:16px;">
+      <table>
+        <thead><tr><th>#</th><th>Practice</th><th>Impact</th><th>Effort</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>Avoid SELECT * — explicit column list</td><td><span class="imp imp-high">High</span></td><td>Low</td></tr>
+          <tr><td>2</td><td>SARGable WHERE clauses — no functions on indexed columns</td><td><span class="imp imp-high">High</span></td><td>Low</td></tr>
+          <tr><td>3</td><td>SET NOCOUNT ON as first line</td><td><span class="imp imp-med">Med</span></td><td>Trivial</td></tr>
+          <tr><td>4</td><td>Resolve parameter sniffing with OPTIMIZE FOR UNKNOWN</td><td><span class="imp imp-high">High</span></td><td>Low</td></tr>
+          <tr><td>5</td><td>WITH RECOMPILE only for infrequent, variable SPs</td><td><span class="imp imp-med">Med</span></td><td>Low</td></tr>
+          <tr><td>6</td><td>Always schema-prefix (dbo.TableName)</td><td><span class="imp imp-low">Low</span></td><td>Trivial</td></tr>
+          <tr><td>7</td><td>Short transactions — no I/O or API calls inside BEGIN/COMMIT</td><td><span class="imp imp-high">High</span></td><td>Med</td></tr>
+          <tr><td>8</td><td>Replace cursors with set-based logic or window functions</td><td><span class="imp imp-high">High</span></td><td>Med</td></tr>
+          <tr><td>9</td><td>#TempTable (with index) over @TableVariable for large sets</td><td><span class="imp imp-med">Med</span></td><td>Low</td></tr>
+          <tr><td>10</td><td>Index awareness — covering indexes, remove unused indexes</td><td><span class="imp imp-high">High</span></td><td>High</td></tr>
+          <tr><td>11</td><td>TRY/CATCH + SET XACT_ABORT ON for all transactional SPs</td><td><span class="imp imp-med">Med</span></td><td>Low</td></tr>
+          <tr><td>12</td><td>Monitor with DMVs, Query Store, and execution plans</td><td><span class="imp imp-high">High</span></td><td>Med</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>SQL Server · Stored Procedure Performance Best Practices</span>
+  <span>Progress saved locally via localStorage · Open in browser to track study</span>
+</footer>
+
+</main>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   PROGRESS TRACKER — localStorage persistence
+   Key: "sp_perf_progress"  Value: JSON array of page numbers
+═══════════════════════════════════════════════════ */
+const STORAGE_KEY = 'sp_perf_progress';
+const TOTAL = 12;
+
+function loadProgress() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch(e) { return []; }
+}
+
+function saveProgress(pages) {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(pages)); }
+  catch(e) { console.warn('localStorage unavailable — progress not saved'); }
+}
+
+function updateDashboard(pages) {
+  const done = pages.length;
+  const pct  = Math.round((done / TOTAL) * 100);
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('pct-label').textContent = pct + '%';
+  document.getElementById('stat-done').textContent = done;
+  document.getElementById('stat-left').textContent = TOTAL - done;
+}
+
+function applyState(pages) {
+  for (let i = 1; i <= TOTAL; i++) {
+    const chk    = document.getElementById('chk-' + i);
+    const status = document.getElementById('status-' + i);
+    const banner = document.getElementById('banner-' + i);
+    if (!chk) continue;
+    const studied = pages.includes(i);
+    chk.checked = studied;
+    if (status) {
+      status.textContent = studied ? '✓ Studied' : 'Not studied';
+      status.className   = 'page-status ' + (studied ? 'status-done' : 'status-todo');
+    }
+    if (banner) {
+      banner.style.background = studied
+        ? 'rgba(62,217,160,0.05)'
+        : 'var(--bg2)';
+      banner.style.borderColor = studied
+        ? 'rgba(62,217,160,0.22)'
+        : 'var(--brd2)';
+    }
+  }
+  updateDashboard(pages);
+}
+
+/* Wire checkboxes */
+document.querySelectorAll('.page-chk').forEach(chk => {
+  chk.addEventListener('change', () => {
+    const page = parseInt(chk.dataset.page, 10);
+    let pages  = loadProgress();
+    if (chk.checked) {
+      if (!pages.includes(page)) pages.push(page);
+    } else {
+      pages = pages.filter(p => p !== page);
+    }
+    saveProgress(pages);
+    applyState(pages);
+  });
+});
+
+/* Reset button */
+document.getElementById('reset-btn').addEventListener('click', () => {
+  if (confirm('Reset all study progress?')) {
+    saveProgress([]);
+    applyState([]);
+  }
+});
+
+/* Sidebar active link on scroll */
+const sections = document.querySelectorAll('.page-section[id]');
+const sbLinks  = document.querySelectorAll('.sb-link[data-page]');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      sbLinks.forEach(l => l.classList.remove('active'));
+      const pg = e.target.id.replace('p','');
+      const m  = document.querySelector(`.sb-link[data-page="${pg}"]`);
+      if (m) m.classList.add('active');
+    }
+  });
+}, { threshold: 0.3, rootMargin: '-60px 0px -40% 0px' });
+sections.forEach(s => obs.observe(s));
+
+/* Init on load */
+applyState(loadProgress());
+</script>
+</body>
+</html>

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Staging, Dimension and Fact Tables - E Tutorial</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      background: #f4f7fb;
+      color: #222;
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, #1f4e79, #2f75b5);
+      color: white;
+      padding: 28px 40px;
+      text-align: center;
+    }
+    header h1 { margin: 0; font-size: 30px; }
+    header p { margin: 8px 0 0; font-size: 16px; }
+    .container {
+      max-width: 1100px;
+      margin: 25px auto;
+      padding: 0 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 22px;
+      box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+      border-left: 6px solid #2f75b5;
+    }
+    h2 { color: #1f4e79; margin-top: 0; }
+    h3 { color: #2f75b5; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+      background: white;
+    }
+    th {
+      background: #1f4e79;
+      color: white;
+      padding: 10px;
+      text-align: left;
+    }
+    td {
+      border: 1px solid #d9e2ef;
+      padding: 10px;
+      vertical-align: top;
+    }
+    tr:nth-child(even) { background: #f8fbff; }
+    .note {
+      background: #fff7e6;
+      border-left: 5px solid #f0ad4e;
+      padding: 14px;
+      margin-top: 14px;
+      border-radius: 8px;
+    }
+    .success {
+      background: #eaf7ea;
+      border-left: 5px solid #3c9d4f;
+      padding: 14px;
+      margin-top: 14px;
+      border-radius: 8px;
+    }
+    .danger {
+      background: #fdecea;
+      border-left: 5px solid #d9534f;
+      padding: 14px;
+      margin-top: 14px;
+      border-radius: 8px;
+    }
+    pre {
+      background: #1e1e1e;
+      color: #f4f4f4;
+      padding: 16px;
+      border-radius: 10px;
+      overflow-x: auto;
+      font-size: 14px;
+    }
+    code { font-family: Consolas, monospace; }
+    .flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 15px;
+    }
+    .box {
+      background: #eaf2fb;
+      border: 1px solid #b7d3ef;
+      padding: 14px;
+      border-radius: 10px;
+      flex: 1 1 160px;
+      text-align: center;
+      font-weight: bold;
+      color: #1f4e79;
+    }
+    .arrow { align-self: center; font-weight: bold; color: #1f4e79; }
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: #666;
+      font-size: 13px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Staging Tables, Dimension Tables and Fact Tables</h1>
+    <p>Classroom Style E-Tutorial for Data Engineering and Data Warehouse Beginners</p>
+  </header>
+
+  <div class="container">
+    <section class="card">
+      <h2>1. Learning Objectives</h2>
+      <p>By the end of this tutorial, you will understand:</p>
+      <ul>
+        <li>What staging tables are and why they are used</li>
+        <li>What dimension tables are</li>
+        <li>What fact tables are</li>
+        <li>How staging, dimension, and fact tables are connected</li>
+        <li>How ETL/ELT pipelines load data into a warehouse</li>
+        <li>How to explain this concept in interviews using a real-time retail example</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>2. Real-Time Scenario</h2>
+      <p>Assume we are building a <strong>Retail Sales Data Warehouse</strong> for a company that has stores in multiple cities.</p>
+      <p>The company wants answers to questions like:</p>
+      <ul>
+        <li>What is the total sales amount by month?</li>
+        <li>Which product category is selling more?</li>
+        <li>Which store has the highest revenue?</li>
+        <li>Who are the top customers?</li>
+        <li>What is the profit by region?</li>
+      </ul>
+      <div class="note">
+        <strong>Important:</strong> Transaction systems store operational data. Data warehouses organize that data for reporting and analytics.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>3. High-Level Data Flow</h2>
+      <div class="flow">
+        <div class="box">Source Systems</div>
+        <div class="arrow">→</div>
+        <div class="box">Staging Tables</div>
+        <div class="arrow">→</div>
+        <div class="box">Dimension Tables</div>
+        <div class="arrow">→</div>
+        <div class="box">Fact Tables</div>
+        <div class="arrow">→</div>
+        <div class="box">Reports / Dashboard</div>
+      </div>
+      <p>Data usually comes from systems such as billing applications, CRM, ERP, Excel files, APIs, or databases. The data is first loaded into staging tables, cleaned, transformed, and then moved into dimension and fact tables.</p>
+    </section>
+
+    <section class="card">
+      <h2>4. What is a Staging Table?</h2>
+      <p>A <strong>staging table</strong> is a temporary or intermediate table where raw data is first loaded from source systems before applying business transformations.</p>
+
+      <h3>Why do we need staging tables?</h3>
+      <ul>
+        <li>To store raw source data safely</li>
+        <li>To validate data before loading into final tables</li>
+        <li>To clean duplicate, missing, or invalid records</li>
+        <li>To compare new data with existing warehouse data</li>
+        <li>To debug ETL/ELT issues easily</li>
+      </ul>
+
+      <h3>Example</h3>
+      <p>A sales file comes from a POS system every day. We first load it into a staging table called <code>stg_sales_orders</code>.</p>
+
+      <pre><code>CREATE TABLE stg_sales_orders (
+    order_id        VARCHAR(50),
+    order_date      VARCHAR(50),
+    customer_name   VARCHAR(100),
+    product_name    VARCHAR(100),
+    store_name      VARCHAR(100),
+    quantity        VARCHAR(20),
+    unit_price      VARCHAR(20),
+    load_date       DATETIME
+);</code></pre>
+
+      <div class="note">
+        In staging tables, columns are often kept as flexible data types like VARCHAR because raw source data may contain errors or inconsistent formats.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>5. What is a Dimension Table?</h2>
+      <p>A <strong>dimension table</strong> stores descriptive business information. It helps users analyze facts from different perspectives.</p>
+
+      <p>Dimension tables usually answer questions like:</p>
+      <ul>
+        <li>Who?</li>
+        <li>What?</li>
+        <li>Where?</li>
+        <li>When?</li>
+        <li>Which category?</li>
+      </ul>
+
+      <h3>Common Dimension Tables</h3>
+      <table>
+        <tr>
+          <th>Dimension Table</th>
+          <th>Description</th>
+          <th>Example Columns</th>
+        </tr>
+        <tr>
+          <td>dim_customer</td>
+          <td>Stores customer information</td>
+          <td>customer_key, customer_id, customer_name, city, state</td>
+        </tr>
+        <tr>
+          <td>dim_product</td>
+          <td>Stores product details</td>
+          <td>product_key, product_id, product_name, category, brand</td>
+        </tr>
+        <tr>
+          <td>dim_store</td>
+          <td>Stores store details</td>
+          <td>store_key, store_id, store_name, region, city</td>
+        </tr>
+        <tr>
+          <td>dim_date</td>
+          <td>Stores calendar details</td>
+          <td>date_key, full_date, month, quarter, year</td>
+        </tr>
+      </table>
+
+      <h3>Example: Product Dimension</h3>
+      <pre><code>CREATE TABLE dim_product (
+    product_key     INT IDENTITY(1,1) PRIMARY KEY,
+    product_id      VARCHAR(50),
+    product_name    VARCHAR(100),
+    category        VARCHAR(50),
+    brand           VARCHAR(50),
+    is_active       BIT,
+    created_date    DATETIME
+);</code></pre>
+
+      <div class="success">
+        <strong>Easy Memory Point:</strong> Dimension tables contain descriptive information used for filtering, grouping, and reporting.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>6. What is a Fact Table?</h2>
+      <p>A <strong>fact table</strong> stores measurable business events or transactions. It usually contains numeric values and foreign keys pointing to dimension tables.</p>
+
+      <p>Fact tables usually answer questions like:</p>
+      <ul>
+        <li>How many?</li>
+        <li>How much?</li>
+        <li>What total?</li>
+        <li>What average?</li>
+      </ul>
+
+      <h3>Example Measures</h3>
+      <ul>
+        <li>Sales amount</li>
+        <li>Quantity sold</li>
+        <li>Discount amount</li>
+        <li>Profit amount</li>
+        <li>Tax amount</li>
+      </ul>
+
+      <h3>Example: Sales Fact Table</h3>
+      <pre><code>CREATE TABLE fact_sales (
+    sales_key       BIGINT IDENTITY(1,1) PRIMARY KEY,
+    order_id        VARCHAR(50),
+    date_key        INT,
+    customer_key    INT,
+    product_key     INT,
+    store_key       INT,
+    quantity        INT,
+    unit_price      DECIMAL(10,2),
+    sales_amount    DECIMAL(12,2),
+    load_date       DATETIME,
+
+    FOREIGN KEY (date_key) REFERENCES dim_date(date_key),
+    FOREIGN KEY (customer_key) REFERENCES dim_customer(customer_key),
+    FOREIGN KEY (product_key) REFERENCES dim_product(product_key),
+    FOREIGN KEY (store_key) REFERENCES dim_store(store_key)
+);</code></pre>
+
+      <div class="success">
+        <strong>Easy Memory Point:</strong> Fact tables contain numbers and transactions. Dimension tables describe those numbers.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>7. Dimension Table vs Fact Table</h2>
+      <table>
+        <tr>
+          <th>Point</th>
+          <th>Dimension Table</th>
+          <th>Fact Table</th>
+        </tr>
+        <tr>
+          <td>Purpose</td>
+          <td>Stores descriptive data</td>
+          <td>Stores measurable transaction data</td>
+        </tr>
+        <tr>
+          <td>Data Type</td>
+          <td>Mostly text/date/category fields</td>
+          <td>Mostly numbers and foreign keys</td>
+        </tr>
+        <tr>
+          <td>Example</td>
+          <td>Customer, Product, Store, Date</td>
+          <td>Sales, Orders, Payments</td>
+        </tr>
+        <tr>
+          <td>Question Answered</td>
+          <td>Who, what, where, when</td>
+          <td>How much, how many</td>
+        </tr>
+        <tr>
+          <td>Size</td>
+          <td>Usually smaller</td>
+          <td>Usually larger</td>
+        </tr>
+      </table>
+    </section>
+
+    <section class="card">
+      <h2>8. What is a Star Schema?</h2>
+      <p>A <strong>star schema</strong> is a data warehouse design where a central fact table is connected to multiple dimension tables.</p>
+
+      <pre><code>                dim_customer
+                     |
+dim_product ---- fact_sales ---- dim_store
+                     |
+                  dim_date</code></pre>
+
+      <p>It is called a star schema because the design looks like a star, with the fact table in the center and dimensions around it.</p>
+    </section>
+
+    <section class="card">
+      <h2>9. ETL Loading Steps</h2>
+      <h3>Step 1: Load raw data into staging</h3>
+      <pre><code>INSERT INTO stg_sales_orders
+SELECT * FROM source_sales_file;</code></pre>
+
+      <h3>Step 2: Clean and validate staging data</h3>
+      <pre><code>SELECT *
+FROM stg_sales_orders
+WHERE quantity IS NULL
+   OR TRY_CAST(quantity AS INT) IS NULL;</code></pre>
+
+      <h3>Step 3: Load dimension tables</h3>
+      <pre><code>INSERT INTO dim_product (product_id, product_name, category, brand, is_active, created_date)
+SELECT DISTINCT
+    product_id,
+    product_name,
+    category,
+    brand,
+    1,
+    GETDATE()
+FROM stg_sales_orders s
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM dim_product d
+    WHERE d.product_id = s.product_id
+);</code></pre>
+
+      <h3>Step 4: Load fact table</h3>
+      <pre><code>INSERT INTO fact_sales (
+    order_id,
+    date_key,
+    customer_key,
+    product_key,
+    store_key,
+    quantity,
+    unit_price,
+    sales_amount,
+    load_date
+)
+SELECT
+    s.order_id,
+    d.date_key,
+    c.customer_key,
+    p.product_key,
+    st.store_key,
+    CAST(s.quantity AS INT),
+    CAST(s.unit_price AS DECIMAL(10,2)),
+    CAST(s.quantity AS INT) * CAST(s.unit_price AS DECIMAL(10,2)),
+    GETDATE()
+FROM stg_sales_orders s
+JOIN dim_date d ON CAST(s.order_date AS DATE) = d.full_date
+JOIN dim_customer c ON s.customer_id = c.customer_id
+JOIN dim_product p ON s.product_id = p.product_id
+JOIN dim_store st ON s.store_id = st.store_id;</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>10. Slowly Changing Dimension</h2>
+      <p>A <strong>Slowly Changing Dimension</strong>, also called SCD, is used when dimension data changes over time.</p>
+
+      <h3>Example</h3>
+      <p>A customer changes city from Chennai to Bengaluru. Should we overwrite the old city or maintain history?</p>
+
+      <table>
+        <tr>
+          <th>SCD Type</th>
+          <th>Meaning</th>
+          <th>Example</th>
+        </tr>
+        <tr>
+          <td>Type 1</td>
+          <td>Overwrite old value</td>
+          <td>Customer city updated directly</td>
+        </tr>
+        <tr>
+          <td>Type 2</td>
+          <td>Maintain history with new row</td>
+          <td>Old city and new city both stored with dates</td>
+        </tr>
+        <tr>
+          <td>Type 3</td>
+          <td>Store limited history in extra column</td>
+          <td>Current city and previous city columns</td>
+        </tr>
+      </table>
+
+      <div class="note">
+        SCD Type 2 is commonly used when historical reporting is important.
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>11. Real-Time Retail Example</h2>
+      <p>Suppose a customer buys two products from a store.</p>
+
+      <table>
+        <tr>
+          <th>Order ID</th>
+          <th>Customer</th>
+          <th>Product</th>
+          <th>Store</th>
+          <th>Quantity</th>
+          <th>Amount</th>
+        </tr>
+        <tr>
+          <td>ORD1001</td>
+          <td>Raj Kumar</td>
+          <td>Laptop</td>
+          <td>Chennai Store</td>
+          <td>1</td>
+          <td>55000</td>
+        </tr>
+        <tr>
+          <td>ORD1002</td>
+          <td>Priya</td>
+          <td>Mouse</td>
+          <td>Bengaluru Store</td>
+          <td>2</td>
+          <td>1200</td>
+        </tr>
+      </table>
+
+      <p>This data will be split into:</p>
+      <ul>
+        <li><strong>dim_customer:</strong> Raj Kumar, Priya</li>
+        <li><strong>dim_product:</strong> Laptop, Mouse</li>
+        <li><strong>dim_store:</strong> Chennai Store, Bengaluru Store</li>
+        <li><strong>fact_sales:</strong> Order ID, quantity, amount, and keys from dimensions</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>12. Common Interview Questions and Answers</h2>
+
+      <h3>Q1. What is a staging table?</h3>
+      <p><strong>Answer:</strong> A staging table is an intermediate table used to store raw data from source systems before cleaning, validation, and transformation.</p>
+
+      <h3>Q2. Why do we not directly load data into fact and dimension tables?</h3>
+      <p><strong>Answer:</strong> Source data may contain duplicates, missing values, wrong formats, and invalid records. Staging helps validate and clean data before loading final warehouse tables.</p>
+
+      <h3>Q3. What is a dimension table?</h3>
+      <p><strong>Answer:</strong> A dimension table stores descriptive information such as customer, product, store, and date details. It helps users filter and group reports.</p>
+
+      <h3>Q4. What is a fact table?</h3>
+      <p><strong>Answer:</strong> A fact table stores business transactions and measurable values such as sales amount, quantity, discount, and profit.</p>
+
+      <h3>Q5. What is the difference between fact and dimension?</h3>
+      <p><strong>Answer:</strong> Dimension tables describe business entities. Fact tables store measurable events connected to those dimensions.</p>
+
+      <h3>Q6. What is a surrogate key?</h3>
+      <p><strong>Answer:</strong> A surrogate key is a system-generated key used as the primary key in dimension tables. Example: <code>customer_key</code>.</p>
+
+      <h3>Q7. What is a natural key?</h3>
+      <p><strong>Answer:</strong> A natural key comes from the source system. Example: <code>customer_id</code> from the CRM system.</p>
+    </section>
+
+    <section class="card">
+      <h2>13. Best Practices</h2>
+      <ul>
+        <li>Use clear prefixes like <code>stg_</code>, <code>dim_</code>, and <code>fact_</code>.</li>
+        <li>Keep staging data for debugging when required.</li>
+        <li>Use surrogate keys in dimension tables.</li>
+        <li>Load dimensions before fact tables.</li>
+        <li>Validate duplicate and null records in staging.</li>
+        <li>Maintain audit columns such as <code>created_date</code>, <code>updated_date</code>, and <code>load_date</code>.</li>
+        <li>Use consistent SQL formatting and comments.</li>
+        <li>Document business rules clearly.</li>
+      </ul>
+    </section>
+
+    <section class="card">
+      <h2>14. Hands-On Practice</h2>
+      <p>Create a mini data warehouse for retail sales.</p>
+      <ol>
+        <li>Create one staging table: <code>stg_sales_orders</code></li>
+        <li>Create four dimension tables: <code>dim_customer</code>, <code>dim_product</code>, <code>dim_store</code>, <code>dim_date</code></li>
+        <li>Create one fact table: <code>fact_sales</code></li>
+        <li>Insert sample records into staging</li>
+        <li>Load dimension tables from staging</li>
+        <li>Load fact table by joining staging with dimensions</li>
+        <li>Write a report query to show total sales by product category</li>
+      </ol>
+
+      <h3>Sample Report Query</h3>
+      <pre><code>SELECT
+    p.category,
+    SUM(f.sales_amount) AS total_sales
+FROM fact_sales f
+JOIN dim_product p ON f.product_key = p.product_key
+GROUP BY p.category
+ORDER BY total_sales DESC;</code></pre>
+    </section>
+
+    <section class="card">
+      <h2>15. Summary</h2>
+      <table>
+        <tr>
+          <th>Table Type</th>
+          <th>Purpose</th>
+          <th>Example</th>
+        </tr>
+        <tr>
+          <td>Staging Table</td>
+          <td>Stores raw source data temporarily</td>
+          <td>stg_sales_orders</td>
+        </tr>
+        <tr>
+          <td>Dimension Table</td>
+          <td>Stores descriptive business data</td>
+          <td>dim_customer, dim_product</td>
+        </tr>
+        <tr>
+          <td>Fact Table</td>
+          <td>Stores measurable transaction data</td>
+          <td>fact_sales</td>
+        </tr>
+      </table>
+
+      <div class="success">
+        <strong>Final Memory Tip:</strong> Staging receives raw data, dimensions describe the business, and facts store the measurable transactions.
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    Prepared as an e-tutorial for classroom and corporate training use.
+  </footer>
+</body>
+</html>

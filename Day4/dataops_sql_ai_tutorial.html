@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataOps for SQL and AI-Assisted SQL Development</title>
+  <style>
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      margin: 0;
+      background: #f4f7fb;
+      color: #1f2937;
+      line-height: 1.6;
+    }
+    header {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: white;
+      padding: 35px 50px;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 34px;
+    }
+    header p {
+      font-size: 18px;
+      margin-top: 10px;
+    }
+    .container {
+      max-width: 1150px;
+      margin: 25px auto;
+      padding: 0 20px 40px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+    }
+    h2 {
+      color: #1e40af;
+      border-bottom: 3px solid #dbeafe;
+      padding-bottom: 8px;
+    }
+    h3 {
+      color: #0f766e;
+      margin-top: 24px;
+    }
+    h4 {
+      color: #7c2d12;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+      background: white;
+    }
+    th, td {
+      border: 1px solid #d1d5db;
+      padding: 12px;
+      vertical-align: top;
+    }
+    th {
+      background: #dbeafe;
+      color: #1e3a8a;
+      text-align: left;
+    }
+    .note {
+      background: #ecfdf5;
+      border-left: 5px solid #10b981;
+      padding: 14px 18px;
+      margin: 15px 0;
+      border-radius: 8px;
+    }
+    .warning {
+      background: #fff7ed;
+      border-left: 5px solid #f97316;
+      padding: 14px 18px;
+      margin: 15px 0;
+      border-radius: 8px;
+    }
+    .trainer-tip {
+      background: #eef2ff;
+      border-left: 5px solid #6366f1;
+      padding: 14px 18px;
+      margin: 15px 0;
+      border-radius: 8px;
+    }
+    pre {
+      background: #111827;
+      color: #e5e7eb;
+      padding: 18px;
+      overflow-x: auto;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+    code {
+      font-family: Consolas, Monaco, monospace;
+    }
+    .toc a {
+      display: block;
+      padding: 8px 0;
+      color: #1d4ed8;
+      text-decoration: none;
+    }
+    .toc a:hover {
+      text-decoration: underline;
+    }
+    .badge {
+      display: inline-block;
+      background: #2563eb;
+      color: white;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 13px;
+      margin-right: 5px;
+    }
+    .exercise {
+      background: #f9fafb;
+      border: 1px dashed #6b7280;
+      padding: 16px;
+      border-radius: 10px;
+      margin-top: 14px;
+    }
+    footer {
+      text-align: center;
+      padding: 20px;
+      background: #1f2937;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>DataOps for SQL Development & AI-Assisted Query Engineering</h1>
+    <p>Classroom-style eTutorial for corporate training</p>
+  </header>
+
+  <div class="container">
+    <section class="card toc">
+      <h2>Table of Contents</h2>
+      <a href="#overview">1. Training Overview</a>
+      <a href="#dataops-thread">2. DataOps Thread for SQL Development</a>
+      <a href="#modular-sql">3. Modular SQL Scripts</a>
+      <a href="#formatting">4. Consistent SQL Formatting</a>
+      <a href="#debugging">5. SQL Query Debugging</a>
+      <a href="#documentation">6. Peer-Readable Script Documentation</a>
+      <a href="#ai-tools">7. Using Claude/Copilot for SQL Generation</a>
+      <a href="#query-explanation">8. Using Claude/Copilot for Query Explanation</a>
+      <a href="#ai-debugging">9. Using Claude/Copilot for SQL Debugging</a>
+      <a href="#usecase">10. Real-Time Use Case</a>
+      <a href="#hands-on">11. Hands-On Lab</a>
+      <a href="#interview">12. Interview Questions</a>
+    </section>
+
+    <section class="card" id="overview">
+      <h2>1. Training Overview</h2>
+      <p>
+        This tutorial explains how SQL development can follow a DataOps approach and how AI tools like
+        Claude and GitHub Copilot can support SQL generation, query explanation, and debugging.
+      </p>
+
+      <h3>Learning Objectives</h3>
+      <ul>
+        <li>Understand DataOps practices for SQL development.</li>
+        <li>Write modular, readable, and maintainable SQL scripts.</li>
+        <li>Apply consistent formatting and naming conventions.</li>
+        <li>Debug SQL queries step by step.</li>
+        <li>Use Claude/Copilot responsibly for SQL generation and troubleshooting.</li>
+      </ul>
+
+      <div class="note">
+        <strong>Simple Meaning:</strong> DataOps in SQL means treating SQL scripts like professional software code — organized, versioned, tested, reviewed, and documented.
+      </div>
+    </section>
+
+    <section class="card" id="dataops-thread">
+      <h2>2. DataOps Thread for SQL Development</h2>
+      <p>
+        DataOps is a set of practices that improves the quality, speed, reliability, and collaboration of data work.
+        In SQL development, DataOps ensures that queries are not written randomly, but are structured and easy to maintain.
+      </p>
+
+      <h3>Why DataOps is Needed in SQL</h3>
+      <table>
+        <tr>
+          <th>Problem Without DataOps</th>
+          <th>DataOps Solution</th>
+        </tr>
+        <tr>
+          <td>SQL scripts are stored randomly on local machines.</td>
+          <td>Store scripts in Git repository with proper folder structure.</td>
+        </tr>
+        <tr>
+          <td>Queries are difficult to understand.</td>
+          <td>Use formatting, comments, and naming standards.</td>
+        </tr>
+        <tr>
+          <td>No one knows who changed a query.</td>
+          <td>Use version control and pull request review.</td>
+        </tr>
+        <tr>
+          <td>Debugging takes more time.</td>
+          <td>Use step-by-step query validation and logging.</td>
+        </tr>
+        <tr>
+          <td>Production failures happen due to untested scripts.</td>
+          <td>Use testing, peer review, and deployment checklist.</td>
+        </tr>
+      </table>
+
+      <h3>Typical DataOps SQL Lifecycle</h3>
+      <pre><code>Requirement
+   ↓
+SQL Design
+   ↓
+Modular Script Development
+   ↓
+Local Testing
+   ↓
+Peer Review
+   ↓
+Version Control Commit
+   ↓
+Deployment
+   ↓
+Monitoring and Debugging</code></pre>
+    </section>
+
+    <section class="card" id="modular-sql">
+      <h2>3. Modular SQL Scripts</h2>
+      <p>
+        Modular SQL means dividing a large SQL process into smaller, meaningful scripts. Each script should do one clear job.
+      </p>
+
+      <h3>Example Folder Structure</h3>
+      <pre><code>retail-data-project/
+│
+├── 01_schema/
+│   ├── create_tables.sql
+│   └── create_indexes.sql
+│
+├── 02_staging/
+│   ├── load_customers_staging.sql
+│   └── load_orders_staging.sql
+│
+├── 03_transformation/
+│   ├── clean_customer_data.sql
+│   ├── calculate_order_totals.sql
+│   └── create_sales_summary.sql
+│
+├── 04_quality_checks/
+│   ├── check_null_customer_id.sql
+│   └── check_duplicate_orders.sql
+│
+└── 05_reports/
+    └── monthly_sales_report.sql</code></pre>
+
+      <h3>Bad Practice: One Large SQL File</h3>
+      <pre><code>-- One file contains table creation, data loading, cleaning, transformation,
+-- validation, and reporting logic.
+-- This becomes difficult to test and maintain.</code></pre>
+
+      <h3>Good Practice: Modular SQL</h3>
+      <pre><code>-- File: calculate_order_totals.sql
+-- Purpose: Calculate total order amount using order quantity and unit price.
+
+SELECT
+    order_id,
+    customer_id,
+    product_id,
+    quantity,
+    unit_price,
+    quantity * unit_price AS order_total
+FROM staging_orders;</code></pre>
+
+      <div class="trainer-tip">
+        <strong>Trainer Tip:</strong> Ask learners to compare a 300-line SQL file with 5 smaller SQL scripts. Let them identify which one is easier to debug.
+      </div>
+    </section>
+
+    <section class="card" id="formatting">
+      <h2>4. Consistent SQL Formatting</h2>
+      <p>
+        Formatting makes SQL readable for other developers, reviewers, and future maintainers.
+      </p>
+
+      <h3>SQL Formatting Rules</h3>
+      <table>
+        <tr>
+          <th>Rule</th>
+          <th>Example</th>
+        </tr>
+        <tr>
+          <td>Write SQL keywords in uppercase.</td>
+          <td><code>SELECT, FROM, WHERE, JOIN, GROUP BY</code></td>
+        </tr>
+        <tr>
+          <td>Use meaningful aliases.</td>
+          <td><code>customers AS c</code>, <code>orders AS o</code></td>
+        </tr>
+        <tr>
+          <td>Place each selected column on a new line.</td>
+          <td>Improves readability.</td>
+        </tr>
+        <tr>
+          <td>Use indentation for joins and conditions.</td>
+          <td>Makes logic clear.</td>
+        </tr>
+        <tr>
+          <td>Avoid unnecessary SELECT *.</td>
+          <td>Select only required columns.</td>
+        </tr>
+      </table>
+
+      <h3>Bad Formatting</h3>
+      <pre><code>select c.name,o.order_id,p.product_name,o.quantity*p.price total from customers c join orders o on c.id=o.customer_id join products p on p.id=o.product_id where o.status='Completed'</code></pre>
+
+      <h3>Good Formatting</h3>
+      <pre><code>SELECT
+    c.customer_name,
+    o.order_id,
+    p.product_name,
+    o.quantity,
+    p.price,
+    o.quantity * p.price AS total_amount
+FROM customers AS c
+INNER JOIN orders AS o
+    ON c.customer_id = o.customer_id
+INNER JOIN products AS p
+    ON o.product_id = p.product_id
+WHERE o.status = 'Completed';</code></pre>
+
+      <div class="note">
+        <strong>Remember:</strong> SQL is not only for execution. It is also for communication between data engineers, analysts, DBAs, and business teams.
+      </div>
+    </section>
+
+    <section class="card" id="debugging">
+      <h2>5. SQL Query Debugging</h2>
+      <p>
+        Query debugging means identifying why a query is failing, producing wrong results, or running slowly.
+      </p>
+
+      <h3>Common SQL Issues</h3>
+      <table>
+        <tr>
+          <th>Issue</th>
+          <th>Reason</th>
+          <th>Fix</th>
+        </tr>
+        <tr>
+          <td>Syntax error</td>
+          <td>Missing comma, wrong keyword, invalid alias</td>
+          <td>Check SQL syntax line by line</td>
+        </tr>
+        <tr>
+          <td>Wrong record count</td>
+          <td>Incorrect join condition</td>
+          <td>Validate join keys</td>
+        </tr>
+        <tr>
+          <td>Duplicate records</td>
+          <td>One-to-many join issue</td>
+          <td>Use aggregation or distinct carefully</td>
+        </tr>
+        <tr>
+          <td>Slow query</td>
+          <td>No index, large scan, inefficient joins</td>
+          <td>Check execution plan and indexes</td>
+        </tr>
+        <tr>
+          <td>Null values</td>
+          <td>Missing source data or outer joins</td>
+          <td>Use COALESCE or investigate data quality</td>
+        </tr>
+      </table>
+
+      <h3>Step-by-Step Debugging Approach</h3>
+      <ol>
+        <li>Run the base table query first.</li>
+        <li>Add one join at a time.</li>
+        <li>Check row count after every join.</li>
+        <li>Validate filters separately.</li>
+        <li>Check aggregation logic.</li>
+        <li>Use sample data to confirm business logic.</li>
+        <li>Review execution plan for performance problems.</li>
+      </ol>
+
+      <h3>Example Debugging Query</h3>
+      <pre><code>-- Step 1: Check base order count
+SELECT COUNT(*) AS order_count
+FROM orders;
+
+-- Step 2: Check completed orders only
+SELECT COUNT(*) AS completed_order_count
+FROM orders
+WHERE status = 'Completed';
+
+-- Step 3: Check join count
+SELECT COUNT(*) AS joined_count
+FROM orders AS o
+INNER JOIN customers AS c
+    ON o.customer_id = c.customer_id
+WHERE o.status = 'Completed';</code></pre>
+    </section>
+
+    <section class="card" id="documentation">
+      <h2>6. Peer-Readable Script Documentation</h2>
+      <p>
+        Peer-readable documentation means another developer should understand your SQL script without calling you for explanation.
+      </p>
+
+      <h3>Recommended SQL Header Template</h3>
+      <pre><code>/*
+Script Name     : create_monthly_sales_summary.sql
+Purpose         : Creates monthly sales summary for retail reporting.
+Author          : Data Engineering Team
+Created Date    : 2026-06-11
+Source Tables   : orders, customers, products
+Target Table    : monthly_sales_summary
+Business Logic  : Includes only completed orders.
+Refresh Type    : Daily incremental load
+Change History  :
+    2026-06-11 - Initial version
+*/</code></pre>
+
+      <h3>Inline Comment Example</h3>
+      <pre><code>SELECT
+    DATE_TRUNC('month', o.order_date) AS sales_month,
+    c.region,
+    SUM(o.quantity * p.price) AS total_sales
+FROM orders AS o
+INNER JOIN customers AS c
+    ON o.customer_id = c.customer_id
+INNER JOIN products AS p
+    ON o.product_id = p.product_id
+WHERE o.status = 'Completed' -- Exclude cancelled and returned orders
+GROUP BY
+    DATE_TRUNC('month', o.order_date),
+    c.region;</code></pre>
+
+      <div class="warning">
+        <strong>Important:</strong> Do not over-comment obvious SQL. Comment the business logic, assumptions, filters, and special handling.
+      </div>
+    </section>
+
+    <section class="card" id="ai-tools">
+      <h2>7. Using Claude/Copilot for SQL Generation</h2>
+      <p>
+        Claude and GitHub Copilot can help generate SQL faster. However, AI-generated SQL must always be reviewed and tested before production use.
+      </p>
+
+      <h3>Where AI Helps</h3>
+      <table>
+        <tr>
+          <th>Activity</th>
+          <th>How Claude/Copilot Helps</th>
+        </tr>
+        <tr>
+          <td>SQL generation</td>
+          <td>Creates SELECT, JOIN, GROUP BY, CTE, and stored procedure drafts.</td>
+        </tr>
+        <tr>
+          <td>Query explanation</td>
+          <td>Explains existing SQL in simple language.</td>
+        </tr>
+        <tr>
+          <td>Debugging</td>
+          <td>Identifies syntax errors, join issues, and possible performance problems.</td>
+        </tr>
+        <tr>
+          <td>Optimization</td>
+          <td>Suggests indexes, filtering, CTE simplification, and query restructuring.</td>
+        </tr>
+        <tr>
+          <td>Documentation</td>
+          <td>Creates script headers, comments, and README explanations.</td>
+        </tr>
+      </table>
+
+      <h3>Prompt for SQL Generation</h3>
+      <pre><code>Act as a senior SQL developer.
+Create a SQL query for a retail database.
+Tables:
+- customers(customer_id, customer_name, region)
+- orders(order_id, customer_id, order_date, status)
+- order_items(order_id, product_id, quantity, unit_price)
+
+Requirement:
+Find monthly sales by region for completed orders only.
+
+Output:
+- Use readable formatting
+- Use table aliases
+- Add comments for business logic
+- Avoid SELECT *</code></pre>
+
+      <h3>AI Generated SQL Example</h3>
+      <pre><code>SELECT
+    DATE_TRUNC('month', o.order_date) AS sales_month,
+    c.region,
+    SUM(oi.quantity * oi.unit_price) AS total_sales
+FROM orders AS o
+INNER JOIN customers AS c
+    ON o.customer_id = c.customer_id
+INNER JOIN order_items AS oi
+    ON o.order_id = oi.order_id
+WHERE o.status = 'Completed'
+GROUP BY
+    DATE_TRUNC('month', o.order_date),
+    c.region
+ORDER BY
+    sales_month,
+    c.region;</code></pre>
+
+      <div class="warning">
+        <strong>AI Safety Rule:</strong> Never directly copy AI-generated SQL into production. Validate table names, join logic, filters, data types, performance, and business rules.
+      </div>
+    </section>
+
+    <section class="card" id="query-explanation">
+      <h2>8. Using Claude/Copilot for Query Explanation</h2>
+      <p>
+        AI tools can explain complex SQL queries in simple language. This is useful during code review, onboarding, and debugging.
+      </p>
+
+      <h3>Prompt for Query Explanation</h3>
+      <pre><code>Explain the below SQL query in simple business language.
+Also explain:
+1. What each join does
+2. What filters are applied
+3. What aggregation is performed
+4. Any possible risk in the query
+
+SQL:
+[paste query here]</code></pre>
+
+      <h3>Expected AI Explanation Format</h3>
+      <pre><code>Business Purpose:
+This query calculates total completed sales by month and region.
+
+Tables Used:
+- orders: contains order-level details
+- customers: contains region information
+- order_items: contains product quantity and price
+
+Filter Applied:
+Only completed orders are included.
+
+Aggregation:
+The query calculates total sales using quantity multiplied by unit price.
+
+Possible Risk:
+If order_items has duplicate rows, sales amount may be over-counted.</code></pre>
+    </section>
+
+    <section class="card" id="ai-debugging">
+      <h2>9. Using Claude/Copilot for SQL Debugging</h2>
+      <p>
+        Claude/Copilot can assist in debugging SQL, but the developer must provide enough context such as database type, table schema, error message, and expected output.
+      </p>
+
+      <h3>Bad Debugging Prompt</h3>
+      <pre><code>My SQL is not working. Fix it.</code></pre>
+
+      <h3>Good Debugging Prompt</h3>
+      <pre><code>Act as a SQL debugging assistant.
+Database: PostgreSQL
+Error message: column "customerid" does not exist
+Expected output: monthly sales by customer region
+
+Tables:
+customers(customer_id, customer_name, region)
+orders(order_id, customer_id, order_date, status)
+
+Query:
+SELECT c.customer_name, o.order_id
+FROM customers c
+JOIN orders o ON c.customerid = o.customer_id;
+
+Identify the error, explain the reason, and provide corrected SQL.</code></pre>
+
+      <h3>Corrected SQL</h3>
+      <pre><code>SELECT
+    c.customer_name,
+    o.order_id
+FROM customers AS c
+INNER JOIN orders AS o
+    ON c.customer_id = o.customer_id;</code></pre>
+
+      <h3>AI Debugging Checklist</h3>
+      <ul>
+        <li>Provide database name: SQL Server, PostgreSQL, MySQL, Oracle, Snowflake, Databricks SQL.</li>
+        <li>Provide table schema.</li>
+        <li>Provide sample data if possible.</li>
+        <li>Paste the exact error message.</li>
+        <li>Explain expected output.</li>
+        <li>Ask AI to explain the issue, not only fix it.</li>
+      </ul>
+    </section>
+
+    <section class="card" id="usecase">
+      <h2>10. Real-Time Use Case: Retail Sales Data Pipeline</h2>
+      <p>
+        A retail company wants to create a monthly sales summary report from customers, orders, and order items data.
+      </p>
+
+      <h3>Business Requirement</h3>
+      <ul>
+        <li>Load customer and order data into staging tables.</li>
+        <li>Clean invalid records.</li>
+        <li>Calculate monthly sales by region.</li>
+        <li>Validate missing customer IDs and duplicate orders.</li>
+        <li>Generate a report table for dashboard usage.</li>
+      </ul>
+
+      <h3>DataOps Implementation</h3>
+      <table>
+        <tr>
+          <th>Step</th>
+          <th>SQL Script</th>
+          <th>Purpose</th>
+        </tr>
+        <tr>
+          <td>Schema Creation</td>
+          <td>create_tables.sql</td>
+          <td>Create required tables.</td>
+        </tr>
+        <tr>
+          <td>Staging Load</td>
+          <td>load_orders_staging.sql</td>
+          <td>Load raw order data.</td>
+        </tr>
+        <tr>
+          <td>Transformation</td>
+          <td>create_monthly_sales_summary.sql</td>
+          <td>Create monthly region-wise sales summary.</td>
+        </tr>
+        <tr>
+          <td>Quality Check</td>
+          <td>check_duplicate_orders.sql</td>
+          <td>Identify duplicate order records.</td>
+        </tr>
+        <tr>
+          <td>Reporting</td>
+          <td>monthly_sales_report.sql</td>
+          <td>Generate dashboard-ready data.</td>
+        </tr>
+      </table>
+
+      <h3>Final Transformation Query</h3>
+      <pre><code>CREATE TABLE monthly_sales_summary AS
+SELECT
+    DATE_TRUNC('month', o.order_date) AS sales_month,
+    c.region,
+    COUNT(DISTINCT o.order_id) AS total_orders,
+    SUM(oi.quantity * oi.unit_price) AS total_sales
+FROM orders AS o
+INNER JOIN customers AS c
+    ON o.customer_id = c.customer_id
+INNER JOIN order_items AS oi
+    ON o.order_id = oi.order_id
+WHERE o.status = 'Completed'
+GROUP BY
+    DATE_TRUNC('month', o.order_date),
+    c.region;</code></pre>
+    </section>
+
+    <section class="card" id="hands-on">
+      <h2>11. Hands-On Lab</h2>
+
+      <div class="exercise">
+        <h3>Exercise 1: Modular SQL</h3>
+        <p>Create separate SQL files for the following tasks:</p>
+        <ul>
+          <li>Create customer table</li>
+          <li>Create orders table</li>
+          <li>Load staging data</li>
+          <li>Create sales summary</li>
+          <li>Check duplicate orders</li>
+        </ul>
+      </div>
+
+      <div class="exercise">
+        <h3>Exercise 2: Query Formatting</h3>
+        <p>Rewrite the below query using proper formatting:</p>
+        <pre><code>select c.name,o.id,o.amount from customers c join orders o on c.id=o.customer_id where o.status='Completed'</code></pre>
+      </div>
+
+      <div class="exercise">
+        <h3>Exercise 3: AI Prompt Practice</h3>
+        <p>Use Claude/Copilot to generate a SQL query for this requirement:</p>
+        <pre><code>Find top 5 customers by total purchase amount in the last 6 months.
+Use readable SQL formatting and explain the logic.</code></pre>
+      </div>
+
+      <div class="exercise">
+        <h3>Exercise 4: Debugging Practice</h3>
+        <p>Find the issue in this query:</p>
+        <pre><code>SELECT
+    c.customer_name,
+    SUM(o.amount) AS total_amount
+FROM customers AS c
+INNER JOIN orders AS o
+    ON c.customer_id = o.cust_id
+GROUP BY c.customer_name;</code></pre>
+        <p><strong>Hint:</strong> Check whether the column <code>cust_id</code> exists in the orders table.</p>
+      </div>
+    </section>
+
+    <section class="card" id="interview">
+      <h2>12. Interview Questions and Answers</h2>
+
+      <h3>1. What is DataOps?</h3>
+      <p><strong>Answer:</strong> DataOps is a practice that improves data pipeline quality, collaboration, automation, testing, and delivery using software engineering principles.</p>
+
+      <h3>2. Why should SQL scripts be modular?</h3>
+      <p><strong>Answer:</strong> Modular SQL scripts are easier to read, test, debug, reuse, review, and maintain.</p>
+
+      <h3>3. Why is formatting important in SQL?</h3>
+      <p><strong>Answer:</strong> Formatting improves readability and helps team members understand joins, filters, grouping, and business logic quickly.</p>
+
+      <h3>4. How do you debug a wrong SQL result?</h3>
+      <p><strong>Answer:</strong> Start with base tables, add joins one by one, check row counts, validate filters, check aggregations, and compare results with sample data.</p>
+
+      <h3>5. How can Claude/Copilot help in SQL development?</h3>
+      <p><strong>Answer:</strong> They can generate SQL drafts, explain existing queries, identify syntax errors, suggest optimization, and create documentation.</p>
+
+      <h3>6. What is the risk of using AI-generated SQL?</h3>
+      <p><strong>Answer:</strong> AI may generate incorrect joins, wrong filters, unsupported syntax, or inefficient queries. Every AI-generated query must be reviewed and tested.</p>
+    </section>
+  </div>
+
+  <footer>
+    <p>DataOps SQL & AI-Assisted SQL Development Tutorial | Corporate Training Material</p>
+  </footer>
+</body>
+</html>
