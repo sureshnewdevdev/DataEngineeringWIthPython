@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Engineering Tutorial - ETL, ELT, DBT, DataOps and AI</title>
+  <style>
+    :root{--primary:#1f4e79;--secondary:#2f75b5;--accent:#eaf3f8;--dark:#1f2937;--muted:#6b7280;--border:#d9e2ec;--code-bg:#111827;--code-text:#f9fafb;--success:#0f766e;--warning:#92400e}
+    body{font-family:"Segoe UI",Arial,sans-serif;line-height:1.65;margin:0;color:#1f2937;background:#f7f9fc}
+    header{background:linear-gradient(135deg,var(--primary),#0f172a);color:white;padding:34px 48px}
+    header h1{margin:0 0 10px;font-size:30px;line-height:1.2} header p{margin:5px 0;font-size:15px;opacity:.95}
+    .container{max-width:1180px;margin:0 auto;background:#fff;padding:30px 44px 70px;box-shadow:0 8px 30px rgba(15,23,42,.08)}
+    nav{background:var(--accent);border:1px solid var(--border);padding:18px 22px;border-radius:12px;margin-bottom:30px} nav h2{margin-top:0;color:var(--primary);font-size:21px} nav a{color:var(--primary);text-decoration:none;font-weight:600} nav li{margin:7px 0}
+    h2{color:var(--primary);margin-top:44px;border-bottom:3px solid var(--secondary);padding-bottom:8px;font-size:25px} h3{color:#0f3f68;margin-top:28px;font-size:20px} h4{color:#374151;margin-top:22px;font-size:17px}
+    .trainer-note,.classroom-activity,.interview-tip,.warning,.summary-box{border-left:5px solid var(--secondary);padding:14px 18px;margin:18px 0;border-radius:8px;background:#f1f8ff}.classroom-activity{border-left-color:var(--success);background:#ecfdf5}.interview-tip{border-left-color:#7c3aed;background:#f5f3ff}.warning{border-left-color:#f59e0b;background:#fffbeb}.summary-box{border-left-color:#111827;background:#f3f4f6}
+    table{width:100%;border-collapse:collapse;margin:18px 0 24px;font-size:14px} th{background:var(--primary);color:white;padding:10px;text-align:left} td{border:1px solid var(--border);padding:10px;vertical-align:top} tr:nth-child(even) td{background:#f8fafc}
+    pre{background:var(--code-bg);color:var(--code-text);padding:16px 18px;border-radius:10px;overflow-x:auto;font-size:13.5px;line-height:1.5} code{font-family:Consolas,"Courier New",monospace}
+    .diagram{background:#fff;border:1px solid var(--border);border-radius:12px;padding:18px;margin:18px 0 24px}.flow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:12px 0}.box{background:#eaf3f8;border:1px solid #9ec5e8;color:#0f3f68;padding:12px 16px;border-radius:10px;font-weight:700;min-width:120px;text-align:center}.arrow{font-weight:900;font-size:22px;color:var(--primary)}
+    .mcq{background:#fafafa;border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-top:26px}.mcq ol{padding-left:22px}.mcq li{margin-bottom:16px}.answer-key{background:#ecfdf5;border:1px solid #99f6e4;padding:12px 18px;border-radius:8px;margin-top:10px}.small{color:var(--muted);font-size:13px}.tag{display:inline-block;background:#dbeafe;color:#1e40af;padding:3px 9px;border-radius:999px;font-size:12px;margin:2px 4px 2px 0;font-weight:700} footer{margin-top:50px;padding-top:22px;border-top:1px solid var(--border);color:var(--muted);font-size:13px}
+  </style>
+</head>
+<body>
+<header>
+  <h1>Data Ingestion, ETL/ELT, DBT, DataOps and AI-Driven Transformation</h1>
+  <p><strong>Classroom Training Notes with Subtopics, Examples, Real-Time Coding, Diagrams and MCQs</strong></p>
+  <p>Audience: Python Developers, Data Engineers, ETL Developers, SQL Developers and Corporate Training Participants</p>
+</header>
+<div class="container">
+  <nav>
+    <h2>Table of Contents</h2>
+    <ol>
+      <li><a href="#topic1">Data ingestion, transformation, and loading fundamentals</a></li>
+      <li><a href="#topic2">Building basic ETL/ELT flows using Python and SQL</a></li>
+      <li><a href="#topic3">Reusable transformation workflows with DBT and modern ELT patterns</a></li>
+      <li><a href="#topic4">DataOps: modular pipeline components, config-driven transformations, logging, and debugging</a></li>
+      <li><a href="#topic5">AI-driven transformation generation, mapping logic, and code explanations</a></li>
+    </ol>
+  </nav>
+
+  <section class="summary-box">
+    <h3>Training Goal</h3>
+    <p>By the end of this tutorial, learners should understand how enterprise data moves from source systems into analytical platforms, how Python and SQL are used to build ETL/ELT pipelines, how DBT helps create reusable transformation workflows, how DataOps improves quality and reliability, and how AI tools can assist data engineers in mapping, transformation generation, documentation, testing and code explanation.</p>
+    <p><span class="tag">ETL</span><span class="tag">ELT</span><span class="tag">Python</span><span class="tag">SQL</span><span class="tag">DBT</span><span class="tag">DataOps</span><span class="tag">AI Assisted Data Engineering</span></p>
+  </section>
+
+  <section id="topic1">
+    <h2>1. Data Ingestion, Transformation, and Loading Fundamentals</h2>
+    <h3>Subtopics</h3>
+    <ul><li>What is data ingestion?</li><li>Batch ingestion vs streaming ingestion</li><li>Structured, semi-structured and unstructured data</li><li>Transformation fundamentals</li><li>Loading into data warehouse, data lake and lakehouse</li><li>ETL vs ELT difference</li><li>Common real-world ingestion challenges</li></ul>
+    <div class="trainer-note"><strong>Trainer explanation:</strong> In data engineering, the first job is to bring data from many systems into one place. After that, we clean, transform, validate and load the data so business users can use it for reporting, analytics, AI models and decision-making.</div>
+    <h3>1.1 What is Data Ingestion?</h3>
+    <p>Data ingestion means collecting data from different sources and bringing it into a target system for processing. The source can be an application database, CSV file, API, log file, IoT device, Kafka topic, cloud storage or SaaS application.</p>
+    <table><tr><th>Source Type</th><th>Example</th><th>Typical Ingestion Method</th></tr><tr><td>Database</td><td>Oracle, SQL Server, MySQL, PostgreSQL</td><td>JDBC/ODBC, CDC, export/import, replication</td></tr><tr><td>Files</td><td>CSV, JSON, Excel, Parquet</td><td>File watcher, batch load, cloud object storage</td></tr><tr><td>API</td><td>Payment API, CRM API, HR API</td><td>REST API calls, pagination, incremental pulls</td></tr><tr><td>Streaming</td><td>Clickstream, IoT, transactions</td><td>Kafka, Event Hub, Kinesis, Pub/Sub</td></tr></table>
+    <h3>1.2 Simple Example</h3><p>Suppose a retail company receives a daily sales CSV file from every store. Data ingestion means reading all those files and moving them into a central storage area.</p>
+<pre><code>Input file:
+store_id,order_id,order_date,amount
+S001,O1001,2026-06-01,2500
+S002,O1002,2026-06-01,1800
+
+Ingestion result:
+The file is loaded into a raw table or raw folder.</code></pre>
+    <h3>1.3 ETL vs ELT</h3>
+    <table><tr><th>Point</th><th>ETL</th><th>ELT</th></tr><tr><td>Full Form</td><td>Extract, Transform, Load</td><td>Extract, Load, Transform</td></tr><tr><td>Transformation Location</td><td>Before loading into warehouse</td><td>Inside warehouse/lakehouse after loading</td></tr><tr><td>Common Tools</td><td>Informatica, Talend, SSIS, Python</td><td>DBT, SQL, cloud warehouse transformations</td></tr><tr><td>Best For</td><td>Traditional controlled environments</td><td>Modern cloud data platforms</td></tr></table>
+    <div class="diagram"><h4>Diagram: ETL Flow</h4><div class="flow"><div class="box">Source Data</div><div class="arrow">→</div><div class="box">Extract</div><div class="arrow">→</div><div class="box">Transform</div><div class="arrow">→</div><div class="box">Load</div><div class="arrow">→</div><div class="box">Warehouse</div></div></div>
+    <div class="diagram"><h4>Diagram: ELT Flow</h4><div class="flow"><div class="box">Source Data</div><div class="arrow">→</div><div class="box">Extract</div><div class="arrow">→</div><div class="box">Load Raw Data</div><div class="arrow">→</div><div class="box">Transform in Warehouse</div><div class="arrow">→</div><div class="box">Analytics</div></div></div>
+    <h3>1.4 Real-Time Example: Retail Sales Ingestion</h3><p>A retail organization has 100 branches. Every branch uploads a daily sales file to cloud storage. The data engineering team must ingest those files, validate the format, clean bad records and load clean data into reporting tables.</p>
+    <h4>Python Coding Example: Read and Validate Sales Data</h4>
+<pre><code>import pandas as pd
+from pathlib import Path
+
+input_file = Path("daily_sales.csv")
+df = pd.read_csv(input_file)
+required_columns = ["store_id", "order_id", "order_date", "amount"]
+missing_columns = [col for col in required_columns if col not in df.columns]
+if missing_columns:
+    raise ValueError(f"Missing columns: {missing_columns}")
+
+df["order_date"] = pd.to_datetime(df["order_date"], errors="coerce")
+df["amount"] = pd.to_numeric(df["amount"], errors="coerce")
+valid_df = df.dropna(subset=["store_id", "order_id", "order_date", "amount"])
+invalid_df = df[df.isna().any(axis=1)]
+valid_df.to_csv("clean_sales.csv", index=False)
+invalid_df.to_csv("rejected_sales.csv", index=False)
+print("Valid records:", len(valid_df))
+print("Rejected records:", len(invalid_df))</code></pre>
+    <h4>SQL Loading Example</h4>
+<pre><code>CREATE TABLE raw_sales (
+    store_id     VARCHAR(20),
+    order_id     VARCHAR(20),
+    order_date   DATE,
+    amount       DECIMAL(12,2)
+);
+
+CREATE TABLE sales_summary AS
+SELECT store_id, order_date, SUM(amount) AS total_sales
+FROM raw_sales
+GROUP BY store_id, order_date;</code></pre>
+    <div class="classroom-activity"><strong>Classroom Activity:</strong> Give learners a CSV file with 10 valid records and 5 invalid records. Ask them to create two outputs: <code>clean_sales.csv</code> and <code>rejected_sales.csv</code>.</div>
+    <div class="mcq"><h3>MCQs - Topic 1</h3><ol><li>What is data ingestion?<br>A. Creating dashboard charts<br>B. Collecting data from source systems into a target system<br>C. Deleting duplicate users only<br>D. Writing only SQL joins</li><li>Which is the correct order in ETL?<br>A. Load, Extract, Transform<br>B. Extract, Transform, Load<br>C. Transform, Load, Extract<br>D. Extract, Load, Transform</li><li>Which approach commonly transforms data inside the warehouse?<br>A. ELT<br>B. FTP<br>C. DNS<br>D. SMTP</li><li>Which is a semi-structured data format?<br>A. JSON<br>B. Integer<br>C. CPU<br>D. Index</li><li>What is a common ingestion challenge?<br>A. Missing columns and bad data format<br>B. High monitor brightness<br>C. Keyboard layout<br>D. Printer speed</li></ol><div class="answer-key"><strong>Answer Key:</strong> 1-B, 2-B, 3-A, 4-A, 5-A</div></div>
+  </section>
+
+  <section id="topic2">
+    <h2>2. Building Basic ETL/ELT Flows Using Python and SQL</h2>
+    <h3>Subtopics</h3><ul><li>ETL pipeline structure</li><li>Reading source data using Python</li><li>Cleaning and transforming data</li><li>Loading data into SQL tables</li><li>Using SQL for transformations</li><li>Incremental loading basics</li><li>Error handling and rejected records</li></ul>
+    <div class="trainer-note"><strong>Trainer explanation:</strong> Python is useful for orchestration, file handling, API calls and pre-processing. SQL is powerful for joins, aggregations, filters and warehouse-side transformations. A good data engineer should know when to use Python and when to use SQL.</div>
+    <h3>2.1 Basic ETL Pipeline Steps</h3><ol><li><strong>Extract:</strong> Read data from CSV/API/database.</li><li><strong>Validate:</strong> Check schema, nulls, duplicates and data types.</li><li><strong>Transform:</strong> Clean, standardize, calculate and join.</li><li><strong>Load:</strong> Insert into target table or file.</li><li><strong>Audit:</strong> Store record counts, rejected records and execution status.</li></ol>
+    <div class="diagram"><h4>Diagram: Python + SQL ETL Flow</h4><div class="flow"><div class="box">CSV/API/DB</div><div class="arrow">→</div><div class="box">Python Extract</div><div class="arrow">→</div><div class="box">Validation</div><div class="arrow">→</div><div class="box">SQL Transform</div><div class="arrow">→</div><div class="box">Target Table</div></div></div>
+    <h3>2.2 Simple Example</h3><p>We receive customer data where names have extra spaces and emails are in mixed case. We clean the data and load it into a database table.</p>
+<pre><code>Input:
+customer_id,name,email
+1,  Ravi Kumar  ,RAVI@GMAIL.COM
+2,Meena Rao,MEENA@YAHOO.COM
+
+Output:
+customer_id,name,email
+1,Ravi Kumar,ravi@gmail.com
+2,Meena Rao,meena@yahoo.com</code></pre>
+    <h3>2.3 Real-Time Example: Customer Data ETL</h3><p>In a banking or retail project, customer records may arrive from CRM, branch systems and digital applications. The pipeline must standardize names, clean emails, remove duplicates and load data into a customer master table.</p>
+    <h4>Python Code: Extract and Transform</h4>
+<pre><code>import pandas as pd
+from sqlalchemy import create_engine
+
+customers = pd.read_csv("customers.csv")
+customers["name"] = customers["name"].str.strip().str.title()
+customers["email"] = customers["email"].str.strip().str.lower()
+customers = customers.drop_duplicates(subset=["customer_id"], keep="last")
+customers["processed_at"] = pd.Timestamp.now()
+
+engine = create_engine("sqlite:///training.db")
+customers.to_sql("stg_customers", engine, if_exists="replace", index=False)
+print("Customer data loaded successfully")</code></pre>
+    <h4>SQL Code: Transform Staging to Final Table</h4>
+<pre><code>CREATE TABLE IF NOT EXISTS dim_customer (
+    customer_id INTEGER PRIMARY KEY,
+    name        VARCHAR(100),
+    email       VARCHAR(150),
+    processed_at TIMESTAMP
+);
+
+INSERT INTO dim_customer (customer_id, name, email, processed_at)
+SELECT customer_id, name, email, processed_at
+FROM stg_customers
+WHERE email IS NOT NULL;</code></pre>
+    <h3>2.4 Incremental Load Example</h3><p>In real projects, we do not always reload all data. We load only new or changed records.</p>
+<pre><code>SELECT *
+FROM source_orders
+WHERE updated_at > (
+    SELECT COALESCE(MAX(updated_at), '1900-01-01')
+    FROM target_orders
+);</code></pre>
+    <h3>2.5 Error Handling Example</h3>
+<pre><code>try:
+    df = pd.read_csv("orders.csv")
+    df["amount"] = pd.to_numeric(df["amount"], errors="coerce")
+    rejected = df[df["amount"].isna()]
+    valid = df.dropna(subset=["amount"])
+    valid.to_csv("valid_orders.csv", index=False)
+    rejected.to_csv("rejected_orders.csv", index=False)
+except Exception as ex:
+    print("ETL job failed:", str(ex))
+    # In real projects, write this error to log table or monitoring system</code></pre>
+    <div class="interview-tip"><strong>Interview Tip:</strong> Do not say Python replaces SQL. A strong answer is: "I use Python for orchestration, file handling, API extraction and custom logic. I use SQL for set-based transformations, joins, aggregations and warehouse-side processing."</div>
+    <div class="mcq"><h3>MCQs - Topic 2</h3><ol><li>Which language is best suited for set-based joins and aggregations?<br>A. SQL<br>B. HTML<br>C. CSS<br>D. YAML only</li><li>What does incremental loading mean?<br>A. Load only new or changed data<br>B. Load only images<br>C. Delete all target data every minute<br>D. Stop the pipeline</li><li>What is a staging table?<br>A. Temporary/intermediate area before final transformation<br>B. Final business dashboard<br>C. Network switch<br>D. Cloud password store</li><li>Which Python library is commonly used for tabular data processing?<br>A. Pandas<br>B. Flask only<br>C. Selenium only<br>D. Matplotlib only</li><li>Why do we keep rejected records?<br>A. For audit, correction and debugging<br>B. To increase storage cost only<br>C. To confuse users<br>D. To replace source data</li></ol><div class="answer-key"><strong>Answer Key:</strong> 1-A, 2-A, 3-A, 4-A, 5-A</div></div>
+  </section>
+
+  <section id="topic3">
+    <h2>3. Reusable Transformation Workflows with DBT and Modern ELT Patterns</h2>
+    <h3>Subtopics</h3><ul><li>What is DBT?</li><li>Why DBT is used in modern ELT</li><li>DBT project structure</li><li>Models, sources, refs and lineage</li><li>Staging, intermediate and marts layers</li><li>Tests and documentation</li><li>Macros and reusable SQL</li><li>Incremental models</li></ul>
+    <div class="trainer-note"><strong>Trainer explanation:</strong> DBT helps data teams transform data using SQL in a structured, modular and version-controlled way. Instead of writing random SQL scripts, we create models that depend on each other and produce a clear data lineage.</div>
+    <h3>3.1 What is DBT?</h3><p>DBT is used mainly for the transformation part of modern ELT. Data is already loaded into a warehouse or lakehouse, and DBT helps transform raw data into clean, business-ready tables.</p>
+    <div class="diagram"><h4>Diagram: Modern ELT with DBT</h4><div class="flow"><div class="box">Source Systems</div><div class="arrow">→</div><div class="box">Load Raw Data</div><div class="arrow">→</div><div class="box">DBT Models</div><div class="arrow">→</div><div class="box">Data Marts</div><div class="arrow">→</div><div class="box">BI / Reports</div></div></div>
+    <h3>3.2 DBT Project Structure</h3>
+<pre><code>my_dbt_project/
+├── dbt_project.yml
+├── models/
+│   ├── staging/stg_orders.sql
+│   ├── intermediate/int_order_amounts.sql
+│   └── marts/fct_sales.sql
+├── macros/clean_text.sql
+├── seeds/country_codes.csv
+└── tests/assert_positive_sales.sql</code></pre>
+    <h3>3.3 Simple DBT Model Example</h3>
+<pre><code>-- models/staging/stg_orders.sql
+SELECT
+    order_id,
+    customer_id,
+    CAST(order_date AS DATE) AS order_date,
+    CAST(amount AS DECIMAL(12,2)) AS amount
+FROM {{ source('raw', 'orders') }}
+WHERE order_id IS NOT NULL;</code></pre>
+    <h3>3.4 Using ref()</h3><p>The <code>ref()</code> function is used to reference another DBT model. It also creates dependency and lineage between models.</p>
+<pre><code>-- models/marts/fct_sales.sql
+SELECT customer_id, order_date, SUM(amount) AS total_sales
+FROM {{ ref('stg_orders') }}
+GROUP BY customer_id, order_date;</code></pre>
+    <h3>3.5 Sources</h3><p>Sources represent raw tables loaded by ingestion tools. By declaring sources, we can document raw tables and test source freshness.</p>
+<pre><code># models/sources.yml
+version: 2
+sources:
+  - name: raw
+    tables:
+      - name: orders
+      - name: customers</code></pre>
+    <h3>3.6 Tests</h3><p>DBT tests help validate assumptions about data.</p>
+<pre><code># models/schema.yml
+version: 2
+models:
+  - name: stg_orders
+    columns:
+      - name: order_id
+        tests:
+          - not_null
+          - unique
+      - name: amount
+        tests:
+          - not_null</code></pre>
+    <h3>3.7 Macro Example</h3><p>Macros allow us to reuse SQL logic.</p>
+<pre><code>-- macros/clean_email.sql
+{% macro clean_email(column_name) %}
+    LOWER(TRIM({{ column_name }}))
+{% endmacro %}</code></pre>
+<pre><code>-- models/staging/stg_customers.sql
+SELECT
+    customer_id,
+    customer_name,
+    {{ clean_email('email') }} AS email
+FROM {{ source('raw', 'customers') }};</code></pre>
+    <h3>3.8 Real-Time Example: Retail Sales DBT Flow</h3><p>In a retail analytics project, raw orders and customers are loaded into the warehouse. DBT is used to build cleaned staging tables, intermediate order calculations and final sales fact tables.</p>
+    <div class="diagram"><h4>Diagram: DBT Layering Pattern</h4><div class="flow"><div class="box">raw.orders</div><div class="arrow">→</div><div class="box">stg_orders</div><div class="arrow">→</div><div class="box">int_order_amounts</div><div class="arrow">→</div><div class="box">fct_sales</div></div></div>
+    <h4>Staging Model</h4><pre><code>-- stg_orders.sql
+SELECT order_id, customer_id, CAST(order_date AS DATE) AS order_date, amount
+FROM {{ source('raw', 'orders') }}
+WHERE order_id IS NOT NULL;</code></pre>
+    <h4>Intermediate Model</h4><pre><code>-- int_order_amounts.sql
+SELECT
+    order_id,
+    customer_id,
+    order_date,
+    amount,
+    CASE
+        WHEN amount >= 10000 THEN 'HIGH'
+        WHEN amount >= 5000 THEN 'MEDIUM'
+        ELSE 'LOW'
+    END AS order_value_band
+FROM {{ ref('stg_orders') }};</code></pre>
+    <h4>Mart Model</h4><pre><code>-- fct_sales.sql
+SELECT
+    customer_id,
+    order_date,
+    order_value_band,
+    COUNT(*) AS total_orders,
+    SUM(amount) AS total_sales
+FROM {{ ref('int_order_amounts') }}
+GROUP BY customer_id, order_date, order_value_band;</code></pre>
+    <div class="classroom-activity"><strong>Classroom Activity:</strong> Ask learners to create three DBT models: <code>stg_customers</code>, <code>stg_orders</code> and <code>fct_customer_sales</code>. Then ask them to add tests for <code>customer_id</code> and <code>order_id</code>.</div>
+    <div class="warning"><strong>Important Note:</strong> DBT is not usually used to extract data from source systems. It is mainly used after data is already loaded into a warehouse/lakehouse.</div>
+    <div class="mcq"><h3>MCQs - Topic 3</h3><ol><li>DBT is mainly used for which part of ELT?<br>A. Transformation<br>B. Network routing<br>C. Screen design<br>D. Hardware repair</li><li>What does <code>ref()</code> do in DBT?<br>A. References another model and creates dependency<br>B. Deletes the database<br>C. Creates a virtual machine<br>D. Sends email</li><li>What is a DBT source?<br>A. Raw table loaded by ingestion tools<br>B. A CSS file<br>C. A Python package only<br>D. A monitor setting</li><li>Why do we use DBT tests?<br>A. To validate data assumptions<br>B. To increase bad records<br>C. To hide lineage<br>D. To stop SQL execution permanently</li><li>What is the use of DBT macros?<br>A. Reuse SQL logic<br>B. Store images<br>C. Replace all databases<br>D. Install operating system</li></ol><div class="answer-key"><strong>Answer Key:</strong> 1-A, 2-A, 3-A, 4-A, 5-A</div></div>
+  </section>
+
+  <section id="topic4">
+    <h2>4. DataOps: Modular Pipeline Components, Config-Driven Transformations, Logging, and Debugging</h2>
+    <h3>Subtopics</h3><ul><li>What is DataOps?</li><li>Modular pipeline design</li><li>Configuration-driven transformations</li><li>Logging and audit tables</li><li>Debugging transformation logic</li><li>Testing and validation</li><li>Deployment and version control basics</li></ul>
+    <div class="trainer-note"><strong>Trainer explanation:</strong> DataOps applies software engineering discipline to data pipelines. The goal is to make data pipelines reliable, testable, reusable, observable and easier to maintain.</div>
+    <h3>4.1 What is DataOps?</h3><p>DataOps is a practice that combines data engineering, DevOps, automation, monitoring, testing and collaboration. It helps teams reduce pipeline failures and improve trust in data.</p>
+    <table><tr><th>Without DataOps</th><th>With DataOps</th></tr><tr><td>One large script with hardcoded values</td><td>Modular components with configuration</td></tr><tr><td>No logging</td><td>Detailed logs and audit tables</td></tr><tr><td>Manual deployment</td><td>CI/CD and version control</td></tr><tr><td>Failures discovered by business users</td><td>Failures detected by monitoring and alerts</td></tr></table>
+    <h3>4.2 Modular Pipeline Components</h3><pre><code>pipeline/
+├── config/customer_pipeline.yml
+├── src/extract.py
+├── src/transform.py
+├── src/load.py
+├── src/validate.py
+├── src/logger.py
+└── main.py</code></pre>
+    <h3>4.3 Config-Driven Transformation Example</h3><p>Configuration-driven pipelines reduce hardcoding. Business rules can be changed in a config file instead of changing source code.</p>
+    <h4>YAML Config</h4>
+<pre><code># config/customer_pipeline.yml
+source_file: customers.csv
+target_table: dim_customer
+columns:
+  customer_id: int
+  name: string
+  email: string
+  country: string
+transformations:
+  trim_columns:
+    - name
+    - email
+  lowercase_columns:
+    - email
+  mandatory_columns:
+    - customer_id
+    - email</code></pre>
+    <h4>Python Code</h4>
+<pre><code>import pandas as pd
+import yaml
+
+with open("config/customer_pipeline.yml", "r") as file:
+    config = yaml.safe_load(file)
+
+df = pd.read_csv(config["source_file"])
+for col in config["transformations"]["trim_columns"]:
+    df[col] = df[col].astype(str).str.strip()
+for col in config["transformations"]["lowercase_columns"]:
+    df[col] = df[col].astype(str).str.lower()
+mandatory = config["transformations"]["mandatory_columns"]
+valid_df = df.dropna(subset=mandatory)
+print("Target table:", config["target_table"])
+print("Valid records:", len(valid_df))</code></pre>
+    <h3>4.4 Logging Example</h3><pre><code>import logging
+import pandas as pd
+
+logging.basicConfig(
+    filename="pipeline.log",
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logging.info("Pipeline started")
+try:
+    df = pd.read_csv("orders.csv")
+    logging.info("Input records: %s", len(df))
+    df = df.dropna(subset=["order_id"])
+    logging.info("Valid records after validation: %s", len(df))
+except Exception as e:
+    logging.error("Pipeline failed: %s", str(e))
+    raise
+logging.info("Pipeline completed successfully")</code></pre>
+    <h3>4.5 Audit Table Example</h3><pre><code>CREATE TABLE pipeline_audit (
+    pipeline_name     VARCHAR(100),
+    run_id            VARCHAR(100),
+    start_time        TIMESTAMP,
+    end_time          TIMESTAMP,
+    input_count       INTEGER,
+    output_count      INTEGER,
+    rejected_count    INTEGER,
+    status            VARCHAR(20),
+    error_message     VARCHAR(1000)
+);</code></pre>
+    <h3>4.6 Debugging Transformation Logic</h3><table><tr><th>Issue</th><th>Possible Cause</th><th>Debugging Step</th></tr><tr><td>Record count mismatch</td><td>Filter condition removed records</td><td>Check count before and after every transformation</td></tr><tr><td>Null values in output</td><td>Source data issue or transformation bug</td><td>Profile nulls by column</td></tr><tr><td>Duplicate records</td><td>Join condition incorrect</td><td>Check join keys and duplicate source keys</td></tr><tr><td>Wrong aggregation</td><td>Incorrect group by columns</td><td>Validate with sample data manually</td></tr></table>
+    <div class="diagram"><h4>Diagram: DataOps Feedback Loop</h4><div class="flow"><div class="box">Code</div><div class="arrow">→</div><div class="box">Test</div><div class="arrow">→</div><div class="box">Deploy</div><div class="arrow">→</div><div class="box">Monitor</div><div class="arrow">→</div><div class="box">Improve</div></div></div>
+    <div class="classroom-activity"><strong>Classroom Activity:</strong> Give a pipeline with an incorrect join. Ask learners to detect why row count increased from 1,000 records to 8,000 records. Guide them to check duplicate keys and join conditions.</div>
+    <div class="mcq"><h3>MCQs - Topic 4</h3><ol><li>What is the main goal of DataOps?<br>A. Reliable, automated and observable data pipelines<br>B. Manual copy-paste of reports<br>C. Removing all tests<br>D. Avoiding documentation</li><li>What is a config-driven pipeline?<br>A. Pipeline controlled by external configuration instead of hardcoding<br>B. Pipeline without source data<br>C. Pipeline that only displays images<br>D. Pipeline that cannot be changed</li><li>Why is logging important?<br>A. To track pipeline execution, errors and record counts<br>B. To increase file size only<br>C. To hide failures<br>D. To replace source system</li><li>Which table stores pipeline run details?<br>A. Audit table<br>B. Color table<br>C. Font table<br>D. Keyboard table</li><li>Row count increases unexpectedly after a join. What is a likely reason?<br>A. Duplicate join keys<br>B. Good monitor quality<br>C. File name is short<br>D. Data is encrypted</li></ol><div class="answer-key"><strong>Answer Key:</strong> 1-A, 2-A, 3-A, 4-A, 5-A</div></div>
+  </section>
+
+  <section id="topic5">
+    <h2>5. AI-Driven Transformation Generation, Mapping Logic, and Code Explanations</h2>
+    <h3>Subtopics</h3><ul><li>How AI helps data engineers</li><li>Prompting AI for transformation logic</li><li>Generating SQL and Python transformations</li><li>Explaining existing code</li><li>Creating mapping documents</li><li>Validating AI-generated output</li><li>AI safety and governance in data engineering</li></ul>
+    <div class="trainer-note"><strong>Trainer explanation:</strong> AI should be treated as an assistant, not as the final authority. A data engineer can use AI to generate draft SQL, mapping logic, documentation, tests and code explanations. But every AI output must be reviewed, tested and validated.</div>
+    <h3>5.1 How AI Helps in Data Transformation</h3><table><tr><th>AI Use Case</th><th>Example</th></tr><tr><td>Mapping logic generation</td><td>Convert business rules into SQL transformation logic</td></tr><tr><td>Code explanation</td><td>Explain complex SQL joins or Python scripts</td></tr><tr><td>Test case generation</td><td>Create data validation checks for nulls, duplicates and totals</td></tr><tr><td>Documentation</td><td>Generate column-level descriptions and pipeline notes</td></tr><tr><td>Debugging assistance</td><td>Suggest possible causes for row count mismatch</td></tr></table>
+    <h3>5.2 Prompt Template for Transformation Generation</h3><pre><code>You are a senior data engineer.
+Create SQL transformation logic using the following mapping rules.
+
+Source table: raw_orders
+Target table: fct_sales
+
+Rules:
+1. order_id should not be null.
+2. order_date should be converted to DATE.
+3. amount should be converted to DECIMAL(12,2).
+4. If amount >= 10000, order_value_band = 'HIGH'.
+5. If amount between 5000 and 9999, order_value_band = 'MEDIUM'.
+6. Otherwise order_value_band = 'LOW'.
+
+Return:
+1. SQL query
+2. Validation checks
+3. Explanation of logic</code></pre>
+    <h3>5.3 AI-Generated SQL Example</h3><pre><code>SELECT
+    order_id,
+    customer_id,
+    CAST(order_date AS DATE) AS order_date,
+    CAST(amount AS DECIMAL(12,2)) AS amount,
+    CASE
+        WHEN CAST(amount AS DECIMAL(12,2)) >= 10000 THEN 'HIGH'
+        WHEN CAST(amount AS DECIMAL(12,2)) >= 5000 THEN 'MEDIUM'
+        ELSE 'LOW'
+    END AS order_value_band
+FROM raw_orders
+WHERE order_id IS NOT NULL;</code></pre>
+    <h3>5.4 AI-Generated Python Example</h3><pre><code>import pandas as pd
+
+df = pd.read_csv("raw_orders.csv")
+df = df[df["order_id"].notna()]
+df["order_date"] = pd.to_datetime(df["order_date"], errors="coerce")
+df["amount"] = pd.to_numeric(df["amount"], errors="coerce")
+
+def value_band(amount):
+    if amount >= 10000:
+        return "HIGH"
+    elif amount >= 5000:
+        return "MEDIUM"
+    return "LOW"
+
+df["order_value_band"] = df["amount"].apply(value_band)
+df.to_csv("fct_sales.csv", index=False)</code></pre>
+    <h3>5.5 Mapping Document Example</h3><table><tr><th>Source Column</th><th>Target Column</th><th>Transformation Rule</th><th>Validation</th></tr><tr><td>raw_orders.order_id</td><td>fct_sales.order_id</td><td>Direct mapping</td><td>Not null, unique if order-level fact</td></tr><tr><td>raw_orders.order_date</td><td>fct_sales.order_date</td><td>Cast to DATE</td><td>Reject invalid dates</td></tr><tr><td>raw_orders.amount</td><td>fct_sales.amount</td><td>Cast to DECIMAL(12,2)</td><td>Must be greater than or equal to 0</td></tr><tr><td>raw_orders.amount</td><td>fct_sales.order_value_band</td><td>HIGH/MEDIUM/LOW based on amount</td><td>Must not be null</td></tr></table>
+    <h3>5.6 Real-Time Example: AI-Assisted Data Mapping for Customer 360</h3><p>A company wants to build a Customer 360 table by combining CRM data, order data and support ticket data. The data engineer can use AI to create an initial mapping document, transformation SQL and test cases.</p>
+    <div class="diagram"><h4>Diagram: AI-Assisted Transformation Workflow</h4><div class="flow"><div class="box">Business Rules</div><div class="arrow">→</div><div class="box">AI Draft Mapping</div><div class="arrow">→</div><div class="box">Engineer Review</div><div class="arrow">→</div><div class="box">Code + Tests</div><div class="arrow">→</div><div class="box">Production Pipeline</div></div></div>
+    <h4>Prompt for Code Explanation</h4><pre><code>Explain the below SQL query in simple business language.
+Also identify possible data quality risks and suggest validation tests.
+
+&lt;paste SQL here&gt;</code></pre>
+    <h4>Prompt for Test Case Generation</h4><pre><code>Create data quality test cases for the following transformation:
+- customer_id must not be null
+- email should be lowercase
+- total_sales should match the sum of order amount
+- duplicate customers should be removed based on latest updated_at
+
+Return SQL validation queries.</code></pre>
+    <h4>Sample Validation Queries</h4><pre><code>-- Null customer check
+SELECT COUNT(*) AS null_customer_count
+FROM dim_customer
+WHERE customer_id IS NULL;
+
+-- Duplicate customer check
+SELECT customer_id, COUNT(*) AS duplicate_count
+FROM dim_customer
+GROUP BY customer_id
+HAVING COUNT(*) > 1;
+
+-- Email lowercase check
+SELECT COUNT(*) AS bad_email_count
+FROM dim_customer
+WHERE email <> LOWER(email);</code></pre>
+    <h3>5.7 AI Governance Checklist</h3><table><tr><th>Checklist Item</th><th>Why It Matters</th></tr><tr><td>Do not paste production PII into public AI tools</td><td>Prevents data leakage</td></tr><tr><td>Validate generated SQL with test data</td><td>AI may generate logically wrong code</td></tr><tr><td>Review joins carefully</td><td>Wrong joins can multiply records</td></tr><tr><td>Keep human approval for production deployment</td><td>Maintains accountability and compliance</td></tr><tr><td>Document prompts and outputs when needed</td><td>Supports audit and repeatability</td></tr></table>
+    <div class="warning"><strong>Trainer Warning:</strong> AI can confidently produce wrong SQL. Always verify logic using row counts, reconciliation queries, sample data checks and business validation.</div>
+    <div class="classroom-activity"><strong>Classroom Activity:</strong> Give learners a business rule document and ask them to write an AI prompt to generate SQL. Then ask them to review the generated SQL and identify at least three validation checks.</div>
+    <div class="mcq"><h3>MCQs - Topic 5</h3><ol><li>What is the safest way to use AI-generated SQL?<br>A. Review, test and validate before use<br>B. Directly deploy to production<br>C. Never read the output<br>D. Delete all test cases</li><li>Which item should not be pasted into public AI tools?<br>A. Production PII data<br>B. Dummy sample data<br>C. Generic schema names<br>D. Training example with fake records</li><li>AI can help data engineers create:<br>A. Mapping documents and validation queries<br>B. Physical monitors<br>C. Network cables<br>D. Office chairs</li><li>Why should joins be reviewed carefully?<br>A. Wrong joins can duplicate or multiply records<br>B. Joins always delete all data<br>C. Joins are only for HTML<br>D. Joins cannot be tested</li><li>What is a good AI prompt practice?<br>A. Provide source, target, rules and expected output format<br>B. Ask only "do something"<br>C. Hide all requirements<br>D. Use no context</li></ol><div class="answer-key"><strong>Answer Key:</strong> 1-A, 2-A, 3-A, 4-A, 5-A</div></div>
+  </section>
+
+  <section><h2>Final Mini Project for Classroom</h2><h3>Project: Retail Customer Sales ELT Pipeline</h3><p>Build a small data engineering pipeline using Python, SQL, DBT-style models, logging and AI-assisted documentation.</p><h4>Input Files</h4><ul><li><code>customers.csv</code></li><li><code>orders.csv</code></li><li><code>products.csv</code></li></ul><h4>Expected Output</h4><ul><li><code>dim_customer</code></li><li><code>dim_product</code></li><li><code>fct_sales</code></li><li>Rejected records file</li><li>Pipeline audit table</li><li>Data quality validation queries</li><li>AI-generated mapping document reviewed by learner</li></ul><div class="diagram"><h4>Diagram: End-to-End Project Architecture</h4><div class="flow"><div class="box">CSV Files</div><div class="arrow">→</div><div class="box">Python Ingestion</div><div class="arrow">→</div><div class="box">Raw Tables</div><div class="arrow">→</div><div class="box">DBT-Style SQL</div><div class="arrow">→</div><div class="box">Data Marts</div><div class="arrow">→</div><div class="box">Reports</div></div></div></section>
+  <footer><p><strong>Trainer Note:</strong> This material is designed for classroom delivery. The code examples are intentionally simple and can be extended to PostgreSQL, SQL Server, Oracle, Snowflake, BigQuery, Databricks or other warehouse platforms.</p><p><strong>Recommended Delivery Style:</strong> Explain concept → show small example → run code → discuss real-time scenario → ask MCQs → give mini assignment.</p><p><strong>Reference Notes:</strong> DBT concepts used in this document include models, sources, ref(), source(), Jinja macros and tests based on DBT developer documentation.</p></footer>
+</div>
+</body>
+</html>
