@@ -1,0 +1,5 @@
+order_id,customer_id,product_id,store_id,order_date,quantity,amount,order_status,rejection_reason,rejected_at
+1007,2,104,11,BAD_DATE,1,12000.0,Completed,Invalid order date,2026-06-15 11:33:27
+1007,2,104,11,BAD_DATE,1,12000.0,Completed,Invalid order date,2026-06-15 11:33:27
+1008,3,102,13,2026-06-08,,700.0,Completed,Invalid quantity,2026-06-15 11:33:27
+1009,99,105,10,2026-06-08,3,240.0,Completed,Customer not found,2026-06-15 11:33:27

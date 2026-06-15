@@ -1,0 +1,5 @@
+store_id,store_name,region,city,updated_at,processed_at
+10,Miyapur Store,South,Hyderabad,2026-06-01 09:00:00,2026-06-15 11:33:27
+11,Whitefield Store,South,Bengaluru,2026-06-01 09:00:00,2026-06-15 11:33:27
+12,T Nagar Store,South,Chennai,2026-06-01 09:00:00,2026-06-15 11:33:27
+13,Manhattan Store,East,New York,2026-06-01 09:00:00,2026-06-15 11:33:27

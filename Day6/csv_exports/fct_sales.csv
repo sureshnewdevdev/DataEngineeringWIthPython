@@ -1,0 +1,7 @@
+sales_key,order_id,customer_key,product_key,store_key,date_key,quantity,amount,order_status
+1,1001,1,1,1,20260605,1,55000.0,Completed
+2,1002,2,2,2,20260605,2,1400.0,Completed
+3,1003,3,4,4,20260606,1,12000.0,Completed
+4,1004,4,3,3,20260606,1,8500.0,Completed
+5,1005,1,5,1,20260607,10,800.0,Completed
+6,1006,5,1,1,20260607,1,55000.0,Pending

@@ -1,0 +1,6 @@
+audit_id,pipeline_name,layer_name,input_count,output_count,rejected_count,status,execution_time,comments
+1,Retail DW Pipeline,Source,9,9,0,SUCCESS,2026-06-15 10:00:00,Source data available
+2,Retail DW Pipeline,Staging,9,9,0,SUCCESS,2026-06-15 10:01:00,Staging cleanup completed
+3,Retail DW Pipeline,Rejected,9,4,4,SUCCESS,2026-06-15 10:02:00,Bad records captured
+4,Retail DW Pipeline,Dimensions,15,14,0,SUCCESS,2026-06-15 10:03:00,Dimensions loaded
+5,Retail DW Pipeline,Fact,9,6,4,SUCCESS,2026-06-15 10:04:00,Fact table loaded

@@ -1,0 +1,7 @@
+customer_id,customer_name,email,city,country,updated_at,processed_at
+1,Ravi Kumar,ravi.kumar@email.com,Hyderabad,India,2026-06-01 10:00:00,2026-06-15 11:33:27
+2,Meena Rao,meena.rao@email.com,Bengaluru,India,2026-06-01 11:00:00,2026-06-15 11:33:27
+3,John Smith,john.smith@email.com,New York,USA,2026-06-02 09:00:00,2026-06-15 11:33:27
+4,Anita Sharma,anita.sharma@email.com,Chennai,India,2026-06-02 12:00:00,2026-06-15 11:33:27
+5,Kiran Das,,Pune,India,2026-06-03 10:00:00,2026-06-15 11:33:27
+2,Meena R,meena.rao@email.com,Bengaluru,India,2026-06-04 08:00:00,2026-06-15 11:33:27

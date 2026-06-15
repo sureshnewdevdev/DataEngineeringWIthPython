@@ -1,0 +1,6 @@
+product_key,product_id,product_name,category,price
+1,101,Laptop,Electronics,55000.0
+2,102,Mouse,Electronics,700.0
+3,103,Office Chair,Furniture,8500.0
+4,104,Monitor,Electronics,12000.0
+5,105,Notebook,Stationery,80.0
