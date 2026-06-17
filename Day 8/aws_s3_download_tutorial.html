@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AWS S3 File Download Using Python</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+            background: #f4f7fb;
+            color: #1f2937;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+        .hero {
+            background: linear-gradient(135deg, #0f172a, #1e40af);
+            color: white;
+            padding: 38px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 24px rgba(15, 23, 42, 0.25);
+        }
+        .hero h1 {
+            margin: 0 0 10px;
+            font-size: 34px;
+        }
+        .hero p {
+            margin: 0;
+            font-size: 18px;
+            opacity: 0.95;
+        }
+        .card {
+            background: white;
+            border-radius: 14px;
+            padding: 26px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+            border: 1px solid #e5e7eb;
+        }
+        h2 {
+            color: #0f172a;
+            border-left: 5px solid #2563eb;
+            padding-left: 12px;
+            margin-top: 0;
+        }
+        h3 {
+            color: #1e3a8a;
+        }
+        code, pre {
+            font-family: Consolas, Monaco, 'Courier New', monospace;
+        }
+        pre {
+            background: #111827;
+            color: #e5e7eb;
+            padding: 18px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-size: 14px;
+        }
+        .note {
+            background: #eff6ff;
+            border-left: 5px solid #2563eb;
+            padding: 14px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        .warning {
+            background: #fff7ed;
+            border-left: 5px solid #f97316;
+            padding: 14px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        th {
+            background: #1e40af;
+            color: white;
+        }
+        th, td {
+            border: 1px solid #d1d5db;
+            padding: 12px;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        .footer {
+            text-align: center;
+            color: #6b7280;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="hero">
+            <h1>AWS S3 File Download Using Python</h1>
+            <p>Step-by-step classroom-style guide to download files from an Amazon S3 bucket using Python and boto3.</p>
+        </section>
+
+        <section class="card">
+            <h2>Objective</h2>
+            <p>This tutorial explains how to access an AWS S3 bucket and download files using a Python program.</p>
+            <p>The program can download:</p>
+            <ul>
+                <li>All files from an S3 bucket</li>
+                <li>Files from a specific S3 folder/prefix</li>
+                <li>Files while preserving folder structure locally</li>
+            </ul>
+        </section>
+
+        <section class="card">
+            <h2>Step 1: Check Python Installation</h2>
+            <p>Open Command Prompt and run:</p>
+            <pre><code>python --version</code></pre>
+            <p>or:</p>
+            <pre><code>py --version</code></pre>
+            <p>If Python is not installed, install Python first.</p>
+        </section>
+
+        <section class="card">
+            <h2>Step 2: Install AWS CLI</h2>
+            <p>Check whether AWS CLI is installed:</p>
+            <pre><code>aws --version</code></pre>
+            <p>If it is not installed, install AWS CLI Version 2. After installation, run the same command again.</p>
+        </section>
+
+        <section class="card">
+            <h2>Step 3: Configure AWS Credentials</h2>
+            <p>Run this command:</p>
+            <pre><code>aws configure</code></pre>
+            <p>Enter the following values:</p>
+            <pre><code>AWS Access Key ID [None]: your-access-key-id
+AWS Secret Access Key [None]: your-secret-access-key
+Default region name [None]: ap-south-1
+Default output format [None]: json</code></pre>
+            <div class="warning">
+                <strong>Important:</strong> Never share your AWS Secret Access Key with anyone. Do not paste it in GitHub, WhatsApp, or screenshots.
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Step 4: Required IAM Permissions</h2>
+            <p>The IAM user should have permission to list and download files from the bucket.</p>
+            <pre><code>{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME"
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject"
+      ],
+      "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME/*"
+    }
+  ]
+}</code></pre>
+            <p>Replace <code>YOUR_BUCKET_NAME</code> with your real bucket name.</p>
+        </section>
+
+        <section class="card">
+            <h2>Step 5: Test S3 Access</h2>
+            <p>List all buckets:</p>
+            <pre><code>aws s3 ls</code></pre>
+            <p>List files inside a specific bucket:</p>
+            <pre><code>aws s3 ls s3://YOUR_BUCKET_NAME</code></pre>
+        </section>
+
+        <section class="card">
+            <h2>Step 6: Install boto3</h2>
+            <p>boto3 is the AWS SDK for Python.</p>
+            <pre><code>pip install boto3</code></pre>
+            <p>or:</p>
+            <pre><code>py -m pip install boto3</code></pre>
+        </section>
+
+        <section class="card">
+            <h2>Step 7: Python Program</h2>
+            <p>Create a file named <code>download_s3_files.py</code> and paste this code:</p>
+            <pre><code>import boto3
+import os
+from botocore.exceptions import ClientError, NoCredentialsError
+
+
+def download_files_from_s3(bucket_name, s3_prefix, local_download_folder):
+    """
+    Download files from an AWS S3 bucket.
+
+    bucket_name: Name of the S3 bucket.
+    s3_prefix: Folder path inside bucket. Use empty string "" to download all files.
+    local_download_folder: Local folder where files will be downloaded.
+    """
+
+    try:
+        s3_client = boto3.client("s3")
+        paginator = s3_client.get_paginator("list_objects_v2")
+
+        pages = paginator.paginate(
+            Bucket=bucket_name,
+            Prefix=s3_prefix
+        )
+
+        file_count = 0
+
+        for page in pages:
+            if "Contents" not in page:
+                print("No files found in the given S3 path.")
+                return
+
+            for obj in page["Contents"]:
+                s3_key = obj["Key"]
+
+                if s3_key.endswith("/"):
+                    continue
+
+                relative_path = s3_key[len(s3_prefix):] if s3_prefix else s3_key
+                local_file_path = os.path.join(local_download_folder, relative_path)
+
+                local_dir = os.path.dirname(local_file_path)
+                if local_dir:
+                    os.makedirs(local_dir, exist_ok=True)
+
+                print(f"Downloading: s3://{bucket_name}/{s3_key}")
+                print(f"Saving to   : {local_file_path}")
+
+                s3_client.download_file(
+                    bucket_name,
+                    s3_key,
+                    local_file_path
+                )
+
+                file_count += 1
+
+        print("--------------------------------")
+        print("Download completed successfully.")
+        print(f"Total files downloaded: {file_count}")
+
+    except NoCredentialsError:
+        print("AWS credentials not found.")
+        print("Please run: aws configure")
+
+    except ClientError as error:
+        print("AWS error occurred:")
+        print(error)
+
+    except Exception as error:
+        print("Unexpected error occurred:")
+        print(error)
+
+
+if __name__ == "__main__":
+    BUCKET_NAME = "YOUR_BUCKET_NAME"
+    S3_PREFIX = ""
+    LOCAL_DOWNLOAD_FOLDER = "s3_downloads"
+
+    download_files_from_s3(
+        BUCKET_NAME,
+        S3_PREFIX,
+        LOCAL_DOWNLOAD_FOLDER
+    )</code></pre>
+        </section>
+
+        <section class="card">
+            <h2>Step 8: Update Bucket Name</h2>
+            <p>Change this line:</p>
+            <pre><code>BUCKET_NAME = "YOUR_BUCKET_NAME"</code></pre>
+            <p>Example:</p>
+            <pre><code>BUCKET_NAME = "my-company-bucket"</code></pre>
+        </section>
+
+        <section class="card">
+            <h2>Step 9: Download All Files</h2>
+            <p>To download all files from the bucket, keep:</p>
+            <pre><code>S3_PREFIX = ""</code></pre>
+        </section>
+
+        <section class="card">
+            <h2>Step 10: Download Files from One Folder</h2>
+            <p>If your S3 path is:</p>
+            <pre><code>s3://my-company-bucket/documents/</code></pre>
+            <p>Use:</p>
+            <pre><code>S3_PREFIX = "documents/"</code></pre>
+        </section>
+
+        <section class="card">
+            <h2>Step 11: Run the Program</h2>
+            <p>Run:</p>
+            <pre><code>python download_s3_files.py</code></pre>
+            <p>or:</p>
+            <pre><code>py download_s3_files.py</code></pre>
+            <p>Downloaded files will be saved inside:</p>
+            <pre><code>s3_downloads</code></pre>
+        </section>
+
+        <section class="card">
+            <h2>Common Errors and Fixes</h2>
+            <table>
+                <tr>
+                    <th>Error</th>
+                    <th>Meaning</th>
+                    <th>Fix</th>
+                </tr>
+                <tr>
+                    <td>Unable to locate credentials</td>
+                    <td>AWS credentials are not configured</td>
+                    <td>Run <code>aws configure</code></td>
+                </tr>
+                <tr>
+                    <td>Access Denied</td>
+                    <td>IAM user does not have permission</td>
+                    <td>Add <code>s3:ListBucket</code> and <code>s3:GetObject</code></td>
+                </tr>
+                <tr>
+                    <td>No files found</td>
+                    <td>Bucket or prefix may be wrong</td>
+                    <td>Check bucket name and <code>S3_PREFIX</code></td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="card">
+            <h2>Memory Points</h2>
+            <ul>
+                <li><strong>S3 bucket</strong> means main storage container.</li>
+                <li><strong>S3 prefix</strong> means folder path inside bucket.</li>
+                <li><strong>S3 key</strong> means full file path inside bucket.</li>
+                <li><strong>download_file()</strong> downloads one file.</li>
+                <li><strong>list_objects_v2()</strong> lists files from S3.</li>
+            </ul>
+        </section>
+
+        <div class="footer">
+            AWS S3 Python Download Tutorial
+        </div>
+    </div>
+</body>
+</html>
