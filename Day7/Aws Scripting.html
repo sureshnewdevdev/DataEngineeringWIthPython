@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Classroom Notes · AWS Data Engineering & DataOps</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background: #f5f7fc;
+      font-family: 'Segoe UI', Roboto, system-ui, sans-serif;
+      padding: 2rem 1.5rem;
+      color: #1a2639;
+    }
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 32px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+      padding: 2.5rem 2.8rem;
+    }
+    h1 {
+      font-size: 2.4rem;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      background: linear-gradient(145deg, #0b1e3a, #1f3a6b);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      border-left: 6px solid #ff9f1c;
+      padding-left: 1.2rem;
+      margin-bottom: 0.5rem;
+    }
+    .subhead {
+      font-size: 1.1rem;
+      color: #3e4a66;
+      margin-bottom: 2.5rem;
+      margin-top: 0.2rem;
+      padding-left: 2rem;
+      border-bottom: 1px solid #eaeef5;
+      padding-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: #eef3fa;
+      border-radius: 40px;
+      padding: 0.2rem 1.2rem;
+      font-weight: 500;
+      color: #1f3a6b;
+      font-size: 0.9rem;
+    }
+    h2 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      margin-top: 2.8rem;
+      margin-bottom: 1.2rem;
+      color: #0b1e3a;
+      border-bottom: 3px solid #ffb347;
+      padding-bottom: 0.4rem;
+      display: inline-block;
+    }
+    h3 {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-top: 2rem;
+      margin-bottom: 0.8rem;
+      color: #1f3a6b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    h3 i {
+      font-size: 1.1rem;
+      color: #ff9f1c;
+    }
+    .grid-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin: 1.2rem 0 1.8rem 0;
+    }
+    .card {
+      background: #fafbff;
+      border-radius: 24px;
+      padding: 1.5rem 1.8rem;
+      box-shadow: 0 4px 12px rgba(0, 20, 40, 0.04);
+      border: 1px solid #eef2f9;
+      transition: 0.2s;
+    }
+    .card:hover {
+      border-color: #d0ddea;
+      background: #f8faff;
+    }
+    .card h4 {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #0f2a4f;
+      margin-bottom: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+    .card ul, .card p {
+      font-size: 0.98rem;
+      line-height: 1.6;
+      color: #1f2c44;
+    }
+    .card ul {
+      padding-left: 1.4rem;
+      margin: 0.5rem 0;
+    }
+    .card li {
+      margin-bottom: 0.3rem;
+    }
+    .code-block {
+      background: #0d1b2b;
+      border-radius: 20px;
+      padding: 1.4rem 1.8rem;
+      color: #e4edf5;
+      font-family: 'JetBrains Mono', 'Fira Code', monospace;
+      font-size: 0.9rem;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+      margin: 1.2rem 0 1.8rem 0;
+      border-left: 6px solid #ff9f1c;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    }
+    .code-block .comment {
+      color: #7fa3c9;
+    }
+    .code-block .keyword {
+      color: #ffb347;
+    }
+    .code-block .string {
+      color: #9fdfb2;
+    }
+    .script-note {
+      background: #eaf3e9;
+      border-radius: 20px;
+      padding: 1rem 1.8rem;
+      border-left: 8px solid #2b7a4b;
+      margin: 1.5rem 0;
+    }
+    .script-note strong {
+      color: #0f4b2e;
+    }
+    .checklist {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem 1.8rem;
+      background: #f1f6fe;
+      padding: 1.2rem 2rem;
+      border-radius: 48px;
+      margin: 1.2rem 0 0.8rem 0;
+    }
+    .checklist span {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    .checklist span::before {
+      content: "▹";
+      color: #ff9f1c;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+    .hr-divider {
+      margin: 2.5rem 0 1.5rem 0;
+      border: 0;
+      height: 1px;
+      background: linear-gradient(to right, #dce3ef, transparent);
+    }
+    .tag {
+      background: #dce5f2;
+      border-radius: 40px;
+      padding: 0.1rem 1rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #1e3b6b;
+      letter-spacing: 0.3px;
+    }
+    @media (max-width: 780px) {
+      .container { padding: 1.5rem; }
+      .grid-2col { grid-template-columns: 1fr; gap: 1rem; }
+      .checklist { flex-direction: column; align-items: flex-start; gap: 0.2rem; }
+      h1 { font-size: 1.9rem; }
+    }
+    .icon-az {
+      background: #0b1e3a;
+      color: white;
+      border-radius: 40px;
+      padding: 0.1rem 0.9rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.4rem 1rem;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>☁️ AWS Core Services · Data Engineering</h1>
+  <div class="subhead">
+    <span>📘 Classroom style · Corporate training notes</span>
+    <span class="badge">S3 · EC2 · Regions & AZ · DataOps</span>
+  </div>
+
+  <!-- ===== S3, EC2, Regions/AZ ===== -->
+  <h2>🧱 Core services: S3, EC2, Regions & AZ</h2>
+  <div class="grid-2col">
+    <div class="card">
+      <h4><span style="color:#ff9f1c;">🪣</span> Amazon S3</h4>
+      <ul>
+        <li><strong>Object storage</strong> — unlimited scale, 11 nines durability.</li>
+        <li><strong>Key concepts:</strong> Buckets, objects, prefixes, versions.</li>
+        <li><strong>Storage classes:</strong> Standard, IA, Glacier, Intelligent‑Tiering.</li>
+        <li><strong>Use in data engineering:</strong> data lake, staging, backups, artifacts.</li>
+        <li><strong>Best practice:</strong> enable versioning, lifecycle rules, encryption (SSE‑S3/KMS).</li>
+      </ul>
+      <div style="margin-top: 0.8rem; background: #edf3fc; padding: 0.2rem 1rem; border-radius: 30px;">
+        <span class="tag">⚡ S3 event notifications → trigger pipelines</span>
+      </div>
+    </div>
+    <div class="card">
+      <h4><span style="color:#ff9f1c;">⚙️</span> Amazon EC2</h4>
+      <ul>
+        <li><strong>Elastic Compute</strong> — scalable virtual servers (instances).</li>
+        <li><strong>Instance families:</strong> General, compute‑optimized, memory‑optimized, storage‑optimized.</li>
+        <li><strong>Data engineering workloads:</strong> ETL runners, notebooks (EMR on EC2), custom processing.</li>
+        <li><strong>Key features:</strong> AMIs, instance profiles (IAM), EBS volumes, security groups.</li>
+        <li><strong>Cost:</strong> On‑Demand, Reserved, Spot (great for fault‑tolerant ETL).</li>
+      </ul>
+      <div style="margin-top: 0.8rem; background: #edf3fc; padding: 0.2rem 1rem; border-radius: 30px;">
+        <span class="tag">📦 EBS + instance store · ephemeral vs persistent</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Regions & AZ -->
+  <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; background: #f2f7ff; border-radius: 30px; padding: 1.2rem 1.8rem; margin: 1rem 0 1.8rem;">
+    <div style="flex:1; min-width: 200px;">
+      <h4 style="margin:0 0 0.2rem 0; font-size:1.2rem;">🌍 Regions</h4>
+      <p style="margin:0; font-size:0.98rem;">Geographical area (e.g., <strong>us‑east‑1</strong>, <strong>eu‑west‑2</strong>). Choose for <strong>data residency</strong>, latency, and service availability.</p>
+    </div>
+    <div style="flex:1; min-width: 200px;">
+      <h4 style="margin:0 0 0.2rem 0; font-size:1.2rem;">📡 Availability Zones (AZ)</h4>
+      <p style="margin:0; font-size:0.98rem;">Isolated data centers within a region. <strong>Multi‑AZ</strong> for high availability & fault tolerance. S3 (standard) is AZ‑redundant.</p>
+    </div>
+  </div>
+
+  <!-- cloud infrastructure + data movement -->
+  <h2 style="margin-top:2.2rem;">☁️ Cloud infrastructure: storage, compute, data movement</h2>
+  <div class="card" style="margin:0.8rem 0 1.5rem;">
+    <h4>📦 Storage · Compute · Movement</h4>
+    <ul>
+      <li><strong>Storage:</strong> S3 (data lake, raw/curated), EBS (block storage for EC2), EFS (shared file).</li>
+      <li><strong>Compute:</strong> EC2 (custom ETL), EMR (managed Hadoop/Spark), Glue (serverless Spark), Lambda (event‑driven).</li>
+      <li><strong>Data movement:</strong> AWS DMS (migration), Glue ETL, Kinesis (streaming), S3 Transfer Acceleration, VPC endpoints.</li>
+      <li><strong>Orchestration:</strong> Step Functions, MWAA (Airflow), EventBridge.</li>
+    </ul>
+    <p style="margin-top:0.8rem; background: #e7eff9; padding:0.4rem 1.2rem; border-radius:30px;">
+      🔁 <strong>DataOps principle:</strong> treat infrastructure as code, automate movement, monitor lineage.
+    </p>
+  </div>
+
+  <!-- DataOps thread -->
+  <h2>🧩 DataOps thread · environment‑aware config, naming, docs</h2>
+  <div class="grid-2col">
+    <div class="card">
+      <h4>🌱 Environment‑aware configuration</h4>
+      <ul>
+        <li>Use <strong>parameter store</strong> (SSM) or Secrets Manager for env‑specific values.</li>
+        <li>Prefix variables: <code>dev</code>, <code>staging</code>, <code>prod</code> — e.g., <code>/dataeng/dev/s3_bucket</code>.</li>
+        <li>Leverage <strong>CloudFormation</strong> / Terraform with conditionals.</li>
+        <li>Never hardcode: use <code>${ENV}</code> placeholders in scripts.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h4>🏷️ Cloud resource naming</h4>
+      <ul>
+        <li>Pattern: <code>{org}-{env}-{service}-{name}-{random}</code></li>
+        <li>Example: <code>acme-dev-s3-raw-7f3a</code>, <code>acme-prod-ec2-spark-01</code></li>
+        <li>Tags: <code>Environment</code>, <code>Project</code>, <code>CostCenter</code>, <code>Owner</code>.</li>
+        <li>Automate tagging with IAM policies or CloudFormation.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="card" style="margin:0.5rem 0 1.2rem;">
+    <h4>📄 Documentation of deployment steps</h4>
+    <ul>
+      <li>Maintain a <strong>“runbook”</strong> in markdown (or Confluence) with prerequisites, commands, and rollback.</li>
+      <li>Include <strong>architecture diagram</strong> (e.g., Lucidchart) and data flow.</li>
+      <li>Use <strong>README</strong> in your infra repo: <code>./deploy.sh --env dev</code> etc.</li>
+      <li>Capture <strong>dependency matrix</strong> (IAM, VPC, subnets, S3 buckets).</li>
+    </ul>
+  </div>
+
+  <!-- generating scripts using Claude/Copilot -->
+  <h2 style="margin-top:2rem;">🤖 Generating scripts, checklists & architecture notes with Claude/Copilot</h2>
+  <div class="script-note">
+    <strong>🧠 Prompt engineering for infra code:</strong> “Generate a bash script that creates an S3 bucket with versioning, sets a lifecycle policy, and attaches a bucket policy for read‑only access from a specific EC2 role. Use environment variables for bucket name and region.”
+  </div>
+  <div class="code-block">
+    <span class="comment">#!/bin/bash</span><br>
+    <span class="comment"># generate-s3-infra.sh · environment‑aware setup</span><br>
+    <span class="comment"># usage: ./generate-s3-infra.sh dev us‑east‑1</span><br><br>
+    ENV=<span class="string">"${1:-dev}"</span><br>
+    REGION=<span class="string">"${2:-us‑east‑1}"</span><br>
+    BUCKET_NAME=<span class="string">"acme-${ENV}-data-lake-$(date +%s)"</span><br><br>
+    <span class="keyword">echo</span> "🌐 Creating bucket in region $REGION for env $ENV"<br><br>
+    <span class="comment"># create bucket with versioning and encryption</span><br>
+    aws s3api create-bucket --bucket $BUCKET_NAME --region $REGION --create-bucket-configuration LocationConstraint=$REGION<br>
+    aws s3api put-bucket-versioning --bucket $BUCKET_NAME --versioning-configuration Status=Enabled<br>
+    aws s3api put-bucket-encryption --bucket $BUCKET_NAME --server-side-encryption-configuration '<span class="string">{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}</span>'<br><br>
+    <span class="comment"># lifecycle: transition to Glacier after 90 days</span><br>
+    aws s3api put-bucket-lifecycle-configuration --bucket $BUCKET_NAME --lifecycle-configuration '<span class="string">{"Rules":[{"Status":"Enabled","Prefix":"","Transitions":[{"Days":90,"StorageClass":"GLACIER"}]}]}</span>'<br><br>
+    <span class="keyword">echo</span> "✅ S3 bucket $BUCKET_NAME ready · tags: env=$ENV"<br>
+    aws s3api put-bucket-tagging --bucket $BUCKET_NAME --tagging '<span class="string">{"TagSet":[{"Key":"Environment","Value":"'$ENV'"},{"Key":"Project","Value":"data-lake"}]}</span>'
+  </div>
+
+  <!-- additional scripts : EC2 + IAM -->
+  <div class="grid-2col" style="margin-top: 0.2rem;">
+    <div class="card">
+      <h4>📜 EC2 + IAM role script</h4>
+      <div class="code-block" style="margin:0.6rem 0 0; font-size:0.85rem;">
+        <span class="comment"># create-ec2-with-role.sh</span><br>
+        ROLE_NAME=<span class="string">"dataeng-ec2-${ENV}"</span><br>
+        INSTANCE_PROFILE=<span class="string">"dataeng-profile-${ENV}"</span><br>
+        <span class="comment"># create instance profile and attach policy</span><br>
+        aws iam create-role --role-name $ROLE_NAME --assume-role-policy-document '<span class="string">{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Principal":{"Service":"ec2.amazonaws.com"},"Action":"sts:AssumeRole"}]}</span>'<br>
+        aws iam attach-role-policy --role-name $ROLE_NAME --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess<br>
+        aws iam create-instance-profile --instance-profile-name $INSTANCE_PROFILE<br>
+        aws iam add-role-to-instance-profile --role-name $ROLE_NAME --instance-profile-name $INSTANCE_PROFILE<br>
+        <span class="comment"># launch EC2 (t3.medium, with user‑data for spark env)</span><br>
+        aws ec2 run-instances --image-id ami-0abcdef1234567890 --instance-type t3.medium --iam-instance-profile Name=$INSTANCE_PROFILE --user-data <span class="string">"#!/bin/bash \n apt update && apt install -y openjdk-11"</span>
+      </div>
+    </div>
+    <div class="card">
+      <h4>📋 DataOps checklist (Claude/Copilot friendly)</h4>
+      <ul>
+        <li>✅ Environment variables defined (<code>ENV, REGION, ACCOUNT</code>)</li>
+        <li>✅ Naming convention applied (tags + prefix)</li>
+        <li>✅ S3 bucket versioning + encryption enabled</li>
+        <li>✅ EC2 instance profile with minimal permissions</li>
+        <li>✅ Security groups restrict access (VPC)</li>
+        <li>✅ CloudWatch logs enabled for EC2 / S3 access</li>
+        <li>✅ Deployment steps documented in <code>DEPLOY.md</code></li>
+        <li>✅ Architecture diagram (updated) stored in <code>/docs</code></li>
+      </ul>
+      <div style="margin-top: 0.6rem; background: #dfe9f5; padding: 0.2rem 1rem; border-radius: 30px;">
+        <span class="tag">🧪 test with `--dry-run` or `--no-execute`</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Architecture notes & more scripts -->
+  <h2 style="margin-top:2.2rem;">🧭 Architecture notes & deployment blueprint</h2>
+  <div class="card">
+    <h4>📐 Reference architecture: Data Lake + ETL (S3 + EC2 + Glue)</h4>
+    <ul>
+      <li><strong>Ingestion:</strong> S3 (raw zone) ← Kinesis Firehose / DMS / SDK uploads.</li>
+      <li><strong>Processing:</strong> EC2 (Spark cluster) or Glue job reading from S3, writing to curated zone.</li>
+      <li><strong>Orchestration:</strong> Step Functions / Airflow triggers EC2 or Glue on S3 events.</li>
+      <li><strong>Consumption:</strong> Athena / Redshift Spectrum / QuickSight.</li>
+      <li><strong>Security:</strong> IAM roles, KMS, VPC endpoints, S3 bucket policies.</li>
+    </ul>
+    <p style="background: #e1f0fa; padding:0.5rem 1.2rem; border-radius: 30px; margin-top:0.5rem;">
+      🧩 <strong>DataOps in action:</strong> CI/CD pipeline (CodeCommit+CodePipeline) that deploys CloudFormation stacks per environment.
+    </p>
+  </div>
+
+  <!-- final script: multi-resource setup with claude assistance -->
+  <div class="script-note">
+    <strong>🤖 Copilot / Claude prompt example:</strong> “Write a bash script that creates a full data‑eng stack: VPC (with 2 subnets), S3 bucket, EC2 instance with IAM role, and an S3 gateway endpoint. Use environment variables and include error handling.”
+  </div>
+  <div class="code-block" style="font-size:0.9rem;">
+    <span class="comment">#!/bin/bash -e</span><br>
+    <span class="comment"># deploy-dataeng-stack.sh · uses env: ENV, REGION, VPC_CIDR</span><br>
+    ENV=<span class="string">"${ENV:-dev}"</span>; REGION=<span class="string">"${REGION:-us‑east‑1}"</span><br>
+    VPC_CIDR=<span class="string">"10.0.0.0/16"</span>; SUBNET1_CIDR=<span class="string">"10.0.1.0/24"</span>; SUBNET2_CIDR=<span class="string">"10.0.2.0/24"</span><br><br>
+    <span class="keyword">echo</span> "🚀 Deploying stack for $ENV in $REGION"<br>
+    <span class="comment"># create VPC (simplified)</span><br>
+    VPC_ID=$(aws ec2 create-vpc --cidr-block $VPC_CIDR --query 'Vpc.VpcId' --output text)<br>
+    aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block $SUBNET1_CIDR --availability-zone ${REGION}a<br>
+    aws ec2 create-subnet --vpc-id $VPC_ID --cidr-block $SUBNET2_CIDR --availability-zone ${REGION}b<br>
+    <span class="comment"># create S3 gateway endpoint (for private subnet)</span><br>
+    aws ec2 create-vpc-endpoint --vpc-id $VPC_ID --service-name com.amazonaws.$REGION.s3 --route-table-ids $(aws ec2 describe-route-tables --filters "Name=vpc-id,Values=$VPC_ID" --query 'RouteTables[0].RouteTableId' --output text)<br>
+    <span class="comment"># S3 bucket (versioned, encrypted) with env tag</span><br>
+    BUCKET=<span class="string">"dataeng-${ENV}-${REGION}-$(date +%s)"</span><br>
+    aws s3api create-bucket --bucket $BUCKET --region $REGION --create-bucket-configuration LocationConstraint=$REGION &gt;/dev/null<br>
+    aws s3api put-bucket-versioning --bucket $BUCKET --versioning-configuration Status=Enabled<br>
+    aws s3api put-bucket-encryption --bucket $BUCKET --server-side-encryption-configuration '<span class="string">{"Rules":[{"ApplyServerSideEncryptionByDefault":{"SSEAlgorithm":"AES256"}}]}</span>'<br>
+    <span class="keyword">echo</span> "✅ Stack ready · VPC: $VPC_ID · S3: $BUCKET"<br>
+    <span class="comment"># output for documentation</span><br>
+    <span class="keyword">cat</span> &lt;&lt;EOF &gt; ./stack-output-${ENV}.txt<br>
+    ENV: $ENV | REGION: $REGION<br>
+    VPC_ID: $VPC_ID<br>
+    S3_BUCKET: $BUCKET<br>
+    SUBNETS: ${REGION}a, ${REGION}b<br>
+    ENDPOINT: S3 gateway attached<br>
+    <span class="comment"># next steps: launch EC2 or Glue</span><br>
+    EOF
+  </div>
+
+  <hr class="hr-divider">
+  <div style="display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; color: #2e405f; font-size:0.95rem;">
+    <span>📌 <strong>Trainer tip:</strong> Use these scripts as templates — always test in a sandbox account first.</span>
+    <span>📎 <strong>DataOps maturity:</strong> infrastructure as code + environment parity.</span>
+  </div>
+  <div style="margin-top: 1.8rem; background: #eaf1fb; border-radius: 60px; padding: 0.6rem 2rem; display: inline-block;">
+    <span style="font-weight: 500;">✅ Setup scripts · checklists · architecture · ready for your data engineering lab</span>
+  </div>
+</div>
+<!-- end container -->
+</body>
+</html>
